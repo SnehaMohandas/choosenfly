@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class RoomController extends GetxController {
+class RoomController2 extends GetxController {
   String nightCount;
   AccomodationController acController;
-  RoomController(this.nightCount, this.acController);
+  RoomController2(this.nightCount, this.acController);
 
   var isInteriorClicked = true.obs;
   var interiorIndex = "1".obs;
@@ -30,21 +30,37 @@ class RoomController extends GetxController {
     ],
     ["Family", "3"]
   ];
-  var selectedRoom = ''.obs;
+  var selectedRoom = '1'.obs;
 
   void onRoomSelected(String value) {
     selectedRoom.value = value;
   }
 
-  List<List<String>> courtesy = [
-    ["Mr.", "1"],
-    [
-      "Mrs.",
-      "2",
-    ],
-    ["Ms", "3"]
+  List<String> courtesy2 = ["Mr.", "Mrs", "Ms", "Master"];
+
+  // List<List<String>> courtesy2 = [
+  //   //  "Mr.", "Mrs", "Ms", "Master"
+  //   ["Mr.", "1"],
+  //   [
+  //     "Mrs.",
+  //     "2",
+  //   ],
+  //   ["Ms", "3"],
+  //   ["Master", "4"]
+  // ];
+  List<String> courtesy1 = [
+    "Mr.", "Mrs.", "Ms."
+    // ["Mr."],
+    // ["Mrs."],
+    // ["Ms"]
   ];
-  var selectedcourtesy = [].obs;
+
+  List<String> gender = ["Male", "Female"];
+  var selectedcourtesy1 = "Mr.".obs;
+
+  var selectedcourtesy2 = [].obs;
+  var selectedGender = [].obs;
+
   void oncourtesySelected(String value) {
     // selectedcourtesy.value = value;
   }
@@ -52,6 +68,8 @@ class RoomController extends GetxController {
   var checkInDate = "".obs;
   DateTime? checkin;
   var checkOutDate = "".obs;
+  var newCheckinDate = "".obs;
+  var newCheckoutDate = "".obs;
   DateTime? checkout;
   DateTime? dateforCal1;
   DateTime? dateforCal2;
@@ -67,25 +85,19 @@ class RoomController extends GetxController {
     print("this is difff${difference}");
     final DateTime? picked = await showDatePicker(
         context: context,
-        initialDate: checkInDate.value != ""
-            ? checkin!
-            : acController.checkInDate.value != ""
-                ? acController.checkin!
-                : DateTime.now(),
+        initialDate: checkInDate.value != "" ? checkin! : DateTime.now(),
         firstDate: DateTime.now(),
         lastDate: checkOutDate.value != ""
             ? checkout!.subtract(Duration(days: 1))
-            : acController.checkOutDate.value != ""
-                ? acController.checkout!.subtract(Duration(days: 1))
-                : DateTime(3000));
+            : DateTime(3000));
     if (picked != null) {
       checkin = picked;
       checkInDate.value =
           DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
       ischeckInError.value = false;
       dateforCal1 = DateFormat('MMM-dd-yyyy').parse(checkInDate.value);
-      if (checkOutDate.value != "" || acController.checkOutDate.value != "") {
-        nigtCalculate(acController);
+      if (checkOutDate.value != "") {
+        nigtCalculate();
       }
       print("checkindateeeee===${checkInDate}");
     } else {
@@ -93,18 +105,10 @@ class RoomController extends GetxController {
     }
   }
 
-  nigtCalculate(AccomodationController acController) {
+  nigtCalculate() {
     print("ni8 cal");
-    difference.value = dateforCal2 != null
-        ? dateforCal2!.difference(dateforCal1 != null
-            ? dateforCal1!.toUtc()
-            : acController.dateforCal1!.toUtc())
-        : dateforCal1 != null
-            ? dateforCal2 != null
-                ? dateforCal2!.difference(dateforCal1!.toUtc())
-                : acController.dateforCal2!.difference(dateforCal1!.toUtc())
-            : acController.dateforCal2!
-                .difference(acController.dateforCal1!.toUtc());
+    difference.value = dateforCal2!.difference(dateforCal1!.toUtc());
+
     print("difffvalueee${difference.value}");
     if (difference.value != Duration(seconds: 0)) {
       nitController.text = difference.value.inDays.toString();
@@ -118,21 +122,15 @@ class RoomController extends GetxController {
       context: context,
       initialDate: checkOutDate.value != ""
           ? checkout!
-          : acController.checkOutDate.value != ""
-              ? acController.checkout!
-              : checkInDate.value != ""
-                  ? checkin!.add(Duration(days: 1))
-                  : acController.checkInDate.value != ""
-                      ? acController.checkin!.add(Duration(days: 1))
-                      : DateTime.now().add(Duration(
-                          days: 1)), // initialDate: checkInDate.value != ""
+          : checkInDate.value != ""
+              ? checkin!.add(Duration(days: 1))
+              : DateTime.now().add(
+                  Duration(days: 1)), // initialDate: checkInDate.value != ""
       //     ?checkin!.add(Duration(days: 1))
       //     : DateTime.now(),
       firstDate: checkInDate.value != ""
           ? checkin!.add(Duration(days: 1))
-          : acController.checkInDate.value != ""
-              ? acController.checkin!.add(Duration(days: 1))
-              : DateTime.now().add(Duration(days: 1)),
+          : DateTime.now().add(Duration(days: 1)),
 
       lastDate: DateTime(3000),
     );
@@ -144,8 +142,8 @@ class RoomController extends GetxController {
       ischeckOutError.value = false;
       dateforCal2 = DateFormat('MMM-dd-yyyy').parse(checkOutDate.value);
 
-      if (checkInDate.value != "" || acController.checkInDate.value != "") {
-        nigtCalculate(acController);
+      if (checkInDate.value != "") {
+        nigtCalculate();
       }
 
       print("checkindateeeee===${checkOutDate}");
@@ -158,13 +156,11 @@ class RoomController extends GetxController {
     if (dateforCal1 != null || acController.dateforCal1 != null) {
       print("its workeddd");
       // Calculate the new checkout date based on the number of nights
-      DateTime newCheckoutDate = dateforCal1 != null
-          ? dateforCal1!.add(Duration(days: nights))
-          : acController.dateforCal1!.add(Duration(days: nights));
+      DateTime newCheckoutDate = dateforCal1!.add(Duration(days: nights));
       checkout = newCheckoutDate;
       checkOutDate.value = DateFormat('MMM-dd-yyyy').format(newCheckoutDate);
       dateforCal2 = newCheckoutDate;
-      nigtCalculate(acController);
+      nigtCalculate();
     }
   }
 
@@ -182,13 +178,15 @@ class RoomController extends GetxController {
   List<List<dynamic>> ageTextControllers = [];
   var itemLimit = 1.obs;
   var isValidate = false.obs;
+  var isSearchModify = false.obs;
+  List<List> allAgeOrgs = [];
 
   @override
   void onInit() {
-    if (nightCount != null) {
-      nitController.text = nightCount;
-      print(nitController.text);
-    }
+    // if (nightCount != null) {
+    //   nitController.text = nightCount;
+    //   print(nitController.text);
+    // }
 
     super.onInit();
   }

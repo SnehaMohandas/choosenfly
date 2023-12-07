@@ -49,12 +49,12 @@
 //                           crossAxisAlignment: CrossAxisAlignment.start,
 //                           children: [
 //                             Text('Available Limits',
-//                                 style: GoogleFonts.plusJakartaSans(
+//                                 style: TextStyle(
 //                                     color: Colors.white,
 //                                     fontWeight: FontWeight.normal,
 //                                     fontSize: 16)),
 //                             Text('5,00,000 ',
-//                                 style: GoogleFonts.plusJakartaSans(
+//                                 style: TextStyle(
 //                                     color: Colors.white,
 //                                     fontWeight: FontWeight.bold,
 //                                     fontSize: 25)),
@@ -194,7 +194,7 @@
 //                         children: [
 //                           Text(
 //                             'Dashboard',
-//                             style: GoogleFonts.plusJakartaSans(
+//                             style: TextStyle(
 //                                 color: ColorConstant.primaryColor,
 //                                 fontWeight: FontWeight.normal,
 //                                 fontSize: 16),
@@ -209,7 +209,7 @@
 //                             ),
 //                             child: Center(
 //                               child: Text('View All',
-//                                   style: GoogleFonts.plusJakartaSans(
+//                                   style: TextStyle(
 //                                       color: Colors.white, fontSize: 9)),
 //                             ),
 //                           )
@@ -321,14 +321,17 @@
 //============================
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
+import 'package:choose_n_fly/view/booking_details/booking_dtail.dart';
 import 'package:choose_n_fly/view/calender/calender.dart';
 import 'package:choose_n_fly/view/home/Home%20widgets/Category%20Circle%20Button.dart';
 import 'package:choose_n_fly/view/home/Home%20widgets/Custom%20Status%20Card%20.dart';
 import 'package:choose_n_fly/view/accommodation/accomodation.dart';
 import 'package:choose_n_fly/view/home/controller/home_controller.dart';
+import 'package:choose_n_fly/view/profile/profile.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:phosphor_flutter/phosphor_flutter.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
@@ -368,26 +371,32 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         //const Spacer(),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Available Limits',
-                                style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.normal,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.02)),
-                            Text('5,00,000 ',
-                                style: GoogleFonts.plusJakartaSans(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.03
-                                    //fontSize: 24
-                                    )),
-                          ],
+                        GestureDetector(
+                          onTap: () {
+                            Get.to(() => Profile(),
+                                transition: Transition.rightToLeftWithFade);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Available Limits',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.normal,
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.02)),
+                              Text('5,00,000 ',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize:
+                                          MediaQuery.of(context).size.height *
+                                              0.03
+                                      //fontSize: 24
+                                      )),
+                            ],
+                          ),
                         ),
                         const SizedBox(
                           width: 50,
@@ -398,9 +407,12 @@ class HomeScreen extends StatelessWidget {
                           width: MediaQuery.of(context).size.width * 0.33,
                           decoration: const BoxDecoration(
                               image: DecorationImage(
-                                  image:
-                                      AssetImage("assets/images/image 1.png"),
-                                  fit: BoxFit.fill)),
+                            image: AssetImage(
+                              "assets/images/logo.png",
+                            ),
+                            fit: BoxFit.fill,
+                            filterQuality: FilterQuality.high,
+                          )),
                         ),
                         // const Spacer()
                       ]),
@@ -452,14 +464,11 @@ class HomeScreen extends StatelessWidget {
                     children: [
                       InkWell(
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(
-                            builder: (context) {
-                              return AccommodationScreen();
-                            },
-                          ));
+                          Get.to(() => AccommodationScreen(),
+                              transition: Transition.rightToLeftWithFade);
                         },
                         child: CategoryCircleBtn(
-                          imagePath: 'assets/images/image 2.png',
+                          imagePath: 'assets/images/accommodation.png',
                           text: 'Accommodation',
                           fontSize: MediaQuery.of(context).size.height * 0.015,
                         ),
@@ -467,7 +476,7 @@ class HomeScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {},
                         child: CategoryCircleBtn(
-                          imagePath: 'assets/images/image 3 (1).png',
+                          imagePath: 'assets/images/flight.png',
                           text: 'Flights',
                           fontSize: MediaQuery.of(context).size.height * 0.015,
                         ),
@@ -475,7 +484,7 @@ class HomeScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {},
                         child: CategoryCircleBtn(
-                          imagePath: 'assets/images/image 4.png',
+                          imagePath: 'assets/images/transfer.png',
                           text: 'Tranfer',
                           fontSize: MediaQuery.of(context).size.height * 0.015,
                         ),
@@ -483,7 +492,7 @@ class HomeScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {},
                         child: CategoryCircleBtn(
-                          imagePath: 'assets/images/image 5.png',
+                          imagePath: 'assets/images/tours.png',
                           text: 'Tours and Activity',
                           fontSize: MediaQuery.of(context).size.height * 0.015,
                         ),
@@ -502,7 +511,7 @@ class HomeScreen extends StatelessWidget {
                       InkWell(
                         onTap: () {},
                         child: CategoryCircleBtn(
-                          imagePath: 'assets/images/holiday.png',
+                          imagePath: 'assets/images/holiday_pkg.png',
                           text: 'Holiday Packages',
                           fontSize: MediaQuery.of(context).size.height * 0.015,
                         ),
@@ -521,31 +530,37 @@ class HomeScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.02,
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+            padding: const EdgeInsets.symmetric(horizontal: 26),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   'Dashboard',
-                  style: GoogleFonts.plusJakartaSans(
+                  style: TextStyle(
                       color: ColorConstant.primaryColor,
                       fontWeight: FontWeight.normal,
                       fontSize: 16),
                 ),
-                const Spacer(),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.033,
-                  width: MediaQuery.of(context).size.width * 0.17,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: const Color.fromRGBO(53, 59, 163, 0.76),
-                  ),
-                  child: Center(
-                    child: Text('View All',
-                        style: GoogleFonts.plusJakartaSans(
-                            color: Colors.white,
-                            fontSize:
-                                MediaQuery.of(context).size.height * 0.014)),
+                // const Spacer(),
+                GestureDetector(
+                  onTap: () {
+                    Get.to(() => BookingDetail(),
+                        transition: Transition.rightToLeftWithFade);
+                  },
+                  child: Container(
+                    height: MediaQuery.of(context).size.height * 0.037,
+                    width: MediaQuery.of(context).size.width * 0.35,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: const Color.fromRGBO(53, 59, 163, 0.76),
+                    ),
+                    child: Center(
+                      child: Text('View All Bookings',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize:
+                                  MediaQuery.of(context).size.height * 0.014)),
+                    ),
                   ),
                 )
               ],
@@ -565,24 +580,30 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomStatsCard(
-                          title: 'Total\nBooking',
-                          value: '20',
-                          iconImagePath: 'assets/images/External.png',
+                          title: 'Total\nHotels',
+                          value: '543',
+                          icon: Icon(
+                            FontAwesomeIcons.hotel,
+                            size: 18,
+                            color: ColorConstant.white,
+                          ),
                           iconBackgroundColor: Color(0xFF48BDE2),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 14, right: 14),
                           child: CustomStatsCard(
+                            icon: Icon(Icons.calendar_month,
+                                size: 22, color: ColorConstant.white),
                             title: 'Todays\nCheck-In  ',
                             value: '0',
-                            iconImagePath: 'assets/images/External.png',
                             iconBackgroundColor: Color(0xFFE24897),
                           ),
                         ),
                         CustomStatsCard(
+                          icon: Icon(Icons.calendar_month,
+                              size: 22, color: ColorConstant.white),
                           title: 'Total\nCheck-Out',
                           value: '1',
-                          iconImagePath: 'assets/images/External.png',
                           iconBackgroundColor: Colors.teal,
                         ),
                       ],
@@ -597,24 +618,27 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         CustomStatsCard(
+                          icon: Icon(Icons.cancel,
+                              size: 22, color: ColorConstant.white),
                           title: 'Total\nCancellation',
                           value: '2',
-                          iconImagePath: 'assets/images/External.png',
                           iconBackgroundColor: Color(0xFF40C756),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(left: 14, right: 14),
                           child: CustomStatsCard(
-                            title: 'Todays\n Check-in ',
+                            icon: Icon(Icons.pending_outlined,
+                                size: 22, color: ColorConstant.white),
+                            title: 'Pending\nConfirmation',
                             value: '1',
-                            iconImagePath: 'assets/images/External.png',
-                            iconBackgroundColor: Color(0xFF48BDE2),
+                            iconBackgroundColor: ColorConstant.signBlue,
                           ),
                         ),
                         CustomStatsCard(
+                          icon: Icon(FontAwesomeIcons.wallet,
+                              size: 18, color: ColorConstant.white),
                           title: 'Used\nCredits',
                           value: '0',
-                          iconImagePath: 'assets/images/External.png',
                           iconBackgroundColor: Color(0xFFFE6969),
                         ),
                       ],

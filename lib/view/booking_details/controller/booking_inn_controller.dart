@@ -2,30 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-class AccomodationController extends GetxController {
-  List<List<String>> native = [
-    ["India", "1"],
-    ["Dubai", "2"]
-  ];
-  var selectedNative = ''.obs;
-  var noNatSelected = false.obs;
-
-  void onNatSelected(String value) {
-    selectedNative.value = value;
-  }
-
-  List<List<String>> destination = [
-    ["Maldives", "1"],
-    ["New Zealand", "2"],
-    ["Thailand", "3"],
-    ["Singapore", "4"],
-  ];
-  var selectedDestinaion = ''.obs;
-  var nodestSelected = false.obs;
-  void onDesSelected(String value) {
-    selectedDestinaion.value = value;
-    print(selectedDestinaion.value);
-  }
+class BookingInnController extends GetxController {
+  var isTapped = false.obs;
 
   var checkInDate = "".obs;
   var newCheckinDate = "".obs;

@@ -6,13 +6,12 @@ import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/get_navigation.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class SignInPage extends StatelessWidget {
   SignInPage({super.key});
+  var apiKey = "";
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -48,7 +47,11 @@ class SignInPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Container(
-                              child: Image.asset('assets/images/image 1.png')),
+                              child: Image.asset(
+                            'assets/images/logo.png',
+                            height: 60,
+                            width: 140,
+                          )),
                         ],
                       ),
                     ),
@@ -79,7 +82,7 @@ class SignInPage extends StatelessWidget {
                                   // Get.to(() => GuestPage());
                                 },
                                 child: Text('Sign In',
-                                    style: GoogleFonts.plusJakartaSans(
+                                    style: TextStyle(
                                       fontSize: 30,
                                       fontWeight: FontWeight.bold,
                                     )),
@@ -88,7 +91,7 @@ class SignInPage extends StatelessWidget {
                                 height: 10,
                               ),
                               Text('Sign in to access to your dashboard.',
-                                  style: GoogleFonts.plusJakartaSans(
+                                  style: TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.normal,
                                       color: ColorConstant.liteBlack)),
@@ -124,9 +127,13 @@ class SignInPage extends StatelessWidget {
                               ),
                               InkWell(
                                 onTap: () {
+                                  apiKey = "'12345'";
+                                  print("'${apiKey}'");
                                   //  if (formKey.currentState!.validate()) {
-                                  Get.offAll(() => HomeScreen());
-                                  // }
+                                  Get.offAll(() => HomeScreen(),
+                                      transition:
+                                          Transition.rightToLeftWithFade);
+                                  //}
                                   // Navigator.push(context, MaterialPageRoute(
                                   //   builder: (context) {
                                   //     return HomeScreen();

@@ -1,6 +1,5 @@
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CategoryCircleBtn extends StatelessWidget {
   final String text;
@@ -39,12 +38,17 @@ class CategoryCircleBtn extends StatelessWidget {
             // ]
           ),
           child: Center(
-            child: Image.asset(imagePath),
+            child: Image.asset(
+              imagePath,
+              color: Colors.grey,
+              height: 26,
+              width: 26,
+            ),
           ),
         ),
         Text(
           text,
-          style: GoogleFonts.plusJakartaSans(
+          style: TextStyle(
             fontSize: fontSize,
             color: textColor,
           ),
