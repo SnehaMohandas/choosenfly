@@ -1,8 +1,14 @@
+import 'package:choose_n_fly/model/book_detail_model.dart';
+import 'package:choose_n_fly/utils/consts.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class BookingInnController extends GetxController {
+  BookingInnController({required this.bookingId});
+  final bookingId;
+  HoteldetailModel? hoteldetailModel;
   var isTapped = false.obs;
 
   var checkInDate = "".obs;
@@ -20,84 +26,87 @@ class BookingInnController extends GetxController {
   var ischeckInError = false.obs;
   var ischeckOutError = false.obs;
   var isnightError = false.obs;
+  //================================
+  //for editing
 
-  Future<void> selectCheckin(BuildContext context) async {
-    print("this is difff${difference}");
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: checkInDate.value != "" ? checkin! : DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: checkOutDate.value == ""
-          ? DateTime(3000)
-          : checkout!.subtract(Duration(days: 1)),
-    );
-    if (picked != null) {
-      checkin = picked;
-      checkInDate.value =
-          DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
-      ischeckInError.value = false;
-      dateforCal1 = DateFormat('MMM-dd-yyyy').parse(checkInDate.value);
-      if (checkOutDate.value != "") {
-        nigtCalculate();
-      }
-      print("checkindateeeee===${checkInDate}");
-    } else {
-      print("not pickedd");
-    }
-  }
+  // Future<void> selectCheckin(BuildContext context) async {
+  //   print("this is difff${difference}");
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: checkInDate.value != "" ? checkin! : DateTime.now(),
+  //     firstDate: DateTime.now(),
+  //     lastDate: checkOutDate.value == ""
+  //         ? DateTime(3000)
+  //         : checkout!.subtract(Duration(days: 1)),
+  //   );
+  //   if (picked != null) {
+  //     checkin = picked;
+  //     checkInDate.value =
+  //         DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
+  //     ischeckInError.value = false;
+  //     dateforCal1 = DateFormat('MMM-dd-yyyy').parse(checkInDate.value);
+  //     if (checkOutDate.value != "") {
+  //       nigtCalculate();
+  //     }
+  //     print("checkindateeeee===${checkInDate}");
+  //   } else {
+  //     print("not pickedd");
+  //   }
+  // }
 
-  nigtCalculate() {
-    difference.value = dateforCal2!.difference(dateforCal1!.toUtc());
-    print("difffvalueee${difference.value}");
-    if (difference.value != Duration(seconds: 0)) {
-      nitController.text = difference.value.inDays.toString();
-    }
-    print("nightttt${difference.value.inDays}");
-  }
+  // nigtCalculate() {
+  //   difference.value = dateforCal2!.difference(dateforCal1!.toUtc());
+  //   print("difffvalueee${difference.value}");
+  //   if (difference.value != Duration(seconds: 0)) {
+  //     nitController.text = difference.value.inDays.toString();
+  //   }
+  //   print("nightttt${difference.value.inDays}");
+  // }
 
-  Future<void> selectCheckout(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: checkOutDate.value != ""
-          ? checkout!
-          : checkInDate.value != ""
-              ? checkin!.add(Duration(days: 1))
-              : DateTime.now().add(
-                  Duration(days: 1)), // initialDate: checkInDate.value != ""
-      //     ?checkin!.add(Duration(days: 1))
-      //     : DateTime.now(),
-      firstDate: checkInDate.value == ""
-          ? DateTime.now().add(Duration(days: 1))
-          : checkin!.add(Duration(days: 1)),
-      lastDate: DateTime(3000),
-    );
-    if (picked != null) {
-      checkout = picked;
+  // Future<void> selectCheckout(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: checkOutDate.value != ""
+  //         ? checkout!
+  //         : checkInDate.value != ""
+  //             ? checkin!.add(Duration(days: 1))
+  //             : DateTime.now().add(
+  //                 Duration(days: 1)), // initialDate: checkInDate.value != ""
+  //     //     ?checkin!.add(Duration(days: 1))
+  //     //     : DateTime.now(),
+  //     firstDate: checkInDate.value == ""
+  //         ? DateTime.now().add(Duration(days: 1))
+  //         : checkin!.add(Duration(days: 1)),
+  //     lastDate: DateTime(3000),
+  //   );
+  //   if (picked != null) {
+  //     checkout = picked;
 
-      checkOutDate.value =
-          DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
-      ischeckOutError.value = false;
-      dateforCal2 = DateFormat('MMM-dd-yyyy').parse(checkOutDate.value);
-      if (checkInDate.value != "") {
-        nigtCalculate();
-      }
+  //     checkOutDate.value =
+  //         DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
+  //     ischeckOutError.value = false;
+  //     dateforCal2 = DateFormat('MMM-dd-yyyy').parse(checkOutDate.value);
+  //     if (checkInDate.value != "") {
+  //       nigtCalculate();
+  //     }
 
-      print("checkindateeeee===${checkOutDate}");
-    } else {
-      print("not pickd");
-    }
-  }
+  //     print("checkindateeeee===${checkOutDate}");
+  //   } else {
+  //     print("not pickd");
+  //   }
+  // }
 
-  void updateCheckoutDate(int nights) {
-    if (dateforCal1 != null) {
-      // Calculate the new checkout date based on the number of nights
-      DateTime newCheckoutDate = dateforCal1!.add(Duration(days: nights));
-      checkout = newCheckoutDate;
-      checkOutDate.value = DateFormat('MMM-dd-yyyy').format(newCheckoutDate);
-      dateforCal2 = newCheckoutDate;
-      nigtCalculate();
-    }
-  }
+  // void updateCheckoutDate(int nights) {
+  //   if (dateforCal1 != null) {
+  //     // Calculate the new checkout date based on the number of nights
+  //     DateTime newCheckoutDate = dateforCal1!.add(Duration(days: nights));
+  //     checkout = newCheckoutDate;
+  //     checkOutDate.value = DateFormat('MMM-dd-yyyy').format(newCheckoutDate);
+  //     dateforCal2 = newCheckoutDate;
+  //     nigtCalculate();
+  //   }
+  // }
+  //==================================
 
   //room and guest dropdown values
   var isSubLoading = true.obs;
@@ -119,4 +128,33 @@ class BookingInnController extends GetxController {
   var isDateNotSelected = false.obs;
   var isRoomNotSelected = false.obs;
   List<List> allAgeOrgs = [];
+
+  var isLoading = true.obs;
+
+  fetchbookDetails() async {
+    print("hotel idd==>${bookingId}");
+    try {
+      isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/bookingdetailsViewAPIout?bookingid=${bookingId}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      if (response.statusCode == 200) {
+        print("object");
+        var data = hoteldetailModelFromJson(response.body);
+        print(data);
+        hoteldetailModel = data;
+        print("detaillsss==>${hoteldetailModel}");
+      }
+    } catch (e) {
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  @override
+  void onInit() {
+    fetchbookDetails();
+    super.onInit();
+  }
 }

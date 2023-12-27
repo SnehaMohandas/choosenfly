@@ -12,16 +12,11 @@ class RoomController2 extends GetxController {
   var interiorIndex = "1".obs;
   var exteriorIndex = "1".obs;
   var interior = [
-    "https://www.decorilla.com/online-decorating/wp-content/uploads/2023/02/Interior-design-trends-2023-imagined-by-Decorilla.jpg",
-    "https://www.decorilla.com/online-decorating/wp-content/uploads/2022/08/2023-interior-design-trends-Dina-H.jpeg",
-    "https://essentialhome.eu/inspirations/wp-content/uploads/2017/01/The-Importance-Of-Interior-Design-4.jpg"
+    "assets/images/int1.jpg",
+    "assets/images/int2.jpeg",
+    "assets/images/int3.jpg"
   ];
-  var exterior = [
-    "https://amazingarchitecture.com/storage/1488/moder_house_night_illumination.jpg",
-    "https://static.asianpaints.com/content/dam/asianpaintsbeautifulhomes/202209/20-exterior-house-designs/home-exterior-design.jpg",
-    "https://st.hzcdn.com/simgs/c4413d9e05478f4a_16-4133/home-design.jpg",
-    "https://allurausa.com/uploads/image/file/113/home-design_22.jpg"
-  ];
+  var exterior = ["assets/images/ext1.jpg", "assets/images/ext2.jpg"];
   List<List<String>> rooms = [
     ["Deluxe Room", "1"],
     [
@@ -168,6 +163,7 @@ class RoomController2 extends GetxController {
   var isSubLoading = true.obs;
 
   var roomCount = "".obs;
+  var newRoomCount = "".obs;
 
   var selectedChildIndex = "".obs;
   List selectedDdindex = <String>[].obs;
@@ -180,6 +176,9 @@ class RoomController2 extends GetxController {
   var isValidate = false.obs;
   var isSearchModify = false.obs;
   List<List> allAgeOrgs = [];
+
+  //accomodationdetail post
+  var accommodationDetails;
 
   @override
   void onInit() {

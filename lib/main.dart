@@ -1,10 +1,28 @@
+import 'package:choose_n_fly/test.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
-import 'package:choose_n_fly/view/singnin/sign_in.dart';
+import 'package:choose_n_fly/view/splash/splash_screen.dart';
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+//import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  //await ScreenUtil.ensureScreenSize();
+  // SystemChrome.setPreferredOrientations([
+  //   DeviceOrientation.portraitUp,
+  //   DeviceOrientation.portraitDown,
+  // ]);
+  WidgetsFlutterBinding.ensureInitialized();
+
+  runApp(
+    DevicePreview(
+      enabled: !kReleaseMode,
+      builder: (context) => MyApp(), // Wrap your app
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -13,15 +31,39 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Choosenfly',
+      //========test widget
+      // builder: (context, child) {
+      //   ScreenUtil.init(context);
+      //   return Theme(
+      //     data: ThemeData(
+      //       fontFamily: "Plus Jakarta Sans",
+      //       primarySwatch: buildMaterialColor(ColorConstant.primaryColor),
+      //       primaryColor: ColorConstant.primaryColor,
+      //     ),
+      //     child: Test(),
+      //   );
+      // },
+      //===========
       theme: ThemeData(
         fontFamily: "Plus Jakarta Sans",
         primarySwatch: buildMaterialColor(ColorConstant.primaryColor),
         primaryColor: ColorConstant.primaryColor,
       ),
-      home: SignInPage(),
+      //   payment
+      //==========
+      // home: ChangeNotifierProvider(
+      //   create: (context) => PaymentProvider(),
+      //   child: const PaymentScreen(),
+      // ),
+      //================
+      home: SplashScreen(),
     );
   }
 
