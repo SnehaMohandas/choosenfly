@@ -11,15 +11,15 @@ String hoteldetailModelToJson(HoteldetailModel data) =>
     json.encode(data.toJson());
 
 class HoteldetailModel {
-  int bookingId;
+  dynamic bookingId;
   dynamic searchlogid;
   dynamic customerId;
   dynamic paymentapiId;
-  dynamic bookingCode;
+  String bookingCode;
   dynamic voucherCode;
   dynamic bookingConfirmationCode;
   dynamic commonId;
-  dynamic bookingStatus;
+  bool bookingStatus;
   bool cancellationStatus;
   bool mailStatus;
   bool smsStatus;
@@ -67,7 +67,7 @@ class HoteldetailModel {
   dynamic nativeCountry;
   dynamic salutaion;
   dynamic passportNo;
-  List<dynamic> policyDetailsDtoList;
+  dynamic policyDetailsDtoList;
   dynamic bookingNew;
   dynamic hotelIdList;
   dynamic context;
@@ -231,8 +231,7 @@ class HoteldetailModel {
         nativeCountry: json["native_country"],
         salutaion: json["salutaion"],
         passportNo: json["passport_no"],
-        policyDetailsDtoList:
-            List<dynamic>.from(json["policyDetailsDTOList"].map((x) => x)),
+        policyDetailsDtoList: json["policyDetailsDTOList"],
         bookingNew: json["bookingNew"],
         hotelIdList: json["hotelIdList"],
         context: json["context"],
@@ -314,8 +313,7 @@ class HoteldetailModel {
         "native_country": nativeCountry,
         "salutaion": salutaion,
         "passport_no": passportNo,
-        "policyDetailsDTOList":
-            List<dynamic>.from(policyDetailsDtoList.map((x) => x)),
+        "policyDetailsDTOList": policyDetailsDtoList,
         "bookingNew": bookingNew,
         "hotelIdList": hotelIdList,
         "context": context,
@@ -341,8 +339,8 @@ class HoteldetailModel {
 }
 
 class HotelBookingDtoList {
-  int hotelbookingId;
-  int bookingId;
+  dynamic hotelbookingId;
+  dynamic bookingId;
   dynamic checkIn;
   dynamic checkOut;
   dynamic bookingDate;

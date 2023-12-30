@@ -8,8 +8,9 @@ class HomeController extends GetxController {
 
   var isLoading = true.obs;
   WalletModel? walletModel;
+  var exceptionCatched = false.obs;
 
-  //fetching destination
+  //fetching wallet
   FetchWallet(id) async {
     try {
       var response = await http.get(
@@ -19,6 +20,9 @@ class HomeController extends GetxController {
         print("object");
         var data = walletModelFromJson(response.body);
         walletModel = data;
+      } else {
+        exceptionCatched.value = true;
+        print("000000");
       }
     } catch (e) {
     } finally {

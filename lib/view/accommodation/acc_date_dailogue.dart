@@ -15,7 +15,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Check in: ",
+              const Text("Check in: ",
                   style: TextStyle(color: ColorConstant.black, fontSize: 14)),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.01,
@@ -45,7 +45,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                         padding: const EdgeInsets.only(left: 10),
                         child: Obx(
                           () => acController.checkInDate.value == ""
-                              ? Text(
+                              ? const Text(
                                   "-select-",
                                   style: TextStyle(
                                       color: ColorConstant.liteBlack,
@@ -53,7 +53,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                                 )
                               : Text(
                                   acController.checkInDate.value.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: ColorConstant.liteBlack,
                                       fontSize: 12),
                                 ),
@@ -84,15 +84,15 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
               ),
               Obx(
                 () => acController.ischeckInError.value == true
-                    ? Text("please select checkin date",
+                    ? const Text("please select checkin date",
                         style:
                             TextStyle(color: ColorConstant.red, fontSize: 10))
-                    : SizedBox(),
+                    : const SizedBox(),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
-              Text("Check out: ",
+              const Text("Check out: ",
                   style: TextStyle(color: ColorConstant.black, fontSize: 14)),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.01,
@@ -122,7 +122,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                         padding: const EdgeInsets.only(left: 10),
                         child: Obx(
                           () => acController.checkOutDate.value == ""
-                              ? Text(
+                              ? const Text(
                                   "-select-",
                                   style: TextStyle(
                                       color: ColorConstant.liteBlack,
@@ -130,7 +130,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                                 )
                               : Text(
                                   acController.checkOutDate.value.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       color: ColorConstant.liteBlack,
                                       fontSize: 12),
                                 ),
@@ -161,15 +161,15 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
               ),
               Obx(
                 () => acController.ischeckOutError.value == true
-                    ? Text("please select checkout date",
+                    ? const Text("please select checkout date",
                         style:
                             TextStyle(color: ColorConstant.red, fontSize: 10))
-                    : SizedBox(),
+                    : const SizedBox(),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
               ),
-              Text("Nights:",
+              const Text("Nights:",
                   style: TextStyle(color: ColorConstant.black, fontSize: 14)),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.02,
@@ -189,7 +189,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                       FilteringTextInputFormatter.allow(RegExp("[0-9]")),
                     ],
                     decoration: InputDecoration(
-                        contentPadding: EdgeInsets.only(
+                        contentPadding: const EdgeInsets.only(
                           left: 10,
                           right: 10,
                         ),
@@ -200,10 +200,10 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
               ),
               Obx(
                 () => acController.isnightError.value == true
-                    ? Text("Atleast select 1 night",
+                    ? const Text("Atleast select 1 night",
                         style:
                             TextStyle(color: ColorConstant.red, fontSize: 10))
-                    : SizedBox(),
+                    : const SizedBox(),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.01,
@@ -215,19 +215,19 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   ElevatedButton(
-                      style: ButtonStyle(
+                      style: const ButtonStyle(
                           backgroundColor:
                               MaterialStatePropertyAll(ColorConstant.white)),
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text(
+                      child: const Text(
                         "Close",
                         style: TextStyle(
                             color: ColorConstant.primaryColor, fontSize: 14),
                       )),
                   ElevatedButton(
-                      style: ButtonStyle(
+                      style: const ButtonStyle(
                           backgroundColor: MaterialStatePropertyAll(
                               ColorConstant.primaryColor)),
                       onPressed: () {
@@ -249,7 +249,7 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                           Navigator.pop(context);
                         }
                       },
-                      child: Text(
+                      child: const Text(
                         "Submit",
                         style:
                             TextStyle(color: ColorConstant.white, fontSize: 14),

@@ -12,9 +12,17 @@ import 'package:get/get.dart';
 
 class ReqConfirmScreen extends StatelessWidget {
   ReqConfirmScreen(
-      {super.key, required this.bookingId, required this.bookingstatus});
+      {super.key,
+      required this.bookingId,
+      required this.bookingstatus,
+      required this.hotelbookingidPriceRef,
+      required this.apiType,
+      required this.hotelNmae});
   final bookingId;
   final bookingstatus;
+  final hotelbookingidPriceRef;
+  final apiType;
+  final hotelNmae;
   final NetworkController networkController = Get.find<NetworkController>();
 
   @override
@@ -191,6 +199,7 @@ class ReqConfirmScreen extends StatelessWidget {
                                                         .voucherModel![0]
                                                         .hotelBookingDtoList[0]
                                                         .hotelname ??
+                                                    hotelNmae ??
                                                     "",
                                                 overflow: TextOverflow.ellipsis,
                                                 maxLines: 2,
@@ -383,14 +392,14 @@ class ReqConfirmScreen extends StatelessWidget {
                                                             //             0]
                                                             //         .pricerefernce ??
                                                             //     "",
+
                                                             reqController
-                                                                        .priceRef
-                                                                        .value ==
-                                                                    ""
-                                                                ? ""
-                                                                : reqController
-                                                                    .priceRef
-                                                                    .value,
+                                                                    .requestModel![
+                                                                        0]
+                                                                    .hotelBookingDtoList[
+                                                                        0]
+                                                                    .pricerefernce ??
+                                                                "",
                                                             style: const TextStyle(
                                                                 color: Color
                                                                     .fromARGB(
@@ -406,7 +415,14 @@ class ReqConfirmScreen extends StatelessWidget {
                                                               onTap: () {
                                                                 showAddPriceRefDialogue(
                                                                     context,
-                                                                    reqController);
+                                                                    reqController,
+                                                                    hotelbookingidPriceRef,
+                                                                    apiType,
+                                                                    reqController
+                                                                            .requestModel![0]
+                                                                            .hotelBookingDtoList[0]
+                                                                            .pricerefernce ??
+                                                                        "");
                                                               },
                                                               child: const Icon(
                                                                   Icons.add))
@@ -468,15 +484,28 @@ class ReqConfirmScreen extends StatelessWidget {
                                                                 MainAxisAlignment
                                                                     .spaceBetween,
                                                             children: [
-                                                              Text(reqController
-                                                                      .supplierRef
-                                                                      .value ??
-                                                                  ""),
+                                                              Text(
+                                                                reqController
+                                                                        .confirmModel!
+                                                                        .bookingDetails
+                                                                        .hotelBookingDtoList[
+                                                                            0]
+                                                                        .pricerefernce ??
+                                                                    "",
+                                                                style: TextStyle(
+                                                                    color:
+                                                                        ColorConstant
+                                                                            .red),
+                                                              ),
                                                               GestureDetector(
                                                                   onTap: () {
                                                                     showAddSupplierRefDialogue(
                                                                         context,
-                                                                        reqController);
+                                                                        reqController,
+                                                                        hotelbookingidPriceRef,
+                                                                        apiType,
+                                                                        reqController.confirmModel!.bookingDetails.hotelBookingDtoList[0].pricerefernce ??
+                                                                            "");
                                                                   },
                                                                   child: const Icon(
                                                                       Icons
@@ -533,10 +562,12 @@ class ReqConfirmScreen extends StatelessWidget {
                                                           ),
                                                           Text(
                                                             reqController
-                                                                    .supplierRef
-                                                                    .value ??
+                                                                    .confirmModel!
+                                                                    .bookingDetails
+                                                                    .hotelBookingDtoList[
+                                                                        0]
+                                                                    .pricerefernce ??
                                                                 "",
-                                                            style: TextStyle(),
                                                           ),
                                                           SizedBox(
                                                             height: MediaQuery.of(
@@ -804,54 +835,74 @@ class ReqConfirmScreen extends StatelessWidget {
   }
 
   showAddPriceRefDialogue(
-      BuildContext context, ReqConfirmController reqController) {
+      BuildContext context,
+      ReqConfirmController reqController,
+      dynamic hotelbookingidPriceRef,
+      int apiType,
+      dynamic priceRef) {
     final TextEditingController priceController = TextEditingController();
-    priceController.text = reqController.priceRef.value;
+    priceController.text = priceRef;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Container(
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            title: const Text('Add Price Reference',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-            content: TextFormField(
-              controller: priceController,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12.0)))),
-            ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
+          child: Form(
+            key: formKey,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              title: const Text('Add Price Reference',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+              content: TextFormField(
+                controller: priceController,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+                validator: (value) {
+                  if (value == "" || value == null) {
+                    return "please enter price reference";
+                  }
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                    style: const ButtonStyle(
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)))),
-                        backgroundColor: MaterialStatePropertyAll(
-                            ColorConstant.primaryColor)),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
                     onPressed: () {
-                      reqController.priceRef.value = priceController.text;
-                      Fluttertoast.showToast(msg: "Price Reference Added");
                       Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      "  Add  ",
-                      style: TextStyle(color: ColorConstant.white),
-                    )),
-              )
-            ],
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)))),
+                          backgroundColor: MaterialStatePropertyAll(
+                              ColorConstant.primaryColor)),
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          Navigator.of(context).pop();
+
+                          await reqController.priceRefChange(
+                              hotelbookingidPriceRef,
+                              priceController.text,
+                              apiType);
+                        }
+                      },
+                      child: const Text(
+                        "  Add  ",
+                        style: TextStyle(color: ColorConstant.white),
+                      )),
+                )
+              ],
+            ),
           ),
         );
       },
@@ -859,54 +910,74 @@ class ReqConfirmScreen extends StatelessWidget {
   }
 
   showAddSupplierRefDialogue(
-      BuildContext context, ReqConfirmController reqController) {
+      BuildContext context,
+      ReqConfirmController reqController,
+      dynamic hotelbookingidSupRef,
+      int apiType,
+      dynamic supplierRef) {
     final TextEditingController supplierController = TextEditingController();
-    supplierController.text = reqController.supplierRef.value;
+    supplierController.text = supplierRef;
+    final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Container(
-          child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            title: const Text('Add Supplier Reference',
-                style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
-            content: TextFormField(
-              controller: supplierController,
-              decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(12.0)))),
-            ),
-            actions: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text('Cancel'),
-                ),
+          child: Form(
+            key: formKey,
+            child: AlertDialog(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.all(Radius.circular(20.0))),
+              title: const Text('Add Supplier Reference',
+                  style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+              content: TextFormField(
+                controller: supplierController,
+                decoration: InputDecoration(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(12.0)))),
+                validator: (value) {
+                  if (value == "" || value == null) {
+                    return "please enter supplier reference";
+                  }
+                },
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton(
-                    style: const ButtonStyle(
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)))),
-                        backgroundColor: MaterialStatePropertyAll(
-                            ColorConstant.primaryColor)),
+              actions: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextButton(
                     onPressed: () {
-                      reqController.supplierRef.value = supplierController.text;
-                      Fluttertoast.showToast(msg: "Price Reference Added");
                       Navigator.of(context).pop();
                     },
-                    child: const Text(
-                      "  Add  ",
-                      style: TextStyle(color: ColorConstant.white),
-                    )),
-              )
-            ],
+                    child: const Text('Cancel'),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                      style: const ButtonStyle(
+                          shape: MaterialStatePropertyAll(
+                              RoundedRectangleBorder(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(10.0)))),
+                          backgroundColor: MaterialStatePropertyAll(
+                              ColorConstant.primaryColor)),
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          Navigator.of(context).pop();
+
+                          await reqController.priceRefChange(
+                              hotelbookingidPriceRef,
+                              supplierController.text,
+                              apiType);
+                        }
+                      },
+                      child: const Text(
+                        "  Add  ",
+                        style: TextStyle(color: ColorConstant.white),
+                      )),
+                )
+              ],
+            ),
           ),
         );
       },

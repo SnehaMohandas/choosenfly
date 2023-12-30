@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Widget loader() {
-  return SpinKitFadingCircle(
+  return SpinKitFadingFour(
+    //  shape: BoxShape.circle,
     itemBuilder: (BuildContext context, int index) {
-      return DecoratedBox(
+      return Container(
         decoration: BoxDecoration(
           color: index.isEven ? ColorConstant.primaryColor : ColorConstant.grey,
         ),
@@ -13,3 +14,6 @@ Widget loader() {
     },
   );
 }
+
+
+//SpinKitFadingCircle

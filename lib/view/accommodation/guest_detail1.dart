@@ -582,6 +582,9 @@ class GuestDetail1 extends StatelessWidget {
                                     acController,
                                   );
 
+                                  acController.inHaccDetails =
+                                      getEnteredDataforinHouse(acController);
+
                                   //===========================
 
                                   // for (int i = 0;
@@ -660,5 +663,37 @@ class GuestDetail1 extends StatelessWidget {
     }
 
     return dataList;
+  }
+
+  List<Map<String, dynamic>> getEnteredDataforinHouse(
+      AccomodationController acController) {
+    List<Map<String, dynamic>> dataListinHouse = [];
+
+    var length = acController.newRoomCount.value != ""
+        ? acController.newRoomCount.value
+        : 1;
+
+    for (int i = 0; i < int.parse(length.toString()); i++) {
+      Map<String, dynamic> data = {
+        "roomcount": acController.newRoomCount.value != "" ? (i + 1) : 0,
+        'adult': acController.adultDdnum[i] != 0
+            ? acController.adultDdnum[i]
+            : 0.toString(),
+        'child': acController.childDdnum[i] == 0
+            ? 0.toString()
+            : acController.childDdnum[i] != 0
+                ? acController.childDdnum[i]
+                : 0.toString(),
+        if (acController.allAgeOrgs[i].isNotEmpty)
+          // "children age": acController.allAgeOrgs[i].join(', ')
+          "childAge": acController.allAgeOrgs[i]
+        else if (acController.allAgeOrgs[i].isEmpty)
+          "childAge": []
+      };
+
+      dataListinHouse.add(data);
+    }
+
+    return dataListinHouse;
   }
 }

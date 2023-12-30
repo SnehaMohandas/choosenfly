@@ -1,12 +1,15 @@
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:choose_n_fly/view/singnin/sign_in.dart';
+import 'package:choose_n_fly/view/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class SplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var sConroller = Get.put(SplashController());
+
     return Scaffold(
       backgroundColor: Colors.white, // Set your desired background color
       body: Center(
@@ -21,7 +24,7 @@ class FadeInSplashContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return TweenAnimationBuilder(
       tween: Tween<double>(begin: 0, end: 1),
-      duration: Duration(seconds: 2),
+      duration: Duration(seconds: 6),
       onEnd: () {
         Get.offAll(SignInPage());
       },

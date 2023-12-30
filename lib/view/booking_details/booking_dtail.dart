@@ -236,8 +236,14 @@ class BookingDetail extends StatelessWidget {
                             height: 40,
                             child: TextFormField(
                                 controller: searchController,
-                                onChanged: (value) {
-                                  bookingdController.fetchAllBOokings(value);
+                                onChanged: (value) async {
+                                  print("valueeiishereeee==>${value}");
+                                  print(
+                                      "stattusss===>${bookingdController.selectedStatus.value}");
+                                  print(
+                                      "timeeeee==>${bookingdController.timePeriod.value}");
+                                  await bookingdController
+                                      .fetchAllBOokings(value);
                                 },
                                 decoration: InputDecoration(
                                     hintText: "Search",
@@ -281,314 +287,384 @@ class BookingDetail extends StatelessWidget {
                               ),
                             ),
                           )
-                        : bookingdController.allBookingsModel!.data.length == 0
+                        : bookingdController.noBooking.value == true
                             ? Expanded(
                                 child: Container(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Text("No bookings"),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            right: 40, bottom: 10),
+                                        child: Container(
+                                          height: 120,
+                                          width: 120,
+                                          child: Lottie.asset(
+                                              "assets/animation/no_search_results.json",
+                                              fit: BoxFit.cover),
+                                        ),
+                                      ),
+                                      Text(
+                                        "No Bookings",
+                                        style: TextStyle(
+                                            color: ColorConstant.primaryColor,
+                                            fontWeight: FontWeight.bold),
+                                      )
                                     ],
                                   ),
                                 ),
                               )
-                            : Expanded(
-                                child: ListView.builder(
-                                    physics: const BouncingScrollPhysics(),
-                                    itemCount: bookingdController
-                                        .allBookingsModel!.data.length,
-                                    itemBuilder: (context, index) {
-                                      return GestureDetector(
-                                        onTap: () {
-                                          Get.to(
-                                              () => BookingInnerpage(
-                                                    bookingId:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .bookingId,
-                                                    hotelName:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .hotelname,
-                                                    agentName:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .agentName,
-                                                    // hotelName:
-                                                    //     bookingdController
-                                                    //         .allBookingsModel!
-                                                    //         .data[index]
-                                                    //         .hotelname,
-                                                    bookingCode:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .bookingCode,
-                                                    checKin: bookingdController
-                                                        .allBookingsModel!
-                                                        .data[index]
-                                                        .checkIn,
-                                                    bookingDate:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .bookingdate,
-                                                    checkOut: bookingdController
-                                                        .allBookingsModel!
-                                                        .data[index]
-                                                        .checkOut,
-                                                    // customerName:
-                                                    //     bookingdController
-                                                    //         .allBookingsModel!
-                                                    //         .data[index]
-                                                    //         .customerName,
-                                                    paymentStatus:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .paymentStatus,
-                                                    deadlineDate:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .deadlineTime,
-                                                    refCode: bookingdController
-                                                        .allBookingsModel!
-                                                        .data[index]
-                                                        .clientrefernce,
-                                                    totalMount:
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .totalprice,
-                                                  ),
-                                              transition: Transition
-                                                  .rightToLeftWithFade);
-                                        },
-                                        child: Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 10, vertical: 7),
-                                          //height: MediaQuery.of(context).size.height * 0.15,
-                                          width: double.infinity,
-                                          decoration: BoxDecoration(
-                                              boxShadow: [
-                                                BoxShadow(
-                                                    color: Colors.grey
-                                                        .withOpacity(0.2),
-                                                    offset: const Offset(0, 1),
-                                                    spreadRadius: 2,
-                                                    blurRadius: 10)
-                                              ],
-                                              color: ColorConstant.white,
-                                              borderRadius:
-                                                  BorderRadius.circular(12)),
-                                          child: Row(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              // Padding(
-                                              //   padding:
-                                              //       const EdgeInsets.all(10.0),
-                                              //   child: CachedNetworkImage(
-                                              //     height: MediaQuery.of(context)
-                                              //             .size
-                                              //             .height *
-                                              //         0.08,
-                                              //     width: MediaQuery.of(context)
-                                              //             .size
-                                              //             .width *
-                                              //         0.17,
-                                              //     imageUrl:
-                                              //         "https://cdn.britannica.com/96/115096-050-5AFDAF5D/Bellagio-Hotel-Casino-Las-Vegas.jpg",
-                                              //     imageBuilder: (context,
-                                              //             imageProvider) =>
-                                              //         Container(
-                                              //       height:
-                                              //           MediaQuery.of(context)
-                                              //                   .size
-                                              //                   .height *
-                                              //               0.08,
-                                              //       width:
-                                              //           MediaQuery.of(context)
-                                              //                   .size
-                                              //                   .width *
-                                              //               0.17,
-                                              //       decoration: BoxDecoration(
-                                              //         borderRadius:
-                                              //             BorderRadius.circular(
-                                              //                 8.531),
-                                              //         image: DecorationImage(
-                                              //             image: imageProvider,
-                                              //             fit: BoxFit.cover),
-                                              //       ),
-                                              //     ),
-                                              //     placeholder: (context, url) =>
-                                              //         Center(
-                                              //       child: Lottie.asset(
-                                              //           "assets/animation/Animation - 1700807305736.json",
-                                              //           fit: BoxFit.cover),
-                                              //     ),
-                                              //     errorWidget:
-                                              //         (context, url, error) =>
-                                              //             Center(
-                                              //                 child: Icon(
-                                              //                     Icons.error)),
-                                              //   ),
-                                              // ),
-                                              Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 13,
-                                                    horizontal: 13),
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.start,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      height: 22,
-                                                      width:
-                                                          MediaQuery.of(context)
+                            : bookingdController.exceptionCatched.value == true
+                                ? Center(
+                                    child: Text(
+                                      "SERVER  ERROR",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          color: ColorConstant.red,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  )
+                                : Expanded(
+                                    child: ListView.builder(
+                                        physics: const BouncingScrollPhysics(),
+                                        itemCount: bookingdController
+                                            .allBookingsModel!.data.length,
+                                        itemBuilder: (context, index) {
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Get.to(
+                                                  () => BookingInnerpage(
+                                                        bookingId:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .bookingId,
+                                                        hotelName:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .hotelname,
+                                                        agentName:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .agentName,
+                                                        // hotelName:
+                                                        //     bookingdController
+                                                        //         .allBookingsModel!
+                                                        //         .data[index]
+                                                        //         .hotelname,
+                                                        bookingCode:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .bookingCode,
+                                                        checKin:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .checkIn,
+                                                        bookingDate:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .bookingdate,
+                                                        checkOut:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .checkOut,
+                                                        // customerName:
+                                                        //     bookingdController
+                                                        //         .allBookingsModel!
+                                                        //         .data[index]
+                                                        //         .customerName,
+                                                        paymentStatus:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .paymentStatus,
+                                                        deadlineDate:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .deadlineTime,
+                                                        refCode:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .clientrefernce,
+                                                        totalMount:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .totalprice,
+                                                      ),
+                                                  transition: Transition
+                                                      .rightToLeftWithFade);
+                                            },
+                                            child: Container(
+                                              margin:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10,
+                                                      vertical: 7),
+                                              //height: MediaQuery.of(context).size.height * 0.15,
+                                              width: double.infinity,
+                                              decoration: BoxDecoration(
+                                                  boxShadow: [
+                                                    BoxShadow(
+                                                        color: Colors.grey
+                                                            .withOpacity(0.2),
+                                                        offset:
+                                                            const Offset(0, 1),
+                                                        spreadRadius: 2,
+                                                        blurRadius: 10)
+                                                  ],
+                                                  color: ColorConstant.white,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          12)),
+                                              child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  // Padding(
+                                                  //   padding:
+                                                  //       const EdgeInsets.all(10.0),
+                                                  //   child: CachedNetworkImage(
+                                                  //     height: MediaQuery.of(context)
+                                                  //             .size
+                                                  //             .height *
+                                                  //         0.08,
+                                                  //     width: MediaQuery.of(context)
+                                                  //             .size
+                                                  //             .width *
+                                                  //         0.17,
+                                                  //     imageUrl:
+                                                  //         "https://cdn.britannica.com/96/115096-050-5AFDAF5D/Bellagio-Hotel-Casino-Las-Vegas.jpg",
+                                                  //     imageBuilder: (context,
+                                                  //             imageProvider) =>
+                                                  //         Container(
+                                                  //       height:
+                                                  //           MediaQuery.of(context)
+                                                  //                   .size
+                                                  //                   .height *
+                                                  //               0.08,
+                                                  //       width:
+                                                  //           MediaQuery.of(context)
+                                                  //                   .size
+                                                  //                   .width *
+                                                  //               0.17,
+                                                  //       decoration: BoxDecoration(
+                                                  //         borderRadius:
+                                                  //             BorderRadius.circular(
+                                                  //                 8.531),
+                                                  //         image: DecorationImage(
+                                                  //             image: imageProvider,
+                                                  //             fit: BoxFit.cover),
+                                                  //       ),
+                                                  //     ),
+                                                  //     placeholder: (context, url) =>
+                                                  //         Center(
+                                                  //       child: Lottie.asset(
+                                                  //           "assets/animation/Animation - 1700807305736.json",
+                                                  //           fit: BoxFit.cover),
+                                                  //     ),
+                                                  //     errorWidget:
+                                                  //         (context, url, error) =>
+                                                  //             Center(
+                                                  //                 child: Icon(
+                                                  //                     Icons.error)),
+                                                  //   ),
+                                                  // ),
+                                                  Padding(
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 13,
+                                                            horizontal: 13),
+                                                    child: Column(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .start,
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Container(
+                                                          height: 22,
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width *
                                                               0.6,
-                                                      child: Text(
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .hotelname,
-                                                        maxLines: 1,
-                                                        style: TextStyle(
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          fontWeight:
-                                                              FontWeight.bold,
+                                                          child: Text(
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .hotelname,
+                                                            maxLines: 1,
+                                                            style: TextStyle(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 7),
-                                                      child: Text(
-                                                        bookingdController
-                                                            .allBookingsModel!
-                                                            .data[index]
-                                                            .totalprice,
-                                                        style: TextStyle(
-                                                            color: ColorConstant
-                                                                .red,
-                                                            fontSize: 12),
-                                                      ),
-                                                    ),
-                                                    Container(
-                                                      width:
-                                                          MediaQuery.of(context)
+                                                        Padding(
+                                                          padding: EdgeInsets
+                                                              .symmetric(
+                                                                  vertical: 7),
+                                                          child: Text(
+                                                            bookingdController
+                                                                    .allBookingsModel!
+                                                                    .data[index]
+                                                                    .totalprice ??
+                                                                "",
+                                                            style: TextStyle(
+                                                                color:
+                                                                    ColorConstant
+                                                                        .red,
+                                                                fontSize: 12),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
                                                                   .size
                                                                   .width *
                                                               0.8,
-                                                      height: 20,
-                                                      //  color: Colors.red,
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          Container(
-                                                            // color: Colors.amber,
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.43,
-                                                            child: Text(
-                                                              bookingdController
-                                                                  .allBookingsModel!
-                                                                  .data[index]
-                                                                  .bookingdate,
-                                                              style: TextStyle(
-                                                                  color: ColorConstant
-                                                                      .lightBlue,
-                                                                  fontSize: 12,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .bold),
-                                                            ),
-                                                            // height: 39,
-                                                          ),
-                                                          SizedBox(
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.03,
-                                                          ),
-                                                          Container(
-                                                            // color: Colors.amber,
-                                                            width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width *
-                                                                0.15,
-                                                            child: Row(
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .spaceBetween,
-                                                              children: [
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    showDialogue(
-                                                                        context);
-                                                                  },
-                                                                  child: Icon(
-                                                                    Icons
-                                                                        .delete,
-                                                                    size: 20,
-                                                                    color: Colors
-                                                                            .red[
-                                                                        800],
-                                                                  ),
+                                                          height: 20,
+                                                          //  color: Colors.red,
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              Container(
+                                                                // color: Colors.amber,
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.43,
+                                                                child: Text(
+                                                                  bookingdController
+                                                                      .allBookingsModel!
+                                                                      .data[
+                                                                          index]
+                                                                      .bookingdate,
+                                                                  style: TextStyle(
+                                                                      color: ColorConstant
+                                                                          .lightBlue,
+                                                                      fontSize:
+                                                                          12,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .bold),
                                                                 ),
-                                                                GestureDetector(
-                                                                  onTap: () {
-                                                                    Get.to(
-                                                                        () =>
-                                                                            ReqConfirmScreen(
-                                                                              bookingId: bookingdController.allBookingsModel!.data[index].bookingId,
-                                                                              bookingstatus: bookingdController.selectedStatus.value,
-                                                                            ),
-                                                                        transition:
-                                                                            Transition.rightToLeftWithFade);
-                                                                  },
-                                                                  child: Icon(
-                                                                    Icons.email,
-                                                                    size: 20,
-                                                                    color: ColorConstant
-                                                                        .signBlue,
+                                                                // height: 39,
+                                                              ),
+                                                              SizedBox(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width *
+                                                                    0.03,
+                                                              ),
+                                                              Visibility(
+                                                                visible: bookingdController.selectedStatus.value ==
+                                                                            "2" ||
+                                                                        bookingdController.selectedStatus.value ==
+                                                                            "3"
+                                                                    ? false
+                                                                    : true,
+                                                                child:
+                                                                    Container(
+                                                                  // color: Colors.amber,
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      0.15,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .spaceBetween,
+                                                                    children: [
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          showDialogue(
+                                                                              context);
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              30,
+                                                                          color:
+                                                                              Colors.transparent,
+                                                                          child:
+                                                                              Icon(
+                                                                            Icons.delete,
+                                                                            size:
+                                                                                20,
+                                                                            color:
+                                                                                Colors.red[800],
+                                                                          ),
+                                                                        ),
+                                                                      ),
+                                                                      GestureDetector(
+                                                                        onTap:
+                                                                            () {
+                                                                          Get.to(
+                                                                              () => ReqConfirmScreen(
+                                                                                    bookingId: bookingdController.allBookingsModel!.data[index].bookingId,
+                                                                                    bookingstatus: bookingdController.selectedStatus.value,
+                                                                                    hotelbookingidPriceRef: bookingdController.allBookingsModel!.data[index].hotelbookingId,
+                                                                                    apiType: bookingdController.allBookingsModel!.data[index].apitype,
+                                                                                    hotelNmae: bookingdController.allBookingsModel!.data[index].hotelname,
+                                                                                  ),
+                                                                              transition: Transition.rightToLeftWithFade);
+                                                                        },
+                                                                        child:
+                                                                            Container(
+                                                                          width:
+                                                                              22,
+                                                                          color:
+                                                                              Colors.transparent,
+                                                                          child:
+                                                                              Icon(
+                                                                            Icons.email,
+                                                                            size:
+                                                                                20,
+                                                                            color:
+                                                                                ColorConstant.signBlue,
+                                                                          ),
+                                                                        ),
+                                                                      )
+                                                                    ],
                                                                   ),
-                                                                )
-                                                              ],
-                                                            ),
-                                                            // height: 39,
-                                                          )
-                                                        ],
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
+                                                                  // height: 39,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      );
-                                    }),
-                              ),
+                                            ),
+                                          );
+                                        }),
+                                  ),
                   )
                 ],
               ),

@@ -1,5 +1,8 @@
+import 'dart:ffi';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:choose_n_fly/common_widgets/custom_button.dart';
+import 'package:choose_n_fly/common_widgets/loader.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/accommodation/controller/acc_controller.dart';
@@ -71,72 +74,95 @@ class RoomDetails2 extends StatelessWidget {
           var roomController =
               Get.put(RoomController2(nights ?? "", acController));
           return Scaffold(
-            bottomSheet: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-              child: GestureDetector(
-                onTap: () {
-                  if (roomController.isDateShown.value == false &&
-                      acController.isSearchtapped.value == false) {
-                    Fluttertoast.showToast(msg: "Please enter date");
-                  } else if (roomController.accommodationDetails == null &&
-                      acController.isSearchtapped.value == false) {
-                    Fluttertoast.showToast(msg: "Please enter room details");
-                  } else {
-                    Get.to(
-                        () => BookingPage(
-                              roomController: roomController,
-                              acController: acController,
-                              checkinD: roomController.isDateShown.value == true
-                                  ? roomController.newCheckinDate.value
-                                  // : acController.isDateShown.value == true
-                                  //     ? acController.newCheckinDate.value
-                                  : acController.orgnewChekin.value != ""
-                                      ? acController.orgnewChekin.value
-                                      : acController.isSearchtapped.value ==
+            bottomSheet: Obx(
+              () => roomController.isLoading.value == true
+                  ? const SizedBox()
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 8),
+                      child: GestureDetector(
+                        onTap: () {
+                          if (roomController.isDateShown.value == false &&
+                              acController.isSearchtapped.value == false) {
+                            Fluttertoast.showToast(msg: "Please enter date");
+                          } else if (roomController.accommodationDetails ==
+                                  null &&
+                              acController.isSearchtapped.value == false) {
+                            Fluttertoast.showToast(
+                                msg: "Please enter room details");
+                          } else {
+                            Get.to(
+                                () => BookingPage(
+                                      roomController: roomController,
+                                      acController: acController,
+                                      checkinD: roomController
+                                                  .isDateShown.value ==
                                               true
-                                          ? acController.newCheckinDate.value
-                                          : "",
-                              checkoutD: roomController.isDateShown.value ==
-                                      true
-                                  ? roomController.newCheckoutDate.value
-                                  : acController.orgnewChekout.value != ""
-                                      ? acController.orgnewChekout.value
-                                      : acController.isSearchtapped.value ==
-                                              true
-                                          ? acController.newCheckoutDate.value
+                                          ? roomController.newCheckinDate.value
                                           // : acController.isDateShown.value == true
-                                          //     ? acController.newCheckoutDate.value
-                                          : "",
-                              roomDetail: roomController.accommodationDetails !=
-                                      null
-                                  ? roomController.accommodationDetails
-                                  : acController.orgAccomodationDetails != null
-                                      ? acController.orgAccomodationDetails
-                                      : acController.isSearchtapped.value ==
+                                          //     ? acController.newCheckinDate.value
+                                          : acController.orgnewChekin.value !=
+                                                  ""
+                                              ? acController.orgnewChekin.value
+                                              : acController.isSearchtapped
+                                                          .value ==
+                                                      true
+                                                  ? acController
+                                                      .newCheckinDate.value
+                                                  : "",
+                                      checkoutD: roomController
+                                                  .isDateShown.value ==
                                               true
-                                          ? acController.accommodationDetails
-                                          //============
-                                          // : acController.accommodationDetails != null
-                                          //     ? acController.accommodationDetails
-                                          //=======
-                                          : [],
+                                          ? roomController.newCheckoutDate.value
+                                          : acController.orgnewChekout.value !=
+                                                  ""
+                                              ? acController.orgnewChekout.value
+                                              : acController.isSearchtapped
+                                                          .value ==
+                                                      true
+                                                  ? acController
+                                                      .newCheckoutDate.value
+                                                  // : acController.isDateShown.value == true
+                                                  //     ? acController.newCheckoutDate.value
+                                                  : "",
+                                      roomDetail: roomController
+                                                  .accommodationDetails !=
+                                              null
+                                          ? roomController.accommodationDetails
+                                          : acController
+                                                      .orgAccomodationDetails !=
+                                                  null
+                                              ? acController
+                                                  .orgAccomodationDetails
+                                              : acController.isSearchtapped
+                                                          .value ==
+                                                      true
+                                                  ? acController
+                                                      .accommodationDetails
+                                                  //============
+                                                  // : acController.accommodationDetails != null
+                                                  //     ? acController.accommodationDetails
+                                                  //=======
+                                                  : [],
+                                    ),
+                                transition: Transition.rightToLeftWithFade);
+                          }
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(bottom: 10),
+                          child: CustomButton(
+                            child: Center(
+                              child: Text(
+                                "Book Now",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white),
+                              ),
                             ),
-                        transition: Transition.rightToLeftWithFade);
-                  }
-                },
-                child: const Padding(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: CustomButton(
-                    child: Center(
-                      child: Text(
-                        "Book Now",
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-              ),
             ),
             extendBodyBehindAppBar: true,
             appBar: AppBar(
@@ -152,406 +178,522 @@ class RoomDetails2 extends StatelessWidget {
                     color: ColorConstant.white,
                   )),
             ),
-            body: SingleChildScrollView(
-              // physics: BouncingScrollPhysics(),
-              child: Form(
-                key: formKey,
-                autovalidateMode: AutovalidateMode.onUserInteraction,
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.37,
-                            child: Obx(
-                              () => CarouselSlider.builder(
-                                itemCount:
-                                    roomController.isInteriorClicked.value ==
-                                            true
-                                        ? roomController.interior.length
-                                        : roomController.exterior.length,
-                                itemBuilder: (context, index, realIndex) {
-                                  return roomController
-                                              .isInteriorClicked.value ==
-                                          true
-                                      ? Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.37,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      roomController
-                                                          .interior[index]),
-                                                  fit: BoxFit.cover)),
-                                        )
-                                      : Container(
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.37,
-                                          decoration: BoxDecoration(
-                                              image: DecorationImage(
-                                                  image: AssetImage(
-                                                      roomController
-                                                          .exterior[index]),
-                                                  fit: BoxFit.cover)),
-                                        );
-                                },
-                                options: CarouselOptions(
-                                    onPageChanged: (index, reason) {
-                                      if (roomController
-                                              .isInteriorClicked.value ==
-                                          true) {
-                                        roomController.interiorIndex.value =
-                                            "${index + 1}";
-                                      } else {
-                                        roomController.exteriorIndex.value =
-                                            "${index + 1}";
-                                      }
-                                    },
+            body: Obx(
+              () => roomController.isLoading.value == true
+                  ? Center(
+                      child: loader(),
+                    )
+                  : SingleChildScrollView(
+                      // physics: BouncingScrollPhysics(),
+                      child: Form(
+                        key: formKey,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        child: Column(
+                          children: [
+                            Stack(
+                              children: [
+                                Container(
+                                    width: MediaQuery.of(context).size.width,
                                     height: MediaQuery.of(context).size.height *
                                         0.37,
-                                    // enlargeCenterPage: true,
-                                    // aspectRatio: 1,
-                                    //  autoPlayCurve: Curves.elasticIn,
-                                    enableInfiniteScroll: true,
-                                    viewportFraction: 1,
-                                    autoPlay: true),
-                              ),
-                            )),
-                        Positioned(
-                          top: MediaQuery.of(context).size.height * 0.3,
-                          left: 20,
-                          child: Obx(
-                            () => Container(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.035,
-                              width: MediaQuery.of(context).size.width * 0.4,
-                              decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(20)),
+                                    child: Obx(
+                                      () => CarouselSlider.builder(
+                                        itemCount: roomController
+                                                    .isInteriorClicked.value ==
+                                                true
+                                            ? roomController.interior.length
+                                            : roomController.exterior.length,
+                                        itemBuilder:
+                                            (context, index, realIndex) {
+                                          return roomController
+                                                      .isInteriorClicked
+                                                      .value ==
+                                                  true
+                                              ? Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.37,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: AssetImage(
+                                                              roomController
+                                                                      .interior[
+                                                                  index]),
+                                                          fit: BoxFit.cover)),
+                                                )
+                                              : Container(
+                                                  height: MediaQuery.of(context)
+                                                          .size
+                                                          .height *
+                                                      0.37,
+                                                  decoration: BoxDecoration(
+                                                      image: DecorationImage(
+                                                          image: AssetImage(
+                                                              roomController
+                                                                      .exterior[
+                                                                  index]),
+                                                          fit: BoxFit.cover)),
+                                                );
+                                        },
+                                        options: CarouselOptions(
+                                            onPageChanged: (index, reason) {
+                                              if (roomController
+                                                      .isInteriorClicked
+                                                      .value ==
+                                                  true) {
+                                                roomController.interiorIndex
+                                                    .value = "${index + 1}";
+                                              } else {
+                                                roomController.exteriorIndex
+                                                    .value = "${index + 1}";
+                                              }
+                                            },
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.37,
+                                            // enlargeCenterPage: true,
+                                            // aspectRatio: 1,
+                                            //  autoPlayCurve: Curves.elasticIn,
+                                            enableInfiniteScroll: true,
+                                            viewportFraction: 1,
+                                            autoPlay: true),
+                                      ),
+                                    )),
+                                Positioned(
+                                  top: MediaQuery.of(context).size.height * 0.3,
+                                  left: 20,
+                                  child: Obx(
+                                    () => Container(
+                                      height:
+                                          MediaQuery.of(context).size.height *
+                                              0.035,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius:
+                                              BorderRadius.circular(20)),
+                                      child: Row(
+                                        children: [
+                                          const Spacer(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              roomController.isInteriorClicked
+                                                  .value = true;
+                                            },
+                                            child: Text(
+                                              'Interior',
+                                              style: TextStyle(
+                                                  color: roomController
+                                                              .isInteriorClicked
+                                                              .value ==
+                                                          true
+                                                      ? ColorConstant
+                                                          .primaryColor
+                                                      : ColorConstant.darkgrey,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          const Spacer(),
+                                          const VerticalDivider(
+                                            thickness: 1,
+                                          ),
+                                          const Spacer(),
+                                          GestureDetector(
+                                            onTap: () {
+                                              roomController.isInteriorClicked
+                                                  .value = false;
+                                            },
+                                            child: Text(
+                                              'Exterior',
+                                              style: TextStyle(
+                                                  color: roomController
+                                                              .isInteriorClicked
+                                                              .value ==
+                                                          true
+                                                      ? ColorConstant.darkgrey
+                                                      : ColorConstant
+                                                          .primaryColor,
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          const Spacer()
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                    top: MediaQuery.of(context).size.height *
+                                        0.3,
+                                    left: MediaQuery.of(context).size.width *
+                                        0.77,
+                                    child: Obx(
+                                      () => Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.035,
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.17,
+                                        decoration: BoxDecoration(
+                                            color: const Color(0XFF161616),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child: Row(
+                                          children: [
+                                            Image.asset(
+                                              'assets/images/material-symbols_image-outline-rounded.png',
+                                              height: 100,
+                                              filterQuality: FilterQuality.high,
+                                            ),
+                                            roomController.isInteriorClicked
+                                                        .value ==
+                                                    true
+                                                ? Text(
+                                                    "${roomController.interiorIndex.value}/${roomController.interior.length}",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  )
+                                                : Text(
+                                                    "${roomController.exteriorIndex.value}/${roomController.exterior.length}",
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  )
+                                          ],
+                                        ),
+                                      ),
+                                    ))
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 15, top: 16),
                               child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      roomController.isInteriorClicked.value =
-                                          true;
-                                    },
-                                    child: Text(
-                                      'Interior',
-                                      style: TextStyle(
-                                          color: roomController
-                                                      .isInteriorClicked
-                                                      .value ==
-                                                  true
-                                              ? ColorConstant.primaryColor
-                                              : ColorConstant.darkgrey,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          roomController
+                                                  .roomModel![0].hotelName ??
+                                              "",
+                                          maxLines: 2,
+                                          style: TextStyle(
+                                            overflow: TextOverflow.ellipsis,
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.024,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                        ),
+                                        // Text(
+                                        //   'Al Wahda',
+                                        //   style: TextStyle(
+                                        //       fontWeight: FontWeight.w600,
+                                        //       fontSize: MediaQuery.of(context)
+                                        //               .size
+                                        //               .height *
+                                        //           0.018,
+                                        //       color: Colors.grey.shade400),
+                                        // ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 5),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                size: 12,
+                                                color: Colors.orange,
+                                              ),
+                                              Container(
+                                                height: 20,
+                                                width: 40,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.orange,
+                                                  borderRadius:
+                                                      BorderRadius.circular(8),
+                                                ),
+                                                child: const Center(
+                                                  child: Text(
+                                                    '4.3/5',
+                                                    style: TextStyle(
+                                                      fontSize: 8,
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Colors.white,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
                                     ),
                                   ),
-                                  const Spacer(),
-                                  const VerticalDivider(
-                                    thickness: 1,
-                                  ),
-                                  const Spacer(),
-                                  GestureDetector(
-                                    onTap: () {
-                                      roomController.isInteriorClicked.value =
-                                          false;
-                                    },
-                                    child: Text(
-                                      'Exterior',
-                                      style: TextStyle(
-                                          color: roomController
-                                                      .isInteriorClicked
-                                                      .value ==
-                                                  true
-                                              ? ColorConstant.darkgrey
-                                              : ColorConstant.primaryColor,
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 12),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      right: 13,
                                     ),
-                                  ),
-                                  const Spacer()
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        const Text(
+                                          'Best Offer',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                            color: ColorConstant.lightBlue,
+                                          ),
+                                        ),
+                                        Obx(
+                                          () => Text(
+                                            roomController.totalRate.value
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: const Color(0xFF149AED),
+                                                fontWeight: FontWeight.w700,
+                                                fontSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.025),
+                                          ),
+                                        ),
+                                        Text(
+                                          '250AED',
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.014,
+                                              color: const Color(0xFF5E5E5E)),
+                                        ),
+                                        // Text(
+                                        //   '+ 10AED taxes and fee',
+                                        //   style: TextStyle(
+                                        //       fontWeight: FontWeight.w500,
+                                        //       fontSize: MediaQuery.of(context)
+                                        //               .size
+                                        //               .height *
+                                        //           0.014,
+                                        //       color: const Color(0xFF5E5E5E)),
+                                        // )
+                                      ],
+                                    ),
+                                  )
                                 ],
                               ),
                             ),
-                          ),
-                        ),
-                        Positioned(
-                            top: MediaQuery.of(context).size.height * 0.3,
-                            left: MediaQuery.of(context).size.width * 0.77,
-                            child: Obx(
-                              () => Container(
+                            SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height * 0.035,
-                                width: MediaQuery.of(context).size.width * 0.17,
-                                decoration: BoxDecoration(
-                                    color: const Color(0XFF161616),
-                                    borderRadius: BorderRadius.circular(20)),
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      'assets/images/material-symbols_image-outline-rounded.png',
-                                      height: 100,
-                                      filterQuality: FilterQuality.high,
-                                    ),
-                                    roomController.isInteriorClicked.value ==
-                                            true
-                                        ? Text(
-                                            "${roomController.interiorIndex.value}/${roomController.interior.length}",
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                          )
-                                        : Text(
-                                            "${roomController.exteriorIndex.value}/${roomController.exterior.length}",
-                                            style: const TextStyle(
-                                                color: Colors.white),
-                                          )
-                                  ],
-                                ),
-                              ),
-                            ))
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 20, top: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Grand Millennium',
-                                style: TextStyle(
-                                  fontSize: MediaQuery.of(context).size.height *
-                                      0.024,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              Text(
-                                'Al Wahda',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    fontSize:
-                                        MediaQuery.of(context).size.height *
-                                            0.018,
-                                    color: Colors.grey.shade400),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(top: 5),
-                                child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.star,
-                                      size: 12,
-                                      color: Colors.orange,
-                                    ),
-                                    Container(
-                                      height: 20,
-                                      width: 40,
-                                      decoration: BoxDecoration(
-                                        color: Colors.orange,
-                                        borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          '4.3/5',
-                                          style: TextStyle(
-                                            fontSize: 8,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              right: 26,
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                const Text(
-                                  'Best Offer',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500,
-                                    color: ColorConstant.lightBlue,
-                                  ),
-                                ),
-                                Text(
-                                  '149AED',
-                                  style: TextStyle(
-                                      color: const Color(0xFF149AED),
-                                      fontWeight: FontWeight.w700,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.025),
-                                ),
-                                Text(
-                                  '250AED',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.014,
-                                      color: const Color(0xFF5E5E5E)),
-                                ),
-                                Text(
-                                  '+ 10AED taxes and fee',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize:
-                                          MediaQuery.of(context).size.height *
-                                              0.014,
-                                      color: const Color(0xFF5E5E5E)),
-                                )
-                              ],
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Padding(
-                      padding:
-                          const EdgeInsets.only(left: 24, right: 24, top: 5),
-                      child: DropdownButtonFormField(
-                        value: roomController.selectedRoom.value == ""
-                            ? null
-                            : roomController.selectedRoom.value,
-                        decoration: InputDecoration(
-                            contentPadding: const EdgeInsets.only(
-                                top: 6, bottom: 6, left: 14, right: 14),
-                            hintStyle: TextingStyle.font14normalLb,
-                            hintText: 'Select Room',
-                            enabledBorder: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: ColorConstant.grey),
-                                borderRadius: BorderRadius.circular(10)),
-                            border: OutlineInputBorder(
-                                borderSide:
-                                    const BorderSide(color: ColorConstant.grey),
-                                borderRadius: BorderRadius.circular(10))),
-                        items: roomController.rooms.map((item) {
-                          return DropdownMenuItem(
-                              value: item[1], child: Text(item[0]));
-                        }).toList(),
-                        onChanged: (v) {
-                          roomController.onRoomSelected(v.toString());
-                          print(roomController.selectedRoom.value);
-                        },
-                        validator: (value) {
-                          if (value == null) {
-                            return "Please select room";
-                          }
-                          return null;
-                        },
-                      ),
-                    ),
-                    SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.012),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 26, right: 26),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: ColorConstant.white,
-                            border: Border.all(color: ColorConstant.grey),
-                            borderRadius: BorderRadius.circular(10)),
-                        height: 58,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                dateDialogue(
-                                    context, roomController, acController);
-                              },
-                              child: Container(
-                                color: Colors.transparent,
-                                width: 130,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.only(left: 16, top: 10),
-                                      child: Text(
-                                        'Date',
-                                        style: TextStyle(
-                                            color: ColorConstant.lightBlue2,
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12),
-                                      ),
-                                    ),
-                                    Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 16,
-                                        ),
-                                        child: Obx(
-                                          () => roomController
-                                                          .newCheckinDate.value !=
-                                                      "" &&
-                                                  roomController.newCheckoutDate
-                                                          .value !=
-                                                      "" &&
-                                                  roomController
-                                                          .isDateShown.value ==
-                                                      true
-                                              ? Text(
-                                                  '${roomController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${roomController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
-                                                  style: const TextStyle(
-                                                      color: ColorConstant
-                                                          .lightBlue,
-                                                      fontWeight:
-                                                          FontWeight.w500,
-                                                      fontSize: 14),
-                                                )
-                                              : acController.orgnewChekin
-                                                              .value !=
-                                                          "" &&
-                                                      acController.orgnewChekout
-                                                              .value !=
-                                                          ""
-                                                  ? Text(
-                                                      '${acController.orgnewChekin.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.orgnewChekout.value.characters.take(6).toString().replaceAll("-", " ")}',
-                                                      style: const TextStyle(
-                                                          color: ColorConstant
-                                                              .lightBlue,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 14),
-                                                    )
-                                                  : acController.isSearchtapped
-                                                              .value ==
-                                                          true
+                                    MediaQuery.of(context).size.height * 0.012),
+                            Padding(
+                              padding:
+                                  EdgeInsets.only(left: 24, right: 24, top: 5),
+                              // child: DropdownButtonFormField(
+                              //   value: null,
+                              //   // value: roomController
+                              //   //             .selectedRoomCategory.value ==
+                              //   //         ""
+                              //   //     ? null
+                              //   //     : roomController.selectedRoomCategory.value,
+                              //   decoration: InputDecoration(
+                              //       contentPadding: const EdgeInsets.only(
+                              //           top: 6, bottom: 6, left: 14, right: 14),
+                              //       hintStyle: TextingStyle.font14normalLb,
+                              //       hintText: 'Select Room',
+                              //       enabledBorder: OutlineInputBorder(
+                              //           borderSide: const BorderSide(
+                              //               color: ColorConstant.grey),
+                              //           borderRadius:
+                              //               BorderRadius.circular(10)),
+                              //       border: OutlineInputBorder(
+                              //           borderSide: const BorderSide(
+                              //               color: ColorConstant.grey),
+                              //           borderRadius:
+                              //               BorderRadius.circular(10))),
+                              //   // items: roomController.rooms.map((item) {
+                              //   //   return DropdownMenuItem(
+                              //   //       value: item[1], child: Text(item[0]));
+                              //   // }).toList(),
+                              //   items: roomController.roomT.map((room) {
+                              //     return DropdownMenuItem(
+                              //       value: room['roomCategory'],
+                              //       child: Text(room['roomCategory']),
+                              //     );
+                              //   }).toList(),
+                              //   onChanged: (v) {
+                              //     roomController.onRoomSelected(v.toString());
+                              //     print(roomController.selectedRoom.value);
+                              //   },
+                              //   validator: (value) {
+                              //     if (value == null) {
+                              //       return "Please select room";
+                              //     }
+                              //     return null;
+                              //   },
+                              // ),
+                              //===========
+                              // child: DropdownButtonFormField(
+                              //   value: null,
+                              //   decoration: InputDecoration(
+                              //       contentPadding: const EdgeInsets.only(
+                              //           top: 6, bottom: 6, left: 14, right: 14),
+                              //       hintStyle: TextingStyle.font14normalLb,
+                              //       hintText: 'Select Room',
+                              //       enabledBorder: OutlineInputBorder(
+                              //           borderSide:
+                              //               const BorderSide(color: ColorConstant.grey),
+                              //           borderRadius: BorderRadius.circular(10)),
+                              //       border: OutlineInputBorder(
+                              //           borderSide:
+                              //               const BorderSide(color: ColorConstant.grey),
+                              //           borderRadius: BorderRadius.circular(10))),
+                              //   items: roomController.roomsT!.map((item) {
+                              //     return DropdownMenuItem(
+                              //         value: item[9], child: Text(item[9]));
+                              //   }).toList(),
+                              //   onChanged: (v) {},
+                              //   validator: (value) {
+                              //     if (value == null) {
+                              //       return "Please select room";
+                              //     }
+                              //     return null;
+                              //   },
+                              // ),
+                              //==========
+                              child: DropdownButtonFormField<String>(
+                                decoration: InputDecoration(
+                                    contentPadding: const EdgeInsets.only(
+                                        top: 6, bottom: 6, left: 14, right: 14),
+                                    hintStyle: TextingStyle.font14normalLb,
+                                    hintText: 'Select Room',
+                                    enabledBorder: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: ColorConstant.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    border: OutlineInputBorder(
+                                        borderSide: const BorderSide(
+                                            color: ColorConstant.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(10))),
+                                // value: roomController
+                                //             .selectedRoomCategory.value ==
+                                //         ""
+                                //     ? null
+                                //     : roomController.selectedRoomCategory.value,
+                                value: roomController
+                                        .selectedRoomCategory.value.isEmpty
+                                    ? roomController.roomT.isNotEmpty
+                                        ? "0" // Set the initial value to the index of the first room category
+                                        : null // No initial value if roomT is empty
+                                    : roomController.selectedRoomCategory.value,
+                                // value: null,
+                                onChanged: (String? newValue) {
+                                  if (newValue != null) {
+                                    int selectedIndex = int.parse(newValue);
+                                    if (selectedIndex >= 0 &&
+                                        selectedIndex <
+                                            roomController.roomT.length) {
+                                      Map<String, dynamic> selectedRoom =
+                                          roomController.roomT[selectedIndex];
 
-                                                      //=======
-                                                      //  acController
-                                                      //                 .newCheckinDate.value !=
-                                                      //             "" &&
-                                                      //         acController.newCheckoutDate
-                                                      //                 .value !=
-                                                      //             "" &&
-                                                      //         acController
-                                                      //                 .isDateShown.value ==
-                                                      //             true
-                                                      //========
+                                      roomController.totalRate.value =
+                                          selectedRoom['totalRate'].toString();
+                                      print(
+                                          'Total Rate for ${selectedRoom["roomCategory"]}: ${roomController.totalRate}');
+                                    }
+                                  }
+                                },
+
+                                items: roomController.roomT
+                                    .asMap()
+                                    .entries
+                                    .map<DropdownMenuItem<String>>((entry) {
+                                  int index = entry.key;
+                                  Map<String, dynamic> room = entry.value;
+                                  return DropdownMenuItem<String>(
+                                    value: index.toString(),
+                                    child: Text(room["roomCategory"]!),
+                                  );
+                                }).toList(),
+                              ),
+
+                              //====================
+                            ),
+                            Text(roomController.selectedRoomCategory.value),
+                            SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.012),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.only(left: 26, right: 26),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                    color: ColorConstant.white,
+                                    border:
+                                        Border.all(color: ColorConstant.grey),
+                                    borderRadius: BorderRadius.circular(10)),
+                                height: 58,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () {
+                                        dateDialogue(context, roomController,
+                                            acController);
+                                      },
+                                      child: Container(
+                                        color: Colors.transparent,
+                                        width: 130,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 16, top: 10),
+                                              child: Text(
+                                                'Date',
+                                                style: TextStyle(
+                                                    color: ColorConstant
+                                                        .lightBlue2,
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            Padding(
+                                                padding: const EdgeInsets.only(
+                                                  left: 16,
+                                                ),
+                                                child: Obx(
+                                                  () => roomController
+                                                                  .newCheckinDate
+                                                                  .value !=
+                                                              "" &&
+                                                          roomController
+                                                                  .newCheckoutDate
+                                                                  .value !=
+                                                              "" &&
+                                                          roomController
+                                                                  .isDateShown
+                                                                  .value ==
+                                                              true
                                                       ? Text(
-                                                          '${acController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
+                                                          '${roomController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${roomController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
                                                           style: const TextStyle(
                                                               color:
                                                                   ColorConstant
@@ -561,85 +703,107 @@ class RoomDetails2 extends StatelessWidget {
                                                                       .w500,
                                                               fontSize: 14),
                                                         )
-                                                      : const Icon(
-                                                          Icons.arrow_drop_down,
-                                                          color: ColorConstant
-                                                              .lightBlue,
-                                                          size: 28,
-                                                        ),
-                                        ))
-                                  ],
-                                ),
-                              ),
-                            ),
-                            //const Spacer(),
-                            const VerticalDivider(
-                              thickness: 1,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Get.to(
-                                    () => GuestDetail2(
-                                        roomController: roomController,
-                                        acController: acController,
-                                        adultCounts: adultCount!,
-                                        childCounts: childCount!,
-                                        childAgeLists: childAgeList),
-                                    transition: Transition.rightToLeftWithFade);
-                              },
-                              child: Container(
-                                width: 160,
-                                color: Colors.transparent,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Padding(
-                                      padding:
-                                          EdgeInsets.only(left: 16, top: 10),
-                                      child: Text(
-                                        'Room & Guests',
-                                        style: TextStyle(
-                                            color: Color(0XFF7699A5),
-                                            fontWeight: FontWeight.w500,
-                                            fontSize: 12),
+                                                      : acController.orgnewChekin
+                                                                      .value !=
+                                                                  "" &&
+                                                              acController
+                                                                      .orgnewChekout
+                                                                      .value !=
+                                                                  ""
+                                                          ? Text(
+                                                              '${acController.orgnewChekin.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.orgnewChekout.value.characters.take(6).toString().replaceAll("-", " ")}',
+                                                              style: const TextStyle(
+                                                                  color: ColorConstant
+                                                                      .lightBlue,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  fontSize: 14),
+                                                            )
+                                                          : acController
+                                                                      .isSearchtapped
+                                                                      .value ==
+                                                                  true
+
+                                                              //=======
+                                                              //  acController
+                                                              //                 .newCheckinDate.value !=
+                                                              //             "" &&
+                                                              //         acController.newCheckoutDate
+                                                              //                 .value !=
+                                                              //             "" &&
+                                                              //         acController
+                                                              //                 .isDateShown.value ==
+                                                              //             true
+                                                              //========
+                                                              ? Text(
+                                                                  '${acController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
+                                                                  style: const TextStyle(
+                                                                      color: ColorConstant
+                                                                          .lightBlue,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w500,
+                                                                      fontSize:
+                                                                          14),
+                                                                )
+                                                              : const Icon(
+                                                                  Icons
+                                                                      .arrow_drop_down,
+                                                                  color: ColorConstant
+                                                                      .lightBlue,
+                                                                  size: 28,
+                                                                ),
+                                                ))
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(
-                                        left: 16,
-                                      ),
-                                      child: Obx(
-                                        () => roomController
-                                                    .isSubLoading.value ==
-                                                false
-                                            ? Text(
-                                                "${roomController.newRoomCount.value} Rooms - ${roomController.guestTotal} Guests",
-                                                style: const TextStyle(
-                                                    color:
-                                                        ColorConstant.lightBlue,
+                                    //const Spacer(),
+                                    const VerticalDivider(
+                                      thickness: 1,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        Get.to(
+                                            () => GuestDetail2(
+                                                roomController: roomController,
+                                                acController: acController,
+                                                adultCounts: adultCount!,
+                                                childCounts: childCount!,
+                                                childAgeLists: childAgeList),
+                                            transition:
+                                                Transition.rightToLeftWithFade);
+                                      },
+                                      child: Container(
+                                        width: 160,
+                                        color: Colors.transparent,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Padding(
+                                              padding: EdgeInsets.only(
+                                                  left: 16, top: 10),
+                                              child: Text(
+                                                'Room & Guests',
+                                                style: TextStyle(
+                                                    color: Color(0XFF7699A5),
                                                     fontWeight: FontWeight.w500,
-                                                    fontSize: 14),
-                                              )
-                                            //=========
-                                            // : acController.isSubLoading.value == false
-                                            //============
-
-                                            : acController.orgRoomcount.value !=
-                                                    ""
-                                                ? Text(
-                                                    "${acController.orgRoomcount.value} Rooms - ${acController.orgguestTotal} Guests",
-                                                    style: const TextStyle(
-                                                        color: ColorConstant
-                                                            .lightBlue,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                        fontSize: 14),
-                                                  )
-                                                : acController.isSearchtapped
+                                                    fontSize: 12),
+                                              ),
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 16,
+                                              ),
+                                              child: Obx(
+                                                () => roomController
+                                                            .isSubLoading
                                                             .value ==
-                                                        true
+                                                        false
                                                     ? Text(
-                                                        "${acController.newRoomCount.value} Rooms - ${acController.guestTotal} Guests",
+                                                        "${roomController.newRoomCount.value} Rooms - ${roomController.guestTotal} Guests",
                                                         style: const TextStyle(
                                                             color: ColorConstant
                                                                 .lightBlue,
@@ -647,111 +811,149 @@ class RoomDetails2 extends StatelessWidget {
                                                                 FontWeight.w500,
                                                             fontSize: 14),
                                                       )
-                                                    : const Icon(
-                                                        Icons.arrow_drop_down,
-                                                        color: ColorConstant
-                                                            .lightBlue,
-                                                        size: 28,
-                                                      ),
+                                                    //=========
+                                                    // : acController.isSubLoading.value == false
+                                                    //============
+
+                                                    : acController.orgRoomcount
+                                                                .value !=
+                                                            ""
+                                                        ? Text(
+                                                            "${acController.orgRoomcount.value} Rooms - ${acController.orgguestTotal} Guests",
+                                                            style: const TextStyle(
+                                                                color: ColorConstant
+                                                                    .lightBlue,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                fontSize: 14),
+                                                          )
+                                                        : acController
+                                                                    .isSearchtapped
+                                                                    .value ==
+                                                                true
+                                                            ? Text(
+                                                                "${acController.newRoomCount.value} Rooms - ${acController.guestTotal} Guests",
+                                                                style: const TextStyle(
+                                                                    color: ColorConstant
+                                                                        .lightBlue,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w500,
+                                                                    fontSize:
+                                                                        14),
+                                                              )
+                                                            : const Icon(
+                                                                Icons
+                                                                    .arrow_drop_down,
+                                                                color: ColorConstant
+                                                                    .lightBlue,
+                                                                size: 28,
+                                                              ),
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    )
+                                    ),
+                                    const Spacer(),
                                   ],
                                 ),
                               ),
                             ),
-                            const Spacer(),
+                            const Divider(
+                              thickness: 2,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 23, right: 23, top: 12, bottom: 12),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text("Description",
+                                      style: TextStyle(
+                                          color: ColorConstant.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ReadMoreText(
+                                    roomController.roomModel![0].hotelDetails
+                                            .toString() ??
+                                        "",
+                                    style: const TextStyle(
+                                        fontSize:
+                                            13), //  style: TextStyle(fontSize: 13),
+                                    trimLines: 2,
+                                    trimMode: TrimMode.Line,
+                                    trimCollapsedText: 'Show more',
+                                    trimExpandedText: 'Show less',
+                                    lessStyle: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: ColorConstant.lightBlue,
+                                        fontSize: 13),
+                                    moreStyle: const TextStyle(
+                                        color: ColorConstant.lightBlue,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 13),
+                                  ),
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
+                                  const Text("Amenities",
+                                      style: TextStyle(
+                                          color: ColorConstant.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  GridView.builder(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 60),
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      gridDelegate:
+                                          const SliverGridDelegateWithFixedCrossAxisCount(
+                                              crossAxisCount: 2,
+                                              crossAxisSpacing: 0,
+                                              mainAxisExtent: 40,
+                                              mainAxisSpacing: 0),
+                                      itemCount: amIons.length,
+                                      itemBuilder: (context, index) {
+                                        return Container(
+                                          height: 15,
+                                          // color: Colors.yellow,
+                                          width: double.infinity,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 0),
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  amIons[index],
+                                                  color: ColorConstant.grey,
+                                                ),
+                                                const SizedBox(
+                                                  width: 10,
+                                                ),
+                                                Text(amTitle[index],
+                                                    style: const TextStyle(
+                                                        fontSize: 13))
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      })
+                                ],
+                              ),
+                            )
                           ],
                         ),
                       ),
                     ),
-                    const Divider(
-                      thickness: 2,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                          left: 23, right: 23, top: 12, bottom: 12),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Description",
-                              style: TextStyle(
-                                  color: ColorConstant.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15)),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          const ReadMoreText(
-                            "The Jianguo Hotel Qianmen is located near Tiantan Park, just a 10-minute walk from the National Center for the Performing Arts and Tian'anmen Square. Built in 1956 it has old school charm and many rooms still feature high, crown-molded ceilings. A 2012 renovation brought all rooms and services up to modern day scratch and guestrooms come equipped with free Wi-Fi and all the usual amenities required for a comfortable stay.",
-                            style: TextStyle(
-                                fontSize:
-                                    13), //  style: TextStyle(fontSize: 13),
-                            trimLines: 2,
-                            trimMode: TrimMode.Line,
-                            trimCollapsedText: 'Show more',
-                            trimExpandedText: 'Show less',
-                            lessStyle: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: ColorConstant.lightBlue,
-                                fontSize: 13),
-                            moreStyle: TextStyle(
-                                color: ColorConstant.lightBlue,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 13),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          const Text("Amenities",
-                              style: TextStyle(
-                                  color: ColorConstant.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15)),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          GridView.builder(
-                              padding: const EdgeInsets.only(bottom: 60),
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 2,
-                                      crossAxisSpacing: 0,
-                                      mainAxisExtent: 40,
-                                      mainAxisSpacing: 0),
-                              itemCount: amIons.length,
-                              itemBuilder: (context, index) {
-                                return Container(
-                                  height: 15,
-                                  // color: Colors.yellow,
-                                  width: double.infinity,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 0),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          amIons[index],
-                                          color: ColorConstant.grey,
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Text(amTitle[index],
-                                            style:
-                                                const TextStyle(fontSize: 13))
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              })
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
             ),
           );
         } else {
@@ -761,3 +963,4 @@ class RoomDetails2 extends StatelessWidget {
     );
   }
 }
+// 

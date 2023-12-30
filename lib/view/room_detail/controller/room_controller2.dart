@@ -1,7 +1,12 @@
+import 'dart:convert';
+
+import 'package:choose_n_fly/model/room_model.dart';
+import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/view/accommodation/controller/acc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class RoomController2 extends GetxController {
   String nightCount;
@@ -164,7 +169,7 @@ class RoomController2 extends GetxController {
 
   var roomCount = "".obs;
   var newRoomCount = "".obs;
-
+  List<RoomModel>? roomModel;
   var selectedChildIndex = "".obs;
   List selectedDdindex = <String>[].obs;
   var adultDdnum = [].obs;
@@ -178,15 +183,111 @@ class RoomController2 extends GetxController {
   List<List> allAgeOrgs = [];
 
   //accomodationdetail post
+  //=============================
+
+  // final ckeckinfromAc;
+  // final checkoutfromAc;
+  // final nativeCountryidfromAc;
+  // final noOfroomfromAc;
+  // final searchcityidfromAc;
+  //final searchcityTypefromAc
+
   var accommodationDetails;
 
+  var isLoading = true.obs;
+  late final jsonEncodeResponse;
+  var checkino;
+
+  List roomT = [];
+
+  var selectedRoomCategory = ''.obs;
+  var totalRate = "".obs;
+
+  var data = {
+    "checkIn": "01/02/2024",
+    "checkOut": "02/02/2024",
+    "native_country_id": "2",
+    "noOfRooms": "1",
+    "countStart": 0,
+    "id": 0,
+    "countLast": "4",
+    "agent_id": "564",
+    "searchCityorCountry_id": "0~235~3",
+    "searchCorCtype": "State",
+    "searchRoomDTO": [
+      {"roomcount": 1, "adult": "1", "child": "0", "childAge": []}
+    ],
+    "destinationHotel": "Dubai - United Arab Emirates",
+    "startDate": "20231230",
+    "endDate": "20231231",
+    "hotelCode": "259-284294",
+    "nationality": "FR",
+    "groupByRooms": "Y",
+    "cancellationPolicy": "Y",
+    "room": [
+      {
+        "adult": [
+          {"age": 25},
+          {"age": 25}
+        ]
+      }
+    ]
+  };
+
+  RoomDetailJumerah() async {
+    isLoading.value = true;
+    roomT = [];
+    // checkino = isDateShown.value == true
+    //     ? newCheckinDate.value
+    //     // : acController.isDateShown.value == true
+    //     //     ? acController.newCheckinDate.value
+    //     : acController.orgnewChekin.value != ""
+    //         ? acController.orgnewChekin.value
+    //         : acController.isSearchtapped.value == true
+    //             ? acController.newCheckinDate.value
+    //             : "";
+    var response = await http.post(
+        Uri.parse("${baseUrl}custom/jumeirah/hotelRooms?hotelCode=JCH"),
+        headers: {
+          'apikey': 'CONNECTWORLD123',
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(data));
+    if (response.statusCode == 200) {
+      print(response.statusCode);
+      isLoading.value = true;
+      var roomdata1 = roomModelFromJson(response.body);
+      roomModel = roomdata1;
+      print(roomModel);
+      // print(r)
+
+      var data = json.decode(response.body);
+      print(data);
+
+      if (data[0]["searchHotelRoomsDTOList"] != []) {
+        roomT = data[0]["searchHotelRoomsDTOList"];
+
+        print(roomT[1]);
+        if (roomT.isNotEmpty) {
+          // Set initial values based on the first index of roomT
+          Map<String, dynamic> firstRoom = roomT[0];
+          // selectedRoomCategory.value = firstRoom['roomCategory'].toString();
+          totalRate.value = firstRoom['totalRate'].toString();
+        }
+      }
+
+      // print(roomT[0]);
+    }
+    try {} catch (e) {
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  //=======================================
   @override
   void onInit() {
-    // if (nightCount != null) {
-    //   nitController.text = nightCount;
-    //   print(nitController.text);
-    // }
-
+    RoomDetailJumerah();
     super.onInit();
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:choose_n_fly/model/book_detail_model.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:flutter/material.dart';
@@ -130,23 +132,58 @@ class BookingInnController extends GetxController {
   List<List> allAgeOrgs = [];
 
   var isLoading = true.obs;
+  var nodataFound = false.obs;
+  var exceptionCatched = false.obs;
 
   fetchbookDetails() async {
     print("hotel idd==>${bookingId}");
     try {
       isLoading.value = true;
+      nodataFound.value = false;
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/bookingdetailsViewAPIout?bookingid=${bookingId}"),
           headers: {'apikey': 'CONNECTWORLD123'});
       if (response.statusCode == 200) {
         print("object");
-        var data = hoteldetailModelFromJson(response.body);
-        print(data);
-        hoteldetailModel = data;
-        print("detaillsss==>${hoteldetailModel}");
+        print(response.body);
+
+        var jsonString = json.decode(response.body);
+
+        if (jsonString["hotelBookingDTOList"] == null) {
+          nodataFound.value = true;
+        } else if (jsonString["hotelBookingDTOList"] != null) {
+          List hotelroomDto =
+              jsonString["hotelBookingDTOList"][0]["hotelRoomBookingDTOList"];
+          print(
+              "hlooooo${jsonString["hotelBookingDTOList"][0]["hotelRoomBookingDTOList"]}");
+          if (hotelroomDto.isEmpty) {
+            print("nnnnnnn");
+            nodataFound.value = true;
+          } else {
+            var data = hoteldetailModelFromJson(response.body);
+            print(data);
+            hoteldetailModel = data;
+            print("detaillsss==>${hoteldetailModel}");
+          }
+        }
+
+        //  else if (jsonString["hotelBookingDTOList"][0]
+        //         ["hotelRoomBookingDTOList"] ==
+        //     []) {
+        //   print("iiii");
+        // } else {
+        //   var data = hoteldetailModelFromJson(response.body);
+        //   print(data);
+        //   hoteldetailModel = data;
+        //   print("detaillsss==>${hoteldetailModel}");
+        // }
+      } else {
+        exceptionCatched.value = true;
+        print("000000");
       }
     } catch (e) {
+      print(e);
     } finally {
       isLoading.value = false;
     }

@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:choose_n_fly/model/all_booking_model.dart';
 import 'package:choose_n_fly/utils/consts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -20,6 +23,8 @@ class BookingDController extends GetxController {
     ["Cancelled", "3"]
   ];
   var selectedStatus = '1'.obs;
+  var exceptionCatched = false.obs;
+  var noBooking = false.obs;
 
   fetchAllBOokings(searchKey) async {
     print("seachkeyyy===>>${searchKey}");
@@ -28,15 +33,91 @@ class BookingDController extends GetxController {
 
     try {
       isLoading.value = true;
+      exceptionCatched.value = false;
+      noBooking.value = false;
+
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/bookingListNewAPIout?period=${timePeriod.value}&bookingTypes=${selectedStatus.value}&searchkey=${searchKey}"),
           headers: {'apikey': 'CONNECTWORLD123'});
       if (response.statusCode == 200) {
-        print("object");
-        var data = allBookingsModelFromJson(response.body);
-        allBookingsModel = data;
-        print(allBookingsModel);
+        var jsonString = json.decode(response.body);
+        print(jsonString);
+        List dataList = jsonString["data"];
+        print("datlissttttt===>${dataList}");
+        if (dataList.isEmpty) {
+          noBooking.value = true;
+        } else {
+          print("object");
+          var data = allBookingsModelFromJson(response.body);
+          allBookingsModel = data;
+          print(allBookingsModel);
+        }
+      } else {
+        exceptionCatched.value = true;
+        print("000000");
+      }
+    } catch (e) {
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  //cancel booking inhouse
+
+  cancelBookinginH(bookinId) async {
+    try {
+      isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/cancelInhouseBookingAPIout?id=${bookinId}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Booking Cancelled");
+        Get.back();
+        print(response.body);
+      }
+    } catch (e) {
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  //cancel booking jumerah
+
+  cancelBookingJum(bookinId, lastName, email) async {
+    try {
+      isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/cancelJumeirahBookingAPIout?key=${bookinId}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Booking Cancelled");
+        Get.back();
+        print(response.body);
+      }
+    } catch (e) {
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  //cancel booking atharva
+
+  cancelBookingAth(
+    bookinId,
+  ) async {
+    try {
+      isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/cancelJumeirahBookingAPIout?key=${bookinId}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      if (response.statusCode == 200) {
+        Fluttertoast.showToast(msg: "Booking Cancelled");
+        Get.back();
+        print(response.body);
       }
     } catch (e) {
     } finally {

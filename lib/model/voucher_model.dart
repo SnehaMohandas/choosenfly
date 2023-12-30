@@ -67,7 +67,7 @@ class VoucherModel {
   int nativeCountry;
   dynamic salutaion;
   dynamic passportNo;
-  List<dynamic> policyDetailsDtoList;
+  List<PolicyDetailsDtoList> policyDetailsDtoList;
   int bookingNew;
   dynamic hotelIdList;
   dynamic context;
@@ -230,8 +230,9 @@ class VoucherModel {
         nativeCountry: json["native_country"],
         salutaion: json["salutaion"],
         passportNo: json["passport_no"],
-        policyDetailsDtoList:
-            List<dynamic>.from(json["policyDetailsDTOList"].map((x) => x)),
+        policyDetailsDtoList: List<PolicyDetailsDtoList>.from(
+            json["policyDetailsDTOList"]
+                .map((x) => PolicyDetailsDtoList.fromJson(x))),
         bookingNew: json["bookingNew"],
         hotelIdList: json["hotelIdList"],
         context: json["context"],
@@ -314,7 +315,7 @@ class VoucherModel {
         "salutaion": salutaion,
         "passport_no": passportNo,
         "policyDetailsDTOList":
-            List<dynamic>.from(policyDetailsDtoList.map((x) => x)),
+            List<dynamic>.from(policyDetailsDtoList.map((x) => x.toJson())),
         "bookingNew": bookingNew,
         "hotelIdList": hotelIdList,
         "context": context,
@@ -351,7 +352,7 @@ class HotelBookingDtoList {
   int paymentapiId;
   dynamic currency;
   dynamic currencyValue;
-  String paymentStatus;
+  dynamic paymentStatus;
   dynamic noOfRooms;
   dynamic noOfDays;
   bool cancellationStatus;
@@ -390,24 +391,24 @@ class HotelBookingDtoList {
   dynamic monthlylPromotionsDto;
   dynamic hotelBookingDayRatesDtOs;
   dynamic invoiceNo;
-  String checkInText;
-  String checkOutText;
+  dynamic checkInText;
+  dynamic checkOutText;
   dynamic bookTime;
   dynamic amendTime;
   dynamic cancelTime;
   dynamic bookingCode;
   int checkInCnt;
   int checkOutCnt;
-  String hotelname;
+  dynamic hotelname;
   dynamic agentname;
   dynamic hoteltype;
   dynamic rcname;
   dynamic customername;
-  String clientrefernce;
+  dynamic clientrefernce;
   dynamic inhouserefernce;
   dynamic pricerefernce;
-  String hotelrefernce;
-  String apistatus;
+  dynamic hotelrefernce;
+  dynamic apistatus;
   String confirmationStatus;
   String onHoldStatus;
   dynamic hotelCategory;
@@ -787,5 +788,66 @@ class HotelBookingDtoList {
         "deleted": deleted,
         "refund": refund,
         "rebook": rebook,
+      };
+}
+
+class PolicyDetailsDtoList {
+  int policydetailsId;
+  int policyId;
+  int type;
+  int startDay;
+  dynamic valuePercent;
+  dynamic policyRemark;
+  dynamic policyType;
+  int dayDifference;
+  dynamic canceldate;
+  int canceldays;
+  bool validity;
+  bool deleted;
+
+  PolicyDetailsDtoList({
+    required this.policydetailsId,
+    required this.policyId,
+    required this.type,
+    required this.startDay,
+    required this.valuePercent,
+    required this.policyRemark,
+    required this.policyType,
+    required this.dayDifference,
+    required this.canceldate,
+    required this.canceldays,
+    required this.validity,
+    required this.deleted,
+  });
+
+  factory PolicyDetailsDtoList.fromJson(Map<String, dynamic> json) =>
+      PolicyDetailsDtoList(
+        policydetailsId: json["policydetails_id"],
+        policyId: json["policy_id"],
+        type: json["type"],
+        startDay: json["startDay"],
+        valuePercent: json["valuePercent"],
+        policyRemark: json["policyRemark"],
+        policyType: json["policyType"],
+        dayDifference: json["dayDifference"],
+        canceldate: json["canceldate"],
+        canceldays: json["canceldays"],
+        validity: json["validity"],
+        deleted: json["deleted"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "policydetails_id": policydetailsId,
+        "policy_id": policyId,
+        "type": type,
+        "startDay": startDay,
+        "valuePercent": valuePercent,
+        "policyRemark": policyRemark,
+        "policyType": policyType,
+        "dayDifference": dayDifference,
+        "canceldate": canceldate,
+        "canceldays": canceldays,
+        "validity": validity,
+        "deleted": deleted,
       };
 }

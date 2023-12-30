@@ -2,6 +2,7 @@ import 'package:choose_n_fly/model/confirmation_model.dart';
 import 'package:choose_n_fly/model/req_model.dart';
 import 'package:choose_n_fly/model/voucher_model.dart';
 import 'package:choose_n_fly/utils/consts.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -26,6 +27,7 @@ class ReqConfirmController extends GetxController {
   var isLoading = true.obs;
 
   fetchVoucherDetails() async {
+    print(bookingId);
     try {
       isLoading.value = true;
       var response = await http.get(
@@ -88,10 +90,53 @@ class ReqConfirmController extends GetxController {
   }
 
   ///price reference
-  var priceRef = "".obs;
+  //var priceRef = "".obs;
+
+  priceRefChange(
+    bookingIdPR,
+    code,
+    apiType,
+  ) async {
+    try {
+      //isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print("detaillsss==>${response.body}");
+        // Fluttertoast.showToast(msg: "Removed from cart");
+        await fetchVoucherDetails();
+      }
+    } catch (e) {
+    } finally {}
+  }
 
   //supplier reference
-  var supplierRef = "".obs;
+  //var supplierRef = "".obs;
+
+  supplierRefChange(
+    bookingIdPR,
+    code,
+    apiType,
+  ) async {
+    try {
+      //isLoading.value = true;
+      var response = await http.get(
+          Uri.parse(
+              "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
+          headers: {'apikey': 'CONNECTWORLD123'});
+      print(response.statusCode);
+      if (response.statusCode == 200) {
+        print("detaillsss==>${response.body}");
+        // Fluttertoast.showToast(msg: "Removed from cart");
+        await fetchVoucherDetails();
+      }
+    } catch (e) {
+    } finally {}
+  }
+
   @override
   void onInit() {
     fetchVoucherDetails();

@@ -45,7 +45,6 @@ class AccomodationController extends GetxController {
   //===========
 
   List destination = [].obs;
-  //List destination = [].obs;
   var selectedDestinaion = ''.obs;
   var selectedDesCode = ''.obs;
   var selectedDesType = ''.obs;
@@ -173,77 +172,111 @@ class AccomodationController extends GetxController {
   var isDateNotSelected = false.obs;
   var isRoomNotSelected = false.obs;
   List<List> allAgeOrgs = [];
+  var inHaccDetails;
   var accommodationDetails;
 
   //submit accommodation details
   var parsedCheckin;
   var parsedCheckout;
+  var splitedCityId;
+  Map<String, dynamic>? currentItem;
+  List allItems = [];
+
+  //searchHotels
+
+  var isHotelLoading = false.obs;
 
   Future postAccommodation() async {
-    parsedCheckin = DateFormat('yyyy-MM-dd')
-        .format(DateFormat('MMM-dd-yyyy').parse(orgnewChekin.value));
-    parsedCheckout = DateFormat('yyyy-MM-dd')
-        .format(DateFormat('MMM-dd-yyyy').parse(orgnewChekout.value));
-    final Map<String, dynamic> requestData =
-        // {
-        //   "CheckInDate": "${parsedCheckin}",
-        //   "CheckOutDate": "${parsedCheckout}",
-        //   "HCode": "DXB9892146",
-        //   "CityId": "${orgDestination.value}",
-        //   "NationalityId": "${orgNativeCode.value}",
-        //   "RoomDetail": orgAccomodationDetails
-        // };
+    allItems = [];
+    try {
+      print(DateFormat('dd/MM/yyyy')
+          .format(DateFormat('MMM-dd-yyyy').parse(orgnewChekin.value)));
+      isHotelLoading.value = true;
+      parsedCheckin = DateFormat('yyyy-MM-dd')
+          .format(DateFormat('MMM-dd-yyyy').parse(orgnewChekin.value));
+      parsedCheckout = DateFormat('yyyy-MM-dd')
+          .format(DateFormat('MMM-dd-yyyy').parse(orgnewChekout.value));
+      var value = orgDesCode.split("~");
+      splitedCityId = value.isNotEmpty ? value.last : "";
+      print("splitedddvaluee==>${splitedCityId}");
 
-        {
-      "hotelDTO": {
-        "checkIn": "${parsedCheckin}",
-        "checkOut": "${parsedCheckout}",
-        "native_country_id": "${orgNativeCode}",
-        "noOfRooms": orgRoomcount,
-        "countStart": 0,
-        "id": 0,
-        "countLast": "4",
-        "agent_id": "5",
-        "searchCityorCountry_id": "${orgDesCode}",
-        "searchCorCtype": "${orgDesType}",
-        "searchRoomDTO": [orgAccomodationDetails],
-        "destinationHotel": "${orgDestination}",
-        "startDate": "${parsedCheckin}",
-        "endDate": "${parsedCheckout}"
-      },
-      "atharvaReq": {
-        "CheckInDate": "${parsedCheckout}",
-        "CheckOutDate": "${parsedCheckout}",
-        "CityId": "3",
-        "NationalityId": "${orgNativeCode}",
-        "countryOrCityId": "${orgDesCode}",
-        "RoomDetail": [orgAccomodationDetails]
+      final Map<String, dynamic> requestData =
+          // {
+          //   "CheckInDate": "${parsedCheckin}",
+          //   "CheckOutDate": "${parsedCheckout}",
+          //   "HCode": "DXB9892146",
+          //   "CityId": "${orgDestination.value}",
+          //   "NationalityId": "${orgNativeCode.value}",
+          //   "RoomDetail": orgAccomodationDetails
+          // };
+
+          {
+        "hotelDTO": {
+          "checkIn":
+              "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(orgnewChekin.value))}",
+          "checkOut":
+              "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(orgnewChekout.value))}",
+          "native_country_id": "${orgNativeCode}",
+          "noOfRooms": orgRoomcount.toString(),
+          "countStart": 0,
+          "id": 0,
+          "countLast": "4",
+          "agent_id": "5",
+          "searchCityorCountry_id": "${orgDesCode}",
+          "searchCorCtype": "${orgDesType}",
+          "searchRoomDTO": orginHaccDetails,
+          "destinationHotel": "${orgDestination}",
+          "startDate": "${parsedCheckin}",
+          "endDate": "${parsedCheckout}"
+        },
+        "atharvaReq": {
+          "CheckInDate": "${parsedCheckout}",
+          "CheckOutDate": "${parsedCheckout}",
+          "CityId": "${splitedCityId}",
+          "NationalityId": "${orgNativeCode}",
+          "countryOrCityId": "${orgDesCode}",
+          "RoomDetail": orgAccomodationDetails
+        }
+      };
+      print(jsonEncode(requestData));
+      var response =
+          await http.post(Uri.parse("${baseUrl}custom/searchAllHotelsAPIout"),
+              headers: {
+                'apikey': 'CONNECTWORLD123',
+                'Content-Type': 'application/json',
+              },
+              body: jsonEncode(requestData));
+      if (response.statusCode == 200) {
+        print("object");
+        var data = allHotelModelFromJson(response.body);
+        allHotelModel = data;
+
+        for (int i = 0;
+            i < allHotelModel![0].inhouseHotels!.data[1].length;
+            i++) {
+          currentItem = allHotelModel![0].inhouseHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
+        for (int i = 0;
+            i < allHotelModel![1].atharvaHotels!.data[1].length;
+            i++) {
+          currentItem = allHotelModel![1].atharvaHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
+        for (int i = 0;
+            i < allHotelModel![2].jumeirahHotels!.data[1].length;
+            i++) {
+          currentItem = allHotelModel![2].jumeirahHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
+      } else {
+        print("not 200");
       }
-    };
-
-    // final String apiUrl =
-    //     'https://your.api.endpoint'; // Replace with your actual API endpoint
-
-    // try {
-    //   final response = await http.post(
-    //     Uri.parse(apiUrl),
-    //     headers: <String, String>{
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: jsonEncode(requestData),
-    //   );
-
-    //   if (response.statusCode == 200) {
-    //     // Handle the successful response here
-    //     print(response.body);
-    //   } else {
-    //     // Handle the error response here
-    //     print('Error: ${response.statusCode}');
-    //   }
-    // } catch (error) {
-    //   // Handle the exception
-    //   print('Error: $error');
-    // }
+    } catch (e) {
+      print(e);
+    } finally {
+      isHotelLoading.value = false;
+    }
   }
 
   //orginal details
@@ -257,14 +290,18 @@ class AccomodationController extends GetxController {
   //var orgdesCountry = "".obs;
   var orgNatCountry = "".obs;
   var orgAccomodationDetails;
+  var orginHaccDetails;
   var orgRoomcount = "".obs;
   RxInt orgguestTotal = 0.obs;
 
   var isLoading = true.obs;
+  var exceptionCatched = false.obs;
 
   //fetching destination
   FetchDestination(searchKey) async {
     try {
+      var exceptionCatched = false.obs;
+
       var response = await http.get(
           Uri.parse("${baseUrl}custom/destinationAPIout?term=${searchKey}"),
           headers: {'apikey': 'CONNECTWORLD123'});
@@ -281,7 +318,11 @@ class AccomodationController extends GetxController {
           ]);
         }
         print("desssss==>${destination}");
+      } else {
+        exceptionCatched.value = true;
+        print("000000");
       }
+
       await FetchNative();
     } catch (e) {
     } finally {
@@ -307,84 +348,19 @@ class AccomodationController extends GetxController {
           ]);
         }
         print("desssss==>${native}");
-      }
-    } catch (e) {
-    } finally {
-      // isLoading.value = false;
-    }
-  }
-
-  var isHotelLoading = false.obs;
-  Map<String, dynamic> requestData = {
-    "hotelDTO": {
-      "checkIn": "30/12/2023",
-      "checkOut": "31/12/2023",
-      "native_country_id": "2",
-      "noOfRooms": "1",
-      "countStart": 0,
-      "id": 0,
-      "countLast": "4",
-      "agent_id": "5",
-      "searchCityorCountry_id": "0~235~3",
-      "searchCorCtype": "State",
-      "searchRoomDTO": [
-        {"roomcount": 1, "adult": "1", "child": "0", "childAge": []}
-      ],
-      "destinationHotel": "Dubai - United Arab Emirates",
-      "startDate": "20231230",
-      "endDate": "20231231"
-    },
-    "atharvaReq": {
-      "CheckInDate": "2023-12-30",
-      "CheckOutDate": "2023-12-31",
-      "CityId": "3",
-      "NationalityId": "2",
-      "countryOrCityId": "0~235~3",
-      "RoomDetail": [
-        {"ChildAges": [], "NoOfAdult": "1", "NoOfChild": "0", "RoomSrNo": 1}
-      ]
-    }
-  };
-  postAcDetails() async {
-    isHotelLoading.value = true;
-    String datass = jsonEncode(requestData);
-
-    try {
-      var response =
-          await http.post(Uri.parse("${baseUrl}custom/searchAllHotelsAPIout"),
-              headers: {
-                'apikey': 'CONNECTWORLD123',
-                'Content-Type': 'application/json',
-              },
-              body: datass);
-      if (response.statusCode == 200) {
-        print("object");
-        var data = allHotelModelFromJson(response.body);
-        allHotelModel = data;
-
-        print(
-          "lngthhhhh${allHotelModel![0].inhouseHotels!.data[1][0]["hotel_name"]}", // Replace with the number of items you have
-        );
       } else {
-        print(
-          allHotelModel![0]
-              .inhouseHotels!
-              .data[1]
-              .length, // Replace with the number of items you have
-        );
+        exceptionCatched.value = true;
+        print("000000");
       }
     } catch (e) {
-      print(e);
     } finally {
-      isHotelLoading.value = false;
-
       // isLoading.value = false;
     }
   }
 
   @override
   void onInit() {
-    FetchDestination("");
+    //  FetchDestination("");
     // TODO: implement onInit
     super.onInit();
   }

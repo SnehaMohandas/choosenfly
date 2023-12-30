@@ -405,7 +405,7 @@ class HotelBookingDtoList {
   dynamic customername;
   String clientrefernce;
   dynamic inhouserefernce;
-  String pricerefernce;
+  dynamic pricerefernce;
   String hotelrefernce;
   String apistatus;
   String confirmationStatus;

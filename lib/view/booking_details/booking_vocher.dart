@@ -55,7 +55,8 @@ class BookingVoucher extends StatelessWidget {
                         : reqController.selectedValue.value == "Request"
                             ? bookVController
                                 .requestPdfModel!.filelocationServer
-                            : 'https://www.africau.edu/images/default/sample.pdf',
+                            : bookVController
+                                .confirmPdfModel!.filelocationServer,
                     bookVController.emailController.text);
                 // Fluttertoast.showToast(msg: "Voucher sent to the e-mail");
                 // Get.offAll(() => HomeScreen(), transition: Transition.native);
@@ -165,7 +166,8 @@ class BookingVoucher extends StatelessWidget {
                               : reqController.selectedValue.value == "Request"
                                   ? bookVController
                                       .requestPdfModel!.filelocationServer
-                                  : 'https://www.africau.edu/images/default/sample.pdf',
+                                  : bookVController
+                                      .confirmPdfModel!.filelocationServer,
                         ),
                       ),
                     ),
