@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:choose_n_fly/network/network_controller.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/booking_details/booking_d_inner.dart';
+import 'package:choose_n_fly/view/booking_details/controller/booking_d_controller.dart';
 import 'package:choose_n_fly/view/calender/controller/calender_controller.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:choose_n_fly/view/home/controller/home_controller.dart';
@@ -252,6 +253,7 @@ class CalenderPAge extends StatelessWidget {
                                         paymentStatus: "PAID",
                                         refCode: "455554445555543322222",
                                         totalMount: "159 AED",
+                                        selectedStatus: "1",
                                       ),
                                   transition: Transition.rightToLeftWithFade);
                             },

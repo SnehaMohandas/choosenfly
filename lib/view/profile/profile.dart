@@ -1,10 +1,16 @@
 import 'package:choose_n_fly/network/network_controller.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
-import 'package:choose_n_fly/view/singnin/sign_in.dart';
+import 'package:choose_n_fly/utils/common_fctn.dart';
+import 'package:choose_n_fly/utils/consts.dart';
+import 'package:choose_n_fly/view/home/controller/home_controller.dart';
+import 'package:choose_n_fly/view/login/login_controller.dart';
+import 'package:choose_n_fly/view/login/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Profile extends StatelessWidget {
   Profile({super.key, required this.avLimit, required this.crediLimit});
@@ -14,11 +20,19 @@ class Profile extends StatelessWidget {
   List title = ["Name", "E-mail", "Phone"];
   List subtitle = ["John Thomas", "jh@gmail.com", "9876543210"];
   final NetworkController networkController = Get.find<NetworkController>();
+  showLogOut() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+    // CommonFunction.addDataToSharedPreferences('logout', 'success');
+    Get.offAll(SignInPage());
+    Get.delete<HomeController>();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       if (networkController.isConnected.value) {
+        //var loginController = Get.put(LoginController());
         return Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.transparent,
@@ -75,8 +89,8 @@ class Profile extends StatelessWidget {
                             const SizedBox(
                               height: 20,
                             ),
-                            const Text(
-                              "Today, 06 Dec 2023",
+                            Text(
+                              "Today, ${DateFormat('dd MMM yyyy').format(DateTime.now())}",
                               style: TextStyle(
                                 color: ColorConstant.grey,
                                 fontSize: 10,
@@ -172,6 +186,18 @@ class Profile extends StatelessWidget {
                     ),
                   ),
                 ),
+                // Center(
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       image: DecorationImage(image: NetworkImage(agentProfile)),
+                //       shape: BoxShape.circle,
+                //       color: Colors.yellow,
+                //     ),
+                //     height: 70,
+                //     width: 70,
+                //   ),
+                // ),
+
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.05,
                 ),
@@ -192,16 +218,16 @@ class Profile extends StatelessWidget {
                   thickness: 1,
                   color: ColorConstant.grey,
                 ),
-                const Text("Agent1"),
+                Text(name!),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
                 const Row(
                   children: [
                     Icon(
-                      Icons.email_outlined,
+                      Icons.workspaces_outline,
                       color: ColorConstant.primaryColor,
                     ),
                     Text(
-                      "  E-mail",
+                      " Company Name",
                       style:
                           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                     ),
@@ -211,26 +237,26 @@ class Profile extends StatelessWidget {
                   thickness: 1,
                   color: ColorConstant.grey,
                 ),
-                const Text("agent@gmail.com"),
+                Text(companyName!),
                 SizedBox(height: MediaQuery.of(context).size.height * 0.03),
-                const Row(
-                  children: [
-                    Icon(
-                      Icons.phone_android_outlined,
-                      color: ColorConstant.primaryColor,
-                    ),
-                    Text(
-                      "  Phone",
-                      style:
-                          TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-                const Divider(
-                  thickness: 1,
-                  color: ColorConstant.grey,
-                ),
-                const Text("9876543210"),
+                // const Row(
+                //   children: [
+                //     Icon(
+                //       Icons.phone_android_outlined,
+                //       color: ColorConstant.primaryColor,
+                //     ),
+                //     Text(
+                //       "  Phone",
+                //       style:
+                //           TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+                //     ),
+                //   ],
+                // ),
+                // const Divider(
+                //   thickness: 1,
+                //   color: ColorConstant.grey,
+                // ),
+                // const Text("9876543210"),
               ],
             ),
           ),
@@ -266,10 +292,12 @@ class Profile extends StatelessWidget {
                               BorderRadius.all(Radius.circular(10.0)))),
                       backgroundColor:
                           MaterialStatePropertyAll(ColorConstant.primaryColor)),
-                  onPressed: () {
+                  onPressed: () async {
+                    await showLogOut();
+                    //Get.back();
                     //Fluttertoast.showToast(msg: "Removed from cart");
-                    Navigator.of(context).pop();
-                    Get.offAll(() => SignInPage());
+                    // Navigator.of(context).pop();
+                    // Get.offAll(() => SignInPage());
                   },
                   child: const Text(
                     "Yes",

@@ -249,7 +249,7 @@ class RoomController2 extends GetxController {
     var response = await http.post(
         Uri.parse("${baseUrl}custom/jumeirah/hotelRooms?hotelCode=JCH"),
         headers: {
-          'apikey': 'CONNECTWORLD123',
+          'apikey': header,
           'Content-Type': 'application/json',
         },
         body: jsonEncode(data));

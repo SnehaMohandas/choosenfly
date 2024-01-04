@@ -18,18 +18,18 @@ class RequestPdfModel {
   int type;
   int senttype;
   int sentfiletype;
-  String referenceCode;
-  String bookingCode;
+  dynamic referenceCode;
+  dynamic bookingCode;
   List<String> hotelmails;
-  String employeemails;
-  String agentmail;
+  dynamic employeemails;
+  dynamic agentmail;
   String agentname;
-  String subemployeemails;
+  dynamic subemployeemails;
   String mainAgentName;
   String mainAgentProfile;
   int mainAgentId;
   String mainagentMail;
-  String mobile;
+  dynamic mobile;
 
   RequestPdfModel({
     required this.filepath,

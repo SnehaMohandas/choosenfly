@@ -154,7 +154,7 @@ class AccomodationController extends GetxController {
   //room and guest dropdown values
   var isSubLoading = true.obs;
 
-  var roomCount = "".obs;
+  var roomCount = "1".obs;
   var newRoomCount = "".obs;
 
   var selectedChildIndex = "".obs;
@@ -242,7 +242,7 @@ class AccomodationController extends GetxController {
       var response =
           await http.post(Uri.parse("${baseUrl}custom/searchAllHotelsAPIout"),
               headers: {
-                'apikey': 'CONNECTWORLD123',
+                'apikey': header,
                 'Content-Type': 'application/json',
               },
               body: jsonEncode(requestData));
@@ -304,7 +304,7 @@ class AccomodationController extends GetxController {
 
       var response = await http.get(
           Uri.parse("${baseUrl}custom/destinationAPIout?term=${searchKey}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = destinationModelFromJson(response.body);
@@ -335,7 +335,7 @@ class AccomodationController extends GetxController {
     try {
       var response = await http.get(
           Uri.parse("${baseUrl}custom/nationalityAPIout"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = nativeModelFromJson(response.body);

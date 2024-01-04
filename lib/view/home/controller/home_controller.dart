@@ -15,7 +15,7 @@ class HomeController extends GetxController {
     try {
       var response = await http.get(
           Uri.parse("${baseUrl}custom/agentCreditLimitAPIout?agentId=${id}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = walletModelFromJson(response.body);
@@ -32,8 +32,18 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    FetchWallet("5");
+    FetchWallet(agentId);
     // TODO: implement onInit
     super.onInit();
+  }
+}
+
+void login() async {
+  var respone = await http
+      .get(Uri.parse("${baseUrl}custom/agentCreditLimitAPIout?agentId=539"));
+  if (respone.statusCode == 200) {
+    print(respone.body);
+  } else {
+    print("no resonse");
   }
 }

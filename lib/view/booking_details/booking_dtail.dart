@@ -185,7 +185,6 @@ class BookingDetail extends StatelessWidget {
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                  // color: Colors.white,
                                   borderRadius: BorderRadius.circular(10),
                                   border: Border.all(color: ColorConstant.grey)
                                   // boxShadow: [
@@ -349,11 +348,6 @@ class BookingDetail extends StatelessWidget {
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .agentName,
-                                                        // hotelName:
-                                                        //     bookingdController
-                                                        //         .allBookingsModel!
-                                                        //         .data[index]
-                                                        //         .hotelname,
                                                         bookingCode:
                                                             bookingdController
                                                                 .allBookingsModel!
@@ -374,11 +368,6 @@ class BookingDetail extends StatelessWidget {
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .checkOut,
-                                                        // customerName:
-                                                        //     bookingdController
-                                                        //         .allBookingsModel!
-                                                        //         .data[index]
-                                                        //         .customerName,
                                                         paymentStatus:
                                                             bookingdController
                                                                 .allBookingsModel!
@@ -399,6 +388,10 @@ class BookingDetail extends StatelessWidget {
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .totalprice,
+                                                        selectedStatus:
+                                                            bookingdController
+                                                                .selectedStatus
+                                                                .value,
                                                       ),
                                                   transition: Transition
                                                       .rightToLeftWithFade);
@@ -491,12 +484,20 @@ class BookingDetail extends StatelessWidget {
                                                               .start,
                                                       children: [
                                                         Container(
+                                                          //color: Colors.yellow,
                                                           height: 22,
                                                           width: MediaQuery.of(
                                                                       context)
                                                                   .size
                                                                   .width *
-                                                              0.6,
+                                                              0.8,
+                                                          //with img
+                                                          // width: MediaQuery.of(
+                                                          //             context)
+                                                          //         .size
+                                                          //         .width *
+                                                          //     0.6,
+                                                          //=============
                                                           child: Text(
                                                             bookingdController
                                                                 .allBookingsModel!
@@ -547,12 +548,20 @@ class BookingDetail extends StatelessWidget {
                                                                     .start,
                                                             children: [
                                                               Container(
-                                                                // color: Colors.amber,
+                                                                // color: Colors
+                                                                //     .amber,
+                                                                //===========with img
+                                                                // width: MediaQuery.of(
+                                                                //             context)
+                                                                //         .size
+                                                                //         .width *
+                                                                //  0.43,
+                                                                //==============
                                                                 width: MediaQuery.of(
                                                                             context)
                                                                         .size
                                                                         .width *
-                                                                    0.43,
+                                                                    0.34,
                                                                 child: Text(
                                                                   bookingdController
                                                                       .allBookingsModel!
@@ -571,12 +580,13 @@ class BookingDetail extends StatelessWidget {
                                                                 // height: 39,
                                                               ),
                                                               SizedBox(
-                                                                width: MediaQuery.of(
-                                                                            context)
-                                                                        .size
-                                                                        .width *
-                                                                    0.03,
-                                                              ),
+                                                                  width: MediaQuery.of(
+                                                                              context)
+                                                                          .size
+                                                                          .width *
+                                                                      //    with img
+                                                                      // 0.03,
+                                                                      0.01),
                                                               Visibility(
                                                                 visible: bookingdController.selectedStatus.value ==
                                                                             "2" ||
@@ -586,12 +596,15 @@ class BookingDetail extends StatelessWidget {
                                                                     : true,
                                                                 child:
                                                                     Container(
-                                                                  // color: Colors.amber,
+                                                                  // color: Colors
+                                                                  //     .amber,
                                                                   width: MediaQuery.of(
                                                                               context)
                                                                           .size
                                                                           .width *
-                                                                      0.15,
+                                                                      //with img
+                                                                      //   0.15,
+                                                                      0.21,
                                                                   child: Row(
                                                                     mainAxisAlignment:
                                                                         MainAxisAlignment
@@ -606,9 +619,11 @@ class BookingDetail extends StatelessWidget {
                                                                         child:
                                                                             Container(
                                                                           width:
-                                                                              30,
-                                                                          color:
-                                                                              Colors.transparent,
+                                                                              35,
+                                                                          //with img
+                                                                          // 30,
+                                                                          // color:
+                                                                          //     Colors.black,
                                                                           child:
                                                                               Icon(
                                                                             Icons.delete,
@@ -625,6 +640,7 @@ class BookingDetail extends StatelessWidget {
                                                                           Get.to(
                                                                               () => ReqConfirmScreen(
                                                                                     bookingId: bookingdController.allBookingsModel!.data[index].bookingId,
+                                                                                    hotelbookingId: bookingdController.allBookingsModel!.data[index].hotelbookingId,
                                                                                     bookingstatus: bookingdController.selectedStatus.value,
                                                                                     hotelbookingidPriceRef: bookingdController.allBookingsModel!.data[index].hotelbookingId,
                                                                                     apiType: bookingdController.allBookingsModel!.data[index].apitype,
@@ -635,9 +651,11 @@ class BookingDetail extends StatelessWidget {
                                                                         child:
                                                                             Container(
                                                                           width:
-                                                                              22,
-                                                                          color:
-                                                                              Colors.transparent,
+                                                                              //with img
+                                                                              // 22,
+                                                                              35,
+                                                                          // color:
+                                                                          //     Colors.blue,
                                                                           child:
                                                                               Icon(
                                                                             Icons.email,
@@ -686,15 +704,16 @@ class BookingDetail extends StatelessWidget {
           child: AlertDialog(
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(20.0))),
-            title: const Text('Delete?', style: TextStyle(fontSize: 17)),
-            content: const Text('Are you sure want to delete?',
+            title:
+                const Text('Cancel Booking?', style: TextStyle(fontSize: 17)),
+            content: const Text('Are you sure want to cancel?',
                 style: TextStyle(fontSize: 14)),
             actions: <Widget>[
               TextButton(
                 onPressed: () {
                   Navigator.of(context).pop();
                 },
-                child: const Text('Cancel'),
+                child: const Text('No'),
               ),
               ElevatedButton(
                   style: const ButtonStyle(
@@ -704,11 +723,11 @@ class BookingDetail extends StatelessWidget {
                       backgroundColor: MaterialStatePropertyAll(
                           Color.fromARGB(255, 219, 61, 61))),
                   onPressed: () {
-                    Fluttertoast.showToast(msg: "Booking deleted");
+                    Fluttertoast.showToast(msg: "Booking Cancelled");
                     Navigator.of(context).pop();
                   },
                   child: const Text(
-                    "Delete",
+                    "Yes",
                     style: TextStyle(color: ColorConstant.white),
                   ))
             ],

@@ -5,6 +5,7 @@ import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
+import 'package:choose_n_fly/view/login/login_controller.dart';
 import 'package:choose_n_fly/view/payment/payment_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,6 +15,8 @@ import 'package:get/get_navigation/get_navigation.dart';
 class SignInPage extends StatelessWidget {
   SignInPage({super.key});
   final NetworkController networkController = Get.put(NetworkController());
+
+  final LoginController loginController = Get.put(LoginController());
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -39,7 +42,7 @@ class SignInPage extends StatelessWidget {
                       Container(
                         height: 250,
                         width: double.infinity,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                             image: DecorationImage(
                                 image: AssetImage("assets/images/signin.jpg"),
                                 fit: BoxFit.cover)),
@@ -66,7 +69,7 @@ class SignInPage extends StatelessWidget {
                         left: 0,
                         right: 0,
                         child: Container(
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                               color: ColorConstant.white,
                               borderRadius: BorderRadius.only(
                                   topLeft: Radius.circular(30),
@@ -85,7 +88,7 @@ class SignInPage extends StatelessWidget {
                                     onTap: () {
                                       // Get.to(() => GuestPage());
                                     },
-                                    child: Text('Sign In',
+                                    child: const Text('Sign In',
                                         style: TextStyle(
                                           fontSize: 30,
                                           fontWeight: FontWeight.bold,
@@ -94,7 +97,8 @@ class SignInPage extends StatelessWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Text('Sign in to access to your dashboard.',
+                                  const Text(
+                                      'Sign in to access to your dashboard.',
                                       style: TextStyle(
                                           fontSize: 16,
                                           fontWeight: FontWeight.normal,
@@ -107,11 +111,34 @@ class SignInPage extends StatelessWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  CustomTextfield(
-                                      hint: "Username",
-                                      prefix: Image.asset(
-                                          'assets/images/55  email.png'),
-                                      controller: nameController),
+                                  TextFormField(
+                                    controller: nameController,
+                                    decoration: InputDecoration(
+                                      hintText: "Username",
+                                      hintStyle: const TextStyle(fontSize: 14),
+                                      contentPadding: const EdgeInsets.all(4),
+                                      prefixIcon: const Icon(
+                                        Icons.person_2_outlined,
+                                        color: ColorConstant.grey,
+                                      ),
+                                      enabledBorder: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: const BorderSide(
+                                              color: ColorConstant.grey)),
+                                      border: OutlineInputBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          borderSide: const BorderSide(
+                                              color: ColorConstant.grey)),
+                                    ),
+                                    validator: (value) {
+                                      if (value == null || value == "") {
+                                        return "Please enter your name";
+                                      }
+                                      return null;
+                                    },
+                                  ),
                                   const SizedBox(
                                     height: 24,
                                   ),
@@ -120,23 +147,71 @@ class SignInPage extends StatelessWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  CustomTextfield(
-                                      hint: "Password",
-                                      //suffix: Icon(Icons.visibility),
-                                      prefix: Image.asset(
-                                          'assets/images/19  lock.png'),
-                                      controller: passwordController),
+                                  Obx(
+                                    () => TextFormField(
+                                      obscureText:
+                                          loginController.obscureText.value,
+                                      controller: passwordController,
+                                      decoration: InputDecoration(
+                                        hintText: "Password",
+                                        hintStyle:
+                                            const TextStyle(fontSize: 14),
+                                        contentPadding: const EdgeInsets.all(4),
+                                        prefixIcon: const Icon(
+                                          Icons.lock_outline,
+                                          color: ColorConstant.grey,
+                                        ),
+                                        suffixIcon: IconButton(
+                                          onPressed: () {
+                                            loginController.toggleVisibility();
+                                          },
+                                          icon: loginController
+                                                      .obscureText.value ==
+                                                  true
+                                              ? const Icon(
+                                                  Icons.remove_red_eye_outlined,
+                                                  color: ColorConstant.black,
+                                                  size: 22,
+                                                )
+                                              : const Icon(
+                                                  Icons.visibility_off_outlined,
+                                                  color: ColorConstant.black,
+                                                  size: 22,
+                                                ),
+                                        ),
+                                        enabledBorder: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: const BorderSide(
+                                                color: ColorConstant.grey)),
+                                        border: OutlineInputBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            borderSide: const BorderSide(
+                                                color: ColorConstant.grey)),
+                                      ),
+                                      validator: (value) {
+                                        if (value == null || value == "") {
+                                          return "Please enter your password";
+                                        }
+                                        return null;
+                                      },
+                                    ),
+                                  ),
                                   const SizedBox(
                                     height: 25,
                                   ),
-                                  InkWell(
+                                  GestureDetector(
                                     onTap: () {
-                                      //  if (formKey.currentState!.validate()) {
-                                      Get.offAll(() => HomeScreen(),
-                                          transition:
-                                              Transition.rightToLeftWithFade);
-                                      // }
-                                      // Get.to(() => PaymentScreen());
+                                      if (formKey.currentState!.validate()) {
+                                        loginController.login(
+                                            nameController.text,
+                                            passwordController.text);
+                                      }
+
+                                      // Get.offAll(HomeScreen(),
+                                      //     transition:
+                                      //         Transition.rightToLeftWithFade);
                                     },
                                     child: CustomButton(
                                       child: Center(

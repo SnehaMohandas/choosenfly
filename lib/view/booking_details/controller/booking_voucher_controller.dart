@@ -18,7 +18,7 @@ class BookingVoucherController extends GetxController {
 
   @override
   void onInit() {
-    emailController.text = "agent@gmail.com";
+    // emailController.text = "agent@gmail.com";
     // fetchVoucherPdf();
 
     super.onInit();
@@ -34,12 +34,17 @@ class BookingVoucherController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/voucherPdfAPIout?id=${hotelBookId}&bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = voucherPdfModelFromJson(response.body);
         print(data);
         voucherPdfModel = data;
+        if (voucherPdfModel!.agentmail == null) {
+          emailController.text = "agent@gmail.com";
+        } else {
+          emailController.text = voucherPdfModel!.agentmail.toString();
+        }
         print("detaillsss==>${voucherPdfModel}");
       }
     } catch (e) {
@@ -49,20 +54,24 @@ class BookingVoucherController extends GetxController {
   }
 
   fetchRequestPdf(hotelBookId, bookingId) async {
-    print(hotelBookId);
-    print(bookingId);
+    print("hotelbId==>${hotelBookId}");
+    print("bookingidd==>${bookingId}");
     try {
       isLoading.value = true;
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/requestBookingpdfAPIout?id=${hotelBookId}&bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = requestPdfModelFromJson(response.body);
         print(data);
         requestPdfModel = data;
-        print("detaillsss==>${requestPdfModel}");
+        if (requestPdfModel!.agentmail == null) {
+          emailController.text = "agent@gmail.com";
+        } else {
+          emailController.text = requestPdfModel!.agentmail.toString();
+        }
       }
     } catch (e) {
     } finally {
@@ -78,12 +87,18 @@ class BookingVoucherController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/confirmationPdfAPIout?id=${hotelBookId}&bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = confirmPdfModelFromJson(response.body);
         print(data);
         confirmPdfModel = data;
+        if (confirmPdfModel!.agentmail == null) {
+          emailController.text = "agent@gmail.com";
+        } else {
+          emailController.text = confirmPdfModel!.agentmail.toString();
+        }
+
         print("detaillsss==>${confirmPdfModel}");
       }
     } catch (e) {

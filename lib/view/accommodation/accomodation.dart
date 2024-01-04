@@ -39,6 +39,7 @@ class AccommodationScreen extends StatelessWidget {
           //print(acController.isSubLoading.value);
 
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
@@ -86,6 +87,8 @@ class AccommodationScreen extends StatelessWidget {
                                 padding: const EdgeInsets.only(
                                     left: 24, right: 24, top: 7),
                                 child: CustomDropdown.search(
+                                  closedFillColor: Colors.white,
+                                  expandedFillColor: Colors.white,
                                   initialItem:
                                       acController.orgNatCountry.value != ""
                                           ? acController.orgNatCountry.value
@@ -143,6 +146,8 @@ class AccommodationScreen extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.only(left: 24, right: 24),
                                 child: CustomDropdown.search(
+                                  closedFillColor: Colors.white,
+                                  expandedFillColor: Colors.white,
                                   initialItem:
                                       acController.orgDestination.value != ""
                                           ? acController.orgDestination.value
@@ -209,7 +214,7 @@ class AccommodationScreen extends StatelessWidget {
                                     left: 24, right: 24, top: 7),
                                 child: Container(
                                   decoration: BoxDecoration(
-                                      color: ColorConstant.white,
+                                      color: Colors.white,
                                       border:
                                           Border.all(color: ColorConstant.grey),
                                       borderRadius: BorderRadius.circular(10)),
@@ -290,7 +295,7 @@ class AccommodationScreen extends StatelessWidget {
                                           //showBottomSheet(context, acController);
                                         },
                                         child: Container(
-                                          color: Colors.transparent,
+                                          color: Colors.white,
                                           width: 160,
                                           child: Column(
                                             crossAxisAlignment:

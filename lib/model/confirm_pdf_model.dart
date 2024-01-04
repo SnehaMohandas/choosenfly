@@ -18,11 +18,11 @@ class ConfirmPdfModel {
   int type;
   int senttype;
   int sentfiletype;
-  String referenceCode;
-  String bookingCode;
+  dynamic referenceCode;
+  dynamic bookingCode;
   dynamic hotelmails;
-  String employeemails;
-  String agentmail;
+  dynamic employeemails;
+  dynamic agentmail;
   String agentname;
   String subemployeemails;
   String mainAgentName;

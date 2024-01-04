@@ -643,7 +643,7 @@ class RoomDetails2 extends StatelessWidget {
                                   const EdgeInsets.only(left: 26, right: 26),
                               child: Container(
                                 decoration: BoxDecoration(
-                                    color: ColorConstant.white,
+                                    color: Colors.transparent,
                                     border:
                                         Border.all(color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),

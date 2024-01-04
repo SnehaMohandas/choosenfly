@@ -17,8 +17,11 @@ class ReqConfirmScreen extends StatelessWidget {
       required this.bookingstatus,
       required this.hotelbookingidPriceRef,
       required this.apiType,
-      required this.hotelNmae});
+      required this.hotelNmae,
+      required this.hotelbookingId});
   final bookingId;
+  final hotelbookingId;
+
   final bookingstatus;
   final hotelbookingidPriceRef;
   final apiType;
@@ -41,25 +44,20 @@ class ReqConfirmScreen extends StatelessWidget {
           var bookingVcontroller = Get.put(BookingVoucherController());
 
           return Scaffold(
+            resizeToAvoidBottomInset: false,
             floatingActionButton: FloatingActionButton(
               backgroundColor: ColorConstant.lightBlue,
               onPressed: () async {
                 if (reqController.selectedValue.value == "Request") {
                   await bookingVcontroller.fetchRequestPdf(
-                      reqController.requestModel![0].hotelBookingDtoList[0]
-                          .hotelbookingId,
-                      bookingId);
+                      hotelbookingId, bookingId);
                 } else if (reqController.selectedValue.value ==
                     "Confirmation") {
                   await bookingVcontroller.fetchConfirmPdf(
-                      reqController.confirmModel!.bookingDetails
-                          .hotelBookingDtoList[0].hotelbookingId,
-                      bookingId);
+                      hotelbookingId, bookingId);
                 } else {
                   await bookingVcontroller.fetchVoucherPdf(
-                      reqController.voucherModel![0].hotelBookingDtoList[0]
-                          .hotelbookingId,
-                      bookingId);
+                      hotelbookingId, bookingId);
                 }
 
                 Get.to(
@@ -74,9 +72,7 @@ class ReqConfirmScreen extends StatelessWidget {
                           //         : reqController.confirmModel!.bookingDetails
                           //             .hotelBookingDtoList[0].hotelbookingId,
                           // bookingId: bookingId,
-                          hotelName: reqController.voucherModel![0]
-                                  .hotelBookingDtoList[0].hotelname ??
-                              "",
+                          hotelName: hotelNmae,
                         ),
                     transition: Transition.rightToLeftWithFade);
               },
@@ -121,7 +117,7 @@ class ReqConfirmScreen extends StatelessWidget {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -194,21 +190,29 @@ class ReqConfirmScreen extends StatelessWidget {
                                           // ),
                                           Expanded(
                                             child: Center(
-                                              child: Text(
-                                                reqController
-                                                        .voucherModel![0]
-                                                        .hotelBookingDtoList[0]
-                                                        .hotelname ??
-                                                    hotelNmae ??
-                                                    "",
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    color:
-                                                        ColorConstant.lightBlue,
-                                                    fontSize: 16.5),
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10),
+                                                child: Text(
+                                                  reqController
+                                                          .voucherModel![0]
+                                                          .hotelBookingDtoList[
+                                                              0]
+                                                          .hotelname ??
+                                                      hotelNmae ??
+                                                      "",
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                  textAlign: TextAlign.center,
+                                                  style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color: ColorConstant
+                                                          .lightBlue,
+                                                      fontSize: 16.5),
+                                                ),
                                               ),
                                             ),
                                           ),
@@ -851,6 +855,7 @@ class ReqConfirmScreen extends StatelessWidget {
           child: Form(
             key: formKey,
             child: AlertDialog(
+              scrollable: true,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               title: const Text('Add Price Reference',
@@ -888,17 +893,23 @@ class ReqConfirmScreen extends StatelessWidget {
                               ColorConstant.primaryColor)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          Navigator.of(context).pop();
-
                           await reqController.priceRefChange(
                               hotelbookingidPriceRef,
                               priceController.text,
                               apiType);
+                          Navigator.of(context).pop();
                         }
                       },
-                      child: const Text(
-                        "  Add  ",
-                        style: TextStyle(color: ColorConstant.white),
+                      child: Obx(
+                        () => reqController.isAdding.value == true
+                            ? Text(
+                                "  Adding...  ",
+                                style: TextStyle(color: ColorConstant.white),
+                              )
+                            : Text(
+                                "  Add  ",
+                                style: TextStyle(color: ColorConstant.white),
+                              ),
                       )),
                 )
               ],
@@ -926,6 +937,7 @@ class ReqConfirmScreen extends StatelessWidget {
           child: Form(
             key: formKey,
             child: AlertDialog(
+              scrollable: true,
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               title: const Text('Add Supplier Reference',
@@ -963,17 +975,23 @@ class ReqConfirmScreen extends StatelessWidget {
                               ColorConstant.primaryColor)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
-                          Navigator.of(context).pop();
-
                           await reqController.priceRefChange(
                               hotelbookingidPriceRef,
                               supplierController.text,
                               apiType);
+                          Navigator.of(context).pop();
                         }
                       },
-                      child: const Text(
-                        "  Add  ",
-                        style: TextStyle(color: ColorConstant.white),
+                      child: Obx(
+                        () => reqController.isAdding.value == true
+                            ? Text(
+                                "  Adding...  ",
+                                style: TextStyle(color: ColorConstant.white),
+                              )
+                            : Text(
+                                "  Add  ",
+                                style: TextStyle(color: ColorConstant.white),
+                              ),
                       )),
                 )
               ],

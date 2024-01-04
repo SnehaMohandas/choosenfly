@@ -25,7 +25,7 @@ class ReqConfirmController extends GetxController {
   var timePeriod = "".obs;
 
   var isLoading = true.obs;
-
+  var isNoNet = false.obs;
   fetchVoucherDetails() async {
     print(bookingId);
     try {
@@ -33,7 +33,7 @@ class ReqConfirmController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/voucherDetailsAPIout?bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = voucherModelFromJson(response.body);
@@ -42,10 +42,13 @@ class ReqConfirmController extends GetxController {
         print("detaillsss==>${voucherModel}");
         await fetchConfirmDetails();
         await fetchRequestDetails();
+      } else {
+        isNoNet.value = true;
       }
+      isLoading.value = false;
     } catch (e) {
     } finally {
-      isLoading.value = false;
+      //isLoading.value = false;
     }
   }
 
@@ -55,7 +58,7 @@ class ReqConfirmController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/confirmationDetailsAPIout?bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       print(response.statusCode);
       if (response.statusCode == 200) {
         print("object");
@@ -76,7 +79,7 @@ class ReqConfirmController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/requestDetailspdfAPIout?id=${bookingId}&bookingType=${bookingStatus}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       print(response.statusCode);
       if (response.statusCode == 200) {
         print("object");
@@ -92,17 +95,20 @@ class ReqConfirmController extends GetxController {
   ///price reference
   //var priceRef = "".obs;
 
+  var isAdding = false.obs;
+
   priceRefChange(
     bookingIdPR,
     code,
     apiType,
   ) async {
     try {
+      isAdding.value = true;
       //isLoading.value = true;
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       print(response.statusCode);
       if (response.statusCode == 200) {
         print("detaillsss==>${response.body}");
@@ -110,32 +116,38 @@ class ReqConfirmController extends GetxController {
         await fetchVoucherDetails();
       }
     } catch (e) {
-    } finally {}
+    } finally {
+      isAdding.value = false;
+    }
   }
 
   //supplier reference
   //var supplierRef = "".obs;
 
-  supplierRefChange(
-    bookingIdPR,
-    code,
-    apiType,
-  ) async {
-    try {
-      //isLoading.value = true;
-      var response = await http.get(
-          Uri.parse(
-              "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
-      print(response.statusCode);
-      if (response.statusCode == 200) {
-        print("detaillsss==>${response.body}");
-        // Fluttertoast.showToast(msg: "Removed from cart");
-        await fetchVoucherDetails();
-      }
-    } catch (e) {
-    } finally {}
-  }
+  // supplierRefChange(
+  //   bookingIdPR,
+  //   code,
+  //   apiType,
+  // ) async {
+  //   try {
+  //     isAdding.value = true;
+
+  //     //isLoading.value = true;
+  //     var response = await http.get(
+  //         Uri.parse(
+  //             "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
+  //         headers: {'apikey': header});
+  //     print(response.statusCode);
+  //     if (response.statusCode == 200) {
+  //       print("detaillsss==>${response.body}");
+  //       // Fluttertoast.showToast(msg: "Removed from cart");
+  //       await fetchVoucherDetails();
+  //     }
+  //   } catch (e) {
+  //   } finally {
+  //     isAdding.value = false;
+  //   }
+  // }
 
   @override
   void onInit() {

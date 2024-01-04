@@ -1,6 +1,9 @@
 import 'package:choose_n_fly/model/destination_model.dart';
 import 'package:choose_n_fly/model/native_model.dart';
+import 'package:choose_n_fly/utils/common_fctn.dart';
 import 'package:choose_n_fly/utils/consts.dart';
+import 'package:choose_n_fly/view/home/Home%20Page.dart';
+import 'package:choose_n_fly/view/login/login_screen.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -18,7 +21,7 @@ class SplashController extends GetxController {
 
       var response = await http.get(
           Uri.parse("${baseUrl}custom/destinationAPIout?term=${searchKey}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = destinationModelFromJson(response.body);
@@ -48,7 +51,7 @@ class SplashController extends GetxController {
     try {
       var response = await http.get(
           Uri.parse("${baseUrl}custom/nationalityAPIout"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         var data = nativeModelFromJson(response.body);
@@ -71,9 +74,44 @@ class SplashController extends GetxController {
     }
   }
 
+  splashOn() {
+    Future.delayed(
+      const Duration(seconds: 4),
+      () async {
+        name = await CommonFunction.getSavedKey('username');
+        token = await CommonFunction.getSavedKey('token');
+        userId = await CommonFunction.getSavedKey('userId');
+        companyName = await CommonFunction.getSavedKey('companyName');
+        agentProfile = await CommonFunction.getSavedKey('profileImage');
+
+        print("useridd==>${userId}");
+        FetchDestination("");
+        //print(' ------$name');
+        if (name == null) {
+          Get.offAll(SignInPage());
+        } else {
+          print(token);
+          Get.offAll(HomeScreen());
+
+          // checkToken();
+        }
+      },
+    );
+  }
+
+//   checkToken()async{
+//     checkTokenModel = await HttpServices.checkToken(token);
+//     if(checkTokenModel != null && checkTokenModel!.status == true){
+//       Get.to(BottomNavigationScreen());
+//     }else{
+//       Get.offAll( LoginSignupSelectionScreen());
+//     }
+
+// }
   @override
   void onInit() {
-    FetchDestination("");
+    splashOn();
+    // FetchDestination("");
     super.onInit();
   }
 }

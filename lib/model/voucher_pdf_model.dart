@@ -13,22 +13,22 @@ String voucherPdfModelToJson(VoucherPdfModel data) =>
 class VoucherPdfModel {
   String filepath;
   String filelocationServer;
-  String hotelname;
-  int hotelbookingid;
-  int type;
-  int senttype;
-  int sentfiletype;
-  String referenceCode;
-  String bookingCode;
+  dynamic hotelname;
+  dynamic hotelbookingid;
+  dynamic type;
+  dynamic senttype;
+  dynamic sentfiletype;
+  dynamic referenceCode;
+  dynamic bookingCode;
   dynamic hotelmails;
-  String employeemails;
-  String agentmail;
-  String agentname;
-  String subemployeemails;
-  String mainAgentName;
-  String mainAgentProfile;
-  int mainAgentId;
-  String mainagentMail;
+  dynamic employeemails;
+  dynamic agentmail;
+  dynamic agentname;
+  dynamic subemployeemails;
+  dynamic mainAgentName;
+  dynamic mainAgentProfile;
+  dynamic mainAgentId;
+  dynamic mainagentMail;
   dynamic mobile;
 
   VoucherPdfModel({
@@ -79,7 +79,7 @@ class VoucherPdfModel {
   Map<String, dynamic> toJson() => {
         "filepath": filepath,
         "filelocationServer": filelocationServer,
-        "hotelname": hotelname,
+        "hotelname": hotelname ?? "",
         "hotelbookingid": hotelbookingid,
         "type": type,
         "senttype": senttype,

@@ -143,7 +143,7 @@ class BookingInnController extends GetxController {
       var response = await http.get(
           Uri.parse(
               "${baseUrl}custom/bookingdetailsViewAPIout?bookingid=${bookingId}"),
-          headers: {'apikey': 'CONNECTWORLD123'});
+          headers: {'apikey': header});
       if (response.statusCode == 200) {
         print("object");
         print(response.body);

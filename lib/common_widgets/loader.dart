@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 Widget loader() {
-  return SpinKitFadingFour(
+  return SpinKitCircle(
     //  shape: BoxShape.circle,
     itemBuilder: (BuildContext context, int index) {
       return Container(

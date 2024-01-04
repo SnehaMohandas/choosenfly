@@ -115,7 +115,9 @@ class BookingVoucher extends StatelessWidget {
                     ),
                     child: Center(
                       child: Text(hotelName,
+                          maxLines: 1,
                           style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
                               color: ColorConstant.lightBlue,
                               fontWeight: FontWeight.bold,
                               fontSize:

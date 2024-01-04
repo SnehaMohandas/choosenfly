@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:choose_n_fly/common_widgets/loader.dart';
 import 'package:choose_n_fly/network/network_controller.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
+import 'package:choose_n_fly/view/booking_details/controller/booking_d_controller.dart';
 import 'package:choose_n_fly/view/booking_details/controller/booking_inn_controller.dart';
 import 'package:choose_n_fly/view/booking_details/guest_dtail_edit.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +24,7 @@ class BookingInnerpage extends StatelessWidget {
     required this.deadlineDate,
     required this.paymentStatus,
     required this.totalMount,
+    required this.selectedStatus,
   });
   final bookingId;
   final hotelName;
@@ -35,6 +37,7 @@ class BookingInnerpage extends StatelessWidget {
   final checkOut;
   final totalMount;
   final paymentStatus;
+  final selectedStatus;
   // final customerName;
   final NetworkController networkController = Get.find<NetworkController>();
 
@@ -143,14 +146,14 @@ class BookingInnerpage extends StatelessWidget {
                                                 ],
                                                 begin: Alignment.bottomCenter,
                                                 end: Alignment.topCenter),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.5),
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 8,
-                                                  spreadRadius: 1)
-                                            ],
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.grey
+                                            //           .withOpacity(0.5),
+                                            //       offset: Offset(0, 1),
+                                            //       blurRadius: 8,
+                                            //       spreadRadius: 1)
+                                            // ],
                                           ),
                                           child: Center(
                                               child: Padding(
@@ -158,6 +161,7 @@ class BookingInnerpage extends StatelessWidget {
                                                 horizontal: 18),
                                             child: Text(
                                               hotelName,
+                                              maxLines: 2,
                                               style: TextStyle(
                                                   overflow:
                                                       TextOverflow.ellipsis,
@@ -255,14 +259,14 @@ class BookingInnerpage extends StatelessWidget {
                                               Color.fromARGB(255, 218, 237, 241)
                                             ]),
 
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.4),
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 10,
-                                                  spreadRadius: 2)
-                                            ],
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.grey
+                                            //           .withOpacity(0.4),
+                                            //       offset: Offset(0, 1),
+                                            //       blurRadius: 10,
+                                            //       spreadRadius: 2)
+                                            // ],
                                             // color: Color.fromARGB(255, 167, 162, 231)
                                             //color: Color.fromARGB(255, 212, 233, 239),
                                           ),
@@ -669,14 +673,14 @@ class BookingInnerpage extends StatelessWidget {
                                                 255, 234, 236, 236),
 
                                             //  color: Color.fromARGB(255, 231, 230, 230),
-                                            boxShadow: [
-                                              BoxShadow(
-                                                  color: Colors.grey
-                                                      .withOpacity(0.2),
-                                                  offset: Offset(0, 1),
-                                                  blurRadius: 10,
-                                                  spreadRadius: 2)
-                                            ],
+                                            // boxShadow: [
+                                            //   BoxShadow(
+                                            //       color: Colors.grey
+                                            //           .withOpacity(0.2),
+                                            //       offset: Offset(0, 1),
+                                            //       blurRadius: 10,
+                                            //       spreadRadius: 2)
+                                            // ],
                                             // color: Color.fromARGB(255, 238, 238, 239),
                                           ),
                                           child: Padding(
@@ -1223,31 +1227,36 @@ class BookingInnerpage extends StatelessWidget {
                                                   .height *
                                               0.02,
                                         ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.05,
-                                          decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(13)),
-                                          child: ElevatedButton(
-                                              style: const ButtonStyle(
-                                                  backgroundColor:
-                                                      MaterialStatePropertyAll(
-                                                          ColorConstant.white)),
-                                              onPressed: () {
-                                                cancelDialogue(context);
-                                              },
-                                              child: const Text(
-                                                  "Cancel Booking",
-                                                  style: TextStyle(
-                                                      color: ColorConstant
-                                                          .primaryColor,
-                                                      fontWeight:
-                                                          FontWeight.bold))),
-                                        )
+                                        selectedStatus == "1"
+                                            ? Container(
+                                                width: double.infinity,
+                                                height: MediaQuery.of(context)
+                                                        .size
+                                                        .height *
+                                                    0.05,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            13)),
+                                                child: ElevatedButton(
+                                                    style: const ButtonStyle(
+                                                        backgroundColor:
+                                                            MaterialStatePropertyAll(
+                                                                ColorConstant
+                                                                    .white)),
+                                                    onPressed: () {
+                                                      cancelDialogue(context);
+                                                    },
+                                                    child: const Text(
+                                                        "Cancel Booking",
+                                                        style: TextStyle(
+                                                            color: ColorConstant
+                                                                .primaryColor,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold))),
+                                              )
+                                            : SizedBox()
                                       ],
                                     ),
                                   ),
@@ -1284,8 +1293,9 @@ class BookingInnerpage extends StatelessWidget {
               ),
               ElevatedButton(
                   style: const ButtonStyle(
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(10)))),
+                      // shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      //     borderRadius: BorderRadius.all(Radius.circular(10)))
+                      //     ),
                       backgroundColor:
                           MaterialStatePropertyAll(ColorConstant.primaryColor)),
                   onPressed: () {

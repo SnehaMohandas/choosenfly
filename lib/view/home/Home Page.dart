@@ -18,7 +18,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class HomeScreen extends StatelessWidget {
   HomeScreen({Key? key}) : super(key: key);
 
-  final NetworkController networkController = Get.find<NetworkController>();
+  final NetworkController networkController = Get.put(NetworkController());
 
   int selectedTabIndex = 0;
 
