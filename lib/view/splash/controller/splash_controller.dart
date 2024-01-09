@@ -1,5 +1,6 @@
 import 'package:choose_n_fly/model/destination_model.dart';
 import 'package:choose_n_fly/model/native_model.dart';
+import 'package:choose_n_fly/network/network_controller.dart';
 import 'package:choose_n_fly/utils/common_fctn.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
@@ -14,8 +15,10 @@ class SplashController extends GetxController {
   List<NativeModel>? nativeModel;
   List native = [].obs;
   var exceptionCatched = false.obs;
+  final NetworkController networkController = Get.find<NetworkController>();
 
   FetchDestination(searchKey) async {
+    print("destinationcalledddd----------->");
     try {
       var exceptionCatched = false.obs;
 
@@ -41,10 +44,10 @@ class SplashController extends GetxController {
       }
 
       await FetchNative();
-    } catch (e) {
-    } finally {
       isLoading.value = false;
-    }
+      print("lloollll==>${isLoading.value}");
+    } catch (e) {
+    } finally {}
   }
 
   FetchNative() async {
@@ -69,6 +72,7 @@ class SplashController extends GetxController {
         print("000000");
       }
     } catch (e) {
+      print(e);
     } finally {
       // isLoading.value = false;
     }
@@ -76,7 +80,7 @@ class SplashController extends GetxController {
 
   splashOn() {
     Future.delayed(
-      const Duration(seconds: 4),
+      const Duration(seconds: 6),
       () async {
         name = await CommonFunction.getSavedKey('username');
         token = await CommonFunction.getSavedKey('token');
@@ -85,11 +89,18 @@ class SplashController extends GetxController {
         agentProfile = await CommonFunction.getSavedKey('profileImage');
 
         print("useridd==>${userId}");
-        FetchDestination("");
-        //print(' ------$name');
+
+        // if (!networkController.isConnected.value) {
+        //   isNoNet.value = true;
+        //   print("nonetttt${isNoNet}");
+        // } else {
+        //   isNoNet.value = false;
+        //   print("elseee${isNoNet}");
+        // }
+
         if (name == null) {
           Get.offAll(SignInPage());
-        } else {
+        } else if (name != null) {
           print(token);
           Get.offAll(HomeScreen());
 
@@ -108,6 +119,8 @@ class SplashController extends GetxController {
 //     }
 
 // }
+
+  // var isNoNet = false.obs;
   @override
   void onInit() {
     splashOn();

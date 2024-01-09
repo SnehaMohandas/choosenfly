@@ -11,7 +11,8 @@ import 'package:http/http.dart' as http;
 class RoomController2 extends GetxController {
   String nightCount;
   AccomodationController acController;
-  RoomController2(this.nightCount, this.acController);
+  String hotelCode;
+  RoomController2(this.nightCount, this.acController, this.hotelCode);
 
   var isInteriorClicked = true.obs;
   var interiorIndex = "1".obs;
@@ -38,22 +39,7 @@ class RoomController2 extends GetxController {
 
   List<String> courtesy2 = ["Mr.", "Mrs", "Ms", "Master"];
 
-  // List<List<String>> courtesy2 = [
-  //   //  "Mr.", "Mrs", "Ms", "Master"
-  //   ["Mr.", "1"],
-  //   [
-  //     "Mrs.",
-  //     "2",
-  //   ],
-  //   ["Ms", "3"],
-  //   ["Master", "4"]
-  // ];
-  List<String> courtesy1 = [
-    "Mr.", "Mrs.", "Ms."
-    // ["Mr."],
-    // ["Mrs."],
-    // ["Ms"]
-  ];
+  List<String> courtesy1 = ["Mr.", "Mrs.", "Ms."];
 
   List<String> gender = ["Male", "Female"];
   var selectedcourtesy1 = "Mr.".obs;
@@ -182,112 +168,395 @@ class RoomController2 extends GetxController {
   var isSearchModify = false.obs;
   List<List> allAgeOrgs = [];
 
-  //accomodationdetail post
-  //=============================
-
-  // final ckeckinfromAc;
-  // final checkoutfromAc;
-  // final nativeCountryidfromAc;
-  // final noOfroomfromAc;
-  // final searchcityidfromAc;
-  //final searchcityTypefromAc
-
   var accommodationDetails;
 
-  var isLoading = true.obs;
-  late final jsonEncodeResponse;
-  var checkino;
+  //for cancellation policy
 
-  List roomT = [];
+  var atharvaroomDetail;
+  var iwtxRoomDetail;
+  var iwtxAgeDetail;
 
-  var selectedRoomCategory = ''.obs;
-  var totalRate = "".obs;
+//'''''''''''''''''''''''''
+// cancellation policy
+//''''''''''''''''''''''''''''
 
-  var data = {
-    "checkIn": "01/02/2024",
-    "checkOut": "02/02/2024",
-    "native_country_id": "2",
-    "noOfRooms": "1",
-    "countStart": 0,
-    "id": 0,
-    "countLast": "4",
-    "agent_id": "564",
-    "searchCityorCountry_id": "0~235~3",
-    "searchCorCtype": "State",
-    "searchRoomDTO": [
-      {"roomcount": 1, "adult": "1", "child": "0", "childAge": []}
-    ],
-    "destinationHotel": "Dubai - United Arab Emirates",
-    "startDate": "20231230",
-    "endDate": "20231231",
-    "hotelCode": "259-284294",
-    "nationality": "FR",
-    "groupByRooms": "Y",
-    "cancellationPolicy": "Y",
-    "room": [
-      {
-        "adult": [
-          {"age": 25},
-          {"age": 25}
-        ]
+  List cancelPolicy = [
+    "Cancellations made 15 or more days before check in date will be free.",
+    "Cancellations made more than 7 days in advance but less than 15 days will incur a cancellation charge of 1 nights tariff.",
+    "No shows and cancellations made 0 to 7 days in advance will incur 100% charge of the booking.",
+    "In case of a full refund on cancellation, there will be a deduction of approximately 5.7% as payment processing charges."
+  ];
+  atharvaCancelPolicy() async {
+    var parsedCheckin;
+    var parsedCheckOut;
+    if (newCheckinDate.value != "" &&
+        newCheckoutDate.value != "" &&
+        isDateShown.value == true) {
+      parsedCheckin = newCheckinDate.value;
+      parsedCheckOut = newCheckoutDate.value;
+    } else {
+      parsedCheckin = acController.orgnewChekin.value;
+      parsedCheckOut = acController.orgnewChekout.value;
+    }
+    var atharvaData = await {
+      "CityId": acController.orgDesCode.value,
+      "NationalityId": acController.orgNativeCode.value,
+      "CheckInDate":
+          "${DateFormat('yyyy-MM-dd').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckin))}",
+      "CheckOutDate":
+          "${DateFormat('yyyy-MM-dd').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckOut))}",
+      "HCode": "DXB9891108",
+      "VoucherBooking": "false",
+      "TokenId":
+          "77f467af-978e-4952-a25f-a1943b4618b8~!^~JWVNHw7MwLZ3I/slypsn61JDML+MaI9esBcCQJlHkbdrKsz7N6KyHumS/hF4e6O4+Uz5AUpSjZlzgWoNZ7LWBA==",
+      "HKey":
+          "tWrEobmjNTKLzD2aWWm9BQElOCzl7rTfK6csL+UEREZ5WRVDlctDDw32qzsUrfll/m6G0K7SAdcWnFZZAuM1gyTDobw798Op1bzTemakll7FgUyT+eebFvQldAZMJ+pd",
+      "RoomDetail": newRoomCount.value != ""
+          ? atharvaroomDetail
+          : acController.atharvaroomDetailOrg
+    };
+
+    print("theatharva dataaa--------==>${atharvaData}");
+
+    // var response=await  http.post(Uri.parse("${baseUrl}custom/atharva/hotelPreBooking?type=policy"),
+    // headers: {
+    //   "apikey":header
+    // },
+    // body: atharvaData);
+
+    // if(response.statusCode==200){
+
+    // }
+    // else{
+
+    // }
+  }
+
+  iwtxCancelPolicy() async {
+    var parsedCheckin;
+    var parsedCheckOut;
+    if (newCheckinDate.value != "" &&
+        newCheckoutDate.value != "" &&
+        isDateShown.value == true) {
+      parsedCheckin = newCheckinDate.value;
+      parsedCheckOut = newCheckoutDate.value;
+    } else {
+      parsedCheckin = acController.orgnewChekin.value;
+      parsedCheckOut = acController.orgnewChekout.value;
+    }
+    var iwtxData = await {
+      "room": newRoomCount.value != ""
+          ? iwtxAgeDetail
+          : acController.iwtxAgedetailOrg,
+      "startDate":
+          "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckin))}",
+      "endDate":
+          "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckOut))}",
+      "nationality": acController.orgNativeCode.value,
+      "groupByRooms": "Y",
+      "cancellationPolicy": "Y",
+      "hotelCode": "101-355",
+      "searchRoomDTOs": newRoomCount.value != ""
+          ? iwtxRoomDetail
+          : acController.iwtxRoomdetailOrg
+    };
+
+    print("theiwtx dataaa--------==>${iwtxData}");
+
+    // var response = await http.post(
+    //     Uri.parse("${baseUrl}custom/iwtx/hotelSearch"),
+    //     headers: {"apikey": header},
+    //     body: iwtxData);
+
+    // if (response.statusCode == 200) {
+    // } else {}
+  }
+
+  //''''''''''''''''''''''''''''''''''
+//'''''''''''''''''''''''''''''
+
+//fetchroom type if room details or date changed
+
+  List roomCategory = [].obs;
+
+  var selectedRoomCategory = "".obs;
+  var selectedRoomCategoryId = "".obs;
+  var selectedRoomCategoryRate = "".obs;
+  var isRoomtypeLoading = true.obs;
+
+  fetchRoomTypeidEdited() async {
+    print("Godddddddddddddddd${accommodationDetails}");
+    isRoomtypeLoading.value = true;
+    //adult agedata raw 1
+    List<Map<String, dynamic>> adultAgeData = [];
+    adultAgeData.clear();
+
+    var length = newRoomCount.value != ""
+        ? newRoomCount.value
+        : acController.orgRoomcount.value;
+
+    for (int i = 0; i < int.parse(length); i++) {
+      List<Map<String, dynamic>> adultList = [];
+      adultList.clear();
+      for (int j = 0;
+          j <
+              int.parse(newRoomCount.value != ""
+                  ? accommodationDetails[i]["NoOfAdult"]
+                  : acController.orgAccomodationDetails[i]["NoOfAdult"]);
+          j++) {
+        adultList.add({"age": 25});
       }
-    ]
-  };
 
-  RoomDetailJumerah() async {
-    isLoading.value = true;
-    roomT = [];
-    // checkino = isDateShown.value == true
-    //     ? newCheckinDate.value
-    //     // : acController.isDateShown.value == true
-    //     //     ? acController.newCheckinDate.value
-    //     : acController.orgnewChekin.value != ""
-    //         ? acController.orgnewChekin.value
-    //         : acController.isSearchtapped.value == true
-    //             ? acController.newCheckinDate.value
-    //             : "";
-    var response = await http.post(
-        Uri.parse("${baseUrl}custom/jumeirah/hotelRooms?hotelCode=JCH"),
-        headers: {
-          'apikey': header,
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(data));
-    if (response.statusCode == 200) {
-      print(response.statusCode);
-      isLoading.value = true;
-      var roomdata1 = roomModelFromJson(response.body);
-      roomModel = roomdata1;
-      print(roomModel);
-      // print(r)
+      adultAgeData.add({
+        "adult": adultList,
+      });
+    }
 
-      var data = json.decode(response.body);
-      print(data);
+    print("rawdataaa==>${adultAgeData}");
 
-      if (data[0]["searchHotelRoomsDTOList"] != []) {
-        roomT = data[0]["searchHotelRoomsDTOList"];
+    //===================
 
-        print(roomT[1]);
-        if (roomT.isNotEmpty) {
-          // Set initial values based on the first index of roomT
-          Map<String, dynamic> firstRoom = roomT[0];
-          // selectedRoomCategory.value = firstRoom['roomCategory'].toString();
-          totalRate.value = firstRoom['totalRate'].toString();
+//child and adult age data raw 2
+
+    List<Map<String, dynamic>> childnAdultAge = [];
+    childnAdultAge.clear();
+    var length1 = newRoomCount.value != ""
+        ? newRoomCount.value
+        : acController.orgRoomcount.value;
+
+    for (int i = 0; i < int.parse(length1); i++) {
+      // List<Map<String, dynamic>> adultList = [];
+      List<int> adultList = [];
+
+      for (int j = 0;
+          j <
+              int.parse(newRoomCount.value != ""
+                  ? accommodationDetails[i]["NoOfAdult"]
+                  : acController.orgAccomodationDetails[i]["NoOfAdult"]);
+          j++) {
+        adultList.add(25);
+      }
+
+      List<int> childAges = [];
+
+      for (int k = 0;
+          k <
+              int.parse(newRoomCount.value != ""
+                  ? accommodationDetails[i]["NoOfChild"]
+                  : acController.orgAccomodationDetails[i]["NoOfChild"]);
+          k++) {
+        if (newRoomCount.value != ""
+            ? accommodationDetails[i]["ChildAges"] != []
+            : acController.orgAccomodationDetails[i]["ChildAges"] != []) {
+          childAges.add(int.parse(newRoomCount.value != ""
+              ? accommodationDetails[i]["ChildAges"][k].toString()
+              : acController.orgAccomodationDetails[i]["ChildAges"][k]
+                  .toString()));
         }
       }
 
-      // print(roomT[0]);
+      childnAdultAge.add({
+        "childAge": childAges,
+        "adultAge": adultList,
+      });
     }
-    try {} catch (e) {
-    } finally {
-      isLoading.value = false;
+    print("childadageee--->${childnAdultAge}");
+
+//=========================
+
+//searchroomDTo raw 3
+
+    List<Map<String, dynamic>> searchRoomDTOs = [];
+    var length2 = newRoomCount.value != ""
+        ? newRoomCount.value
+        : acController.orgRoomcount.value;
+
+    for (int i = 0; i < int.parse(length2); i++) {
+      List<int> adultList2 = [];
+      adultList2.clear();
+
+      for (int j = 0;
+          j <
+              int.parse(newRoomCount.value != ""
+                  ? accommodationDetails[i]["NoOfAdult"]
+                  : acController.orgAccomodationDetails[i]["NoOfAdult"]);
+          j++) {
+        adultList2.add(25);
+      }
+
+      Map<String, dynamic> data2 = {
+        "roomcount": i + 1,
+        'adult': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfAdult"]
+            : acController.orgAccomodationDetails[i]["NoOfAdult"],
+        'child': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfChild"]
+            : acController.orgAccomodationDetails[i]["NoOfChild"],
+        "childAge": newRoomCount.value != ""
+            ? accommodationDetails[i]["ChildAges"]
+            : acController.orgAccomodationDetails[i]["ChildAges"],
+        "adultAge": adultList2,
+      };
+
+      searchRoomDTOs.add(data2);
+    }
+    print("searchroomdto====>>${searchRoomDTOs}");
+
+    ///=============================
+    ///
+    ///
+    ///
+    List<Map<String, dynamic>> dataListinHouse = [];
+
+    var length3 = newRoomCount.value != ""
+        ? newRoomCount.value
+        : acController.orgRoomcount.value;
+
+    for (int i = 0; i < int.parse(length3.toString()); i++) {
+      Map<String, dynamic> data = {
+        "roomcount": i + 1,
+        'adult': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfAdult"]
+            : acController.orgAccomodationDetails[i]["NoOfAdult"],
+        'child': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfChild"]
+            : acController.orgAccomodationDetails[i]["NoOfChild"],
+        "childAge": newRoomCount.value != ""
+            ? accommodationDetails[i]["ChildAges"]
+            : acController.orgAccomodationDetails[i]["ChildAges"],
+      };
+
+      dataListinHouse.add(data);
+    }
+//==========================
+    //body raw data
+
+    var roomData = {
+      "hotelDTO": {
+        "checkIn": newCheckinDate.value != ""
+            ? "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(newCheckinDate.value))}"
+            : "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekin.value))}",
+        "checkOut": newCheckoutDate.value != ""
+            ? "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(newCheckoutDate.value))}"
+            : "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekout.value))}",
+        "native_country_id": "${acController.orgNativeCode.value}",
+        "noOfRooms": newRoomCount.value != ""
+            ? newRoomCount.value
+            : acController.orgRoomcount.toString(),
+        "countStart": 0,
+        "id": 0,
+        "countLast": "4",
+        "agent_id": userId,
+        "searchCityorCountry_id": "${acController.orgDesCode}",
+        "searchCorCtype": "${acController.orgDesType}",
+        "searchRoomDTO": newRoomCount.value != ""
+            ? dataListinHouse
+            : acController.orginHaccDetails,
+        "destinationHotel": "${acController.orgDestination}",
+        "startDate": newCheckinDate.value != ""
+            ? "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(newCheckinDate.value))}"
+            : "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekin.value))}",
+        "endDate": newCheckoutDate.value != ""
+            ? "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(newCheckoutDate.value))}"
+            : "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekout.value))}",
+        "hotelCode": "259-284294",
+        "nationality": "${acController.orgNativeCode2.value}",
+        "groupByRooms": "Y",
+        "cancellationPolicy": "Y",
+        "room": adultAgeData
+      },
+      "iwtxDTO": {
+        "room": childnAdultAge,
+        "startDate": newCheckinDate.value != ""
+            ? "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(newCheckinDate.value))}"
+            : "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekin.value))}",
+        "endDate": newCheckoutDate.value != ""
+            ? "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(newCheckoutDate.value))}"
+            : "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekout.value))}",
+        "nationality": "${acController.orgNativeCode}",
+        "groupByRooms": "Y",
+        "cancellationPolicy": "Y",
+        "hotelCode": "137-901789",
+        "searchRoomDTOs": searchRoomDTOs,
+        "agentId": userId
+      }
+    };
+    print("rooooooooooooommediteddddd=======>${roomData}");
+
+    // ==========================
+
+    var response = await http.post(
+      Uri.parse("${baseUrl}custom/roomCategoryListAPIout"),
+      body: jsonEncode(roomData),
+      headers: {
+        'apikey': header,
+        'Content-Type': 'application/json',
+      },
+    );
+
+    roomCategory.clear();
+
+    if (response.statusCode == 200) {
+      print(hotelCode);
+      // print("roomtypeeee=====>>>${response.body}");
+
+      var jsonString = jsonDecode(response.body);
+      print(jsonString);
+      // print(
+      //     "veryy nyssss===>>${jsonString["data"][0]["inhouse_roomshotelsRooms"]["data"][1]}");
+
+      print(jsonString["data"][0]["inhouse_rooms"]["data"][1]);
+
+      List datasroom = jsonString["data"][0]["inhouse_rooms"]["data"][1];
+
+      if (datasroom.isEmpty) {
+        print("object");
+        isNoRoomAvailable.value = true;
+
+        print("no room");
+      } else {
+        for (int i = 0;
+            i < jsonString["data"][0]["inhouse_rooms"]["data"][1].length;
+            i++) {
+          var hotelData = jsonString["data"][0]["inhouse_rooms"]["data"][1][i];
+          if (hotelData["hotel_code"] == hotelCode) {
+            isNoRoomAvailable.value = false;
+
+            for (int i = 0;
+                i < hotelData["searchHotelRoomsDTOList"].length;
+                i++) {
+              roomCategory.add([
+                hotelData["searchHotelRoomsDTOList"][i]["roomCategory"],
+                hotelData["searchHotelRoomsDTOList"][i]["hotel_roomtype_id"],
+                hotelData["searchHotelRoomsDTOList"][i]["totalRate"]
+              ]);
+            }
+            if (roomCategory.isNotEmpty) {
+              selectedRoomCategory.value = roomCategory[0][0];
+              selectedRoomCategoryId.value = roomCategory[0][1].toString();
+              selectedRoomCategoryRate.value = roomCategory[0][2].toString();
+            }
+          }
+        }
+      }
+      print("cattt-->${selectedRoomCategoryId.value}");
+
+      print("success");
+
+      isRoomtypeLoading.value = false;
+    } else {
+      print("failed");
     }
   }
 
-  //=======================================
+  var isNoRoomAvailable = false.obs;
+
   @override
   void onInit() {
-    RoomDetailJumerah();
+    print("object");
+    fetchRoomTypeidEdited();
+    // atharvaCancelPolicy();
+    //iwtxCancelPolicy();
     super.onInit();
   }
 }

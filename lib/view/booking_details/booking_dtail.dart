@@ -331,6 +331,10 @@ class BookingDetail extends StatelessWidget {
                                         itemBuilder: (context, index) {
                                           return GestureDetector(
                                             onTap: () {
+                                              print(
+                                                  "bookingidoriginall===>${bookingdController.allBookingsModel!.data[index].hotelbookingId}");
+                                              print(
+                                                  "platfoemmm===>${bookingdController.allBookingsModel!.data[index].apitype}");
                                               Get.to(
                                                   () => BookingInnerpage(
                                                         bookingId:

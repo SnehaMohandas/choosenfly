@@ -648,8 +648,22 @@ class GuestDetail2 extends StatelessWidget {
                                   roomController.accommodationDetails =
                                       getEnteredData(
                                           acController, roomController);
-                                  print(roomController.accommodationDetails);
+
+                                  roomController.atharvaroomDetail =
+                                      getEnteredDataforAtharvaCancel(
+                                          acController, roomController);
+                                  roomController.iwtxRoomDetail =
+                                      getEnteredDataforiwtxCancel(
+                                          acController, roomController);
+                                  roomController.iwtxAgeDetail =
+                                      getEnteredDataforiwtxAgeCancel(
+                                          acController, roomController);
+
                                   roomController.isSubLoading.value = false;
+
+                                  // roomController.atharvaCancelPolicy();
+                                  // roomController.iwtxCancelPolicy();
+                                  roomController.fetchRoomTypeidEdited();
 
                                   Get.back();
 
@@ -746,13 +760,13 @@ class GuestDetail2 extends StatelessWidget {
     for (int i = 0; i < int.parse(length.toString()); i++) {
       print("this is childcount${roomController.ageTextControllers[i]}");
       Map<String, dynamic> data = {
-        "room no": roomController.newRoomCount.value != ""
+        "RoomSrNo": roomController.newRoomCount.value != ""
             ? (i + 1).toString()
             : 0.toString(),
-        'adult': roomController.adultDdnum[i] != 0
+        'NoOfAdult': roomController.adultDdnum[i] != 0
             ? roomController.adultDdnum[i]
             : 0.toString(),
-        'children': roomController.childDdnum[i] == 0
+        'NoOfChild': roomController.childDdnum[i] == 0
             ? 0.toString()
             : roomController.childDdnum[i] != 0
                 ? roomController.childDdnum[i]
@@ -760,9 +774,129 @@ class GuestDetail2 extends StatelessWidget {
                 //     ? acController.childDdnum[i]
                 : 0.toString(),
         if (roomController.allAgeOrgs[i].isNotEmpty)
-          "children age": roomController.allAgeOrgs[i]
+          "ChildAges": roomController.allAgeOrgs[i]
         else if (roomController.allAgeOrgs[i].isEmpty)
-          "Children age": []
+          "ChildAges": []
+
+        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+      };
+
+      dataList.add(data);
+    }
+
+    return dataList;
+  }
+
+  List<Map<String, dynamic>> getEnteredDataforAtharvaCancel(
+      AccomodationController acController, RoomController2 roomController) {
+    List<Map<String, dynamic>> dataList = [];
+
+    var length = roomController.newRoomCount.value != ""
+        ? roomController.newRoomCount.value
+        : 1;
+
+    for (int i = 0; i < int.parse(length.toString()); i++) {
+      print("this is childcount${roomController.ageTextControllers[i]}");
+      Map<String, dynamic> data = {
+        "RoomSrNo": roomController.newRoomCount.value != ""
+            ? (i + 1).toString()
+            : 0.toString(),
+        'NoOfAdult': roomController.adultDdnum[i] != 0
+            ? roomController.adultDdnum[i]
+            : 0.toString(),
+        'NoOfChild': roomController.childDdnum[i] == 0
+            ? 0.toString()
+            : roomController.childDdnum[i] != 0
+                ? roomController.childDdnum[i]
+                // : acController.childDdnum[i] != 0
+                //     ? acController.childDdnum[i]
+                : 0.toString(),
+        "RateKey": "thcttyd7egsTTu/+T5KfO0TtoK0W2Ftmi7ENr3G8Nw4=",
+        if (roomController.allAgeOrgs[i].isNotEmpty)
+          "ChildAges": roomController.allAgeOrgs[i]
+        else if (roomController.allAgeOrgs[i].isEmpty)
+          "ChildAges": []
+
+        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+      };
+
+      dataList.add(data);
+    }
+
+    return dataList;
+  }
+
+  List<Map<String, dynamic>> getEnteredDataforiwtxCancel(
+      AccomodationController acController, RoomController2 roomController) {
+    List<Map<String, dynamic>> dataList = [];
+    List adultage = [];
+    adultage.clear();
+
+    var length = roomController.newRoomCount.value != ""
+        ? roomController.newRoomCount.value
+        : 1;
+
+    for (int i = 0; i < int.parse(length.toString()); i++) {
+      print("this is childcount${roomController.ageTextControllers[i]}");
+      print("addddd${roomController.adultDdnum[0]}");
+      List<int> adultage = List.generate(
+        int.parse(roomController.adultDdnum[i]),
+        (index) => 25,
+      );
+
+      Map<String, dynamic> data = {
+        "roomcount": roomController.newRoomCount.value != ""
+            ? (i + 1).toString()
+            : 0.toString(),
+        'adult': roomController.adultDdnum[i] != 0
+            ? roomController.adultDdnum[i]
+            : 0.toString(),
+        'child': roomController.childDdnum[i] == 0
+            ? 0.toString()
+            : roomController.childDdnum[i] != 0
+                ? roomController.childDdnum[i]
+                // : acController.childDdnum[i] != 0
+                //     ? acController.childDdnum[i]
+                : 0.toString(),
+        if (roomController.allAgeOrgs[i].isNotEmpty)
+          "childAge": roomController.allAgeOrgs[i]
+        else if (roomController.allAgeOrgs[i].isEmpty)
+          "childAge": [],
+        "adultAges": adultage
+
+        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+      };
+
+      dataList.add(data);
+    }
+
+    return dataList;
+  }
+
+  List<Map<String, dynamic>> getEnteredDataforiwtxAgeCancel(
+      AccomodationController acController, RoomController2 roomController) {
+    List<Map<String, dynamic>> dataList = [];
+    List adultage = [];
+    adultage.clear();
+
+    var length = roomController.newRoomCount.value != ""
+        ? roomController.newRoomCount.value
+        : 1;
+
+    for (int i = 0; i < int.parse(length.toString()); i++) {
+      print("this is childcount${roomController.ageTextControllers[i]}");
+      print("addddd${roomController.adultDdnum[0]}");
+      List<int> adultage = List.generate(
+        int.parse(roomController.adultDdnum[i]),
+        (index) => 25,
+      );
+
+      Map<String, dynamic> data = {
+        if (roomController.allAgeOrgs[i].isNotEmpty)
+          "childAge": roomController.allAgeOrgs[i]
+        else if (roomController.allAgeOrgs[i].isEmpty)
+          "childAge": [],
+        "adultAges": adultage
 
         //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
       };

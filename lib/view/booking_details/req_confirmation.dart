@@ -496,10 +496,15 @@ class ReqConfirmScreen extends StatelessWidget {
                                                                             0]
                                                                         .pricerefernce ??
                                                                     "",
-                                                                style: TextStyle(
-                                                                    color:
-                                                                        ColorConstant
-                                                                            .red),
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Color
+                                                                      .fromARGB(
+                                                                          255,
+                                                                          76,
+                                                                          175,
+                                                                          167),
+                                                                ),
                                                               ),
                                                               GestureDetector(
                                                                   onTap: () {
@@ -856,13 +861,13 @@ class ReqConfirmScreen extends StatelessWidget {
             key: formKey,
             child: AlertDialog(
               scrollable: true,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               title: const Text('Add Price Reference',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
               content: TextFormField(
                 controller: priceController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)))),
                 validator: (value) {
@@ -902,11 +907,11 @@ class ReqConfirmScreen extends StatelessWidget {
                       },
                       child: Obx(
                         () => reqController.isAdding.value == true
-                            ? Text(
+                            ? const Text(
                                 "  Adding...  ",
                                 style: TextStyle(color: ColorConstant.white),
                               )
-                            : Text(
+                            : const Text(
                                 "  Add  ",
                                 style: TextStyle(color: ColorConstant.white),
                               ),
@@ -938,13 +943,13 @@ class ReqConfirmScreen extends StatelessWidget {
             key: formKey,
             child: AlertDialog(
               scrollable: true,
-              shape: RoundedRectangleBorder(
+              shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(20.0))),
               title: const Text('Add Supplier Reference',
                   style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
               content: TextFormField(
                 controller: supplierController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(12.0)))),
                 validator: (value) {
@@ -984,11 +989,11 @@ class ReqConfirmScreen extends StatelessWidget {
                       },
                       child: Obx(
                         () => reqController.isAdding.value == true
-                            ? Text(
+                            ? const Text(
                                 "  Adding...  ",
                                 style: TextStyle(color: ColorConstant.white),
                               )
-                            : Text(
+                            : const Text(
                                 "  Add  ",
                                 style: TextStyle(color: ColorConstant.white),
                               ),

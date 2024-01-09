@@ -4,6 +4,7 @@ import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/booking_details/booking_d_inner.dart';
 import 'package:choose_n_fly/view/booking_details/controller/booking_d_controller.dart';
 import 'package:choose_n_fly/view/calender/controller/calender_controller.dart';
+import 'package:choose_n_fly/view/coming_soon/coming_soon.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:choose_n_fly/view/home/controller/home_controller.dart';
 
@@ -83,6 +84,7 @@ class CalenderPAge extends StatelessWidget {
                               GestureDetector(
                                 onTap: () {
                                   homeController.selecedTab.value = 1;
+                                  Get.to(() => ComingSoon());
                                 },
                                 child: tabbar1(
                                     homeController, 1, "Accounts", context),

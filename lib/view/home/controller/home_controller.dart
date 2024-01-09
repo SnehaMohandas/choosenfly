@@ -24,10 +24,10 @@ class HomeController extends GetxController {
         exceptionCatched.value = true;
         print("000000");
       }
-    } catch (e) {
-    } finally {
       isLoading.value = false;
-    }
+    } catch (e) {
+      print(e);
+    } finally {}
   }
 
   @override
@@ -35,15 +35,5 @@ class HomeController extends GetxController {
     FetchWallet(agentId);
     // TODO: implement onInit
     super.onInit();
-  }
-}
-
-void login() async {
-  var respone = await http
-      .get(Uri.parse("${baseUrl}custom/agentCreditLimitAPIout?agentId=539"));
-  if (respone.statusCode == 200) {
-    print(respone.body);
-  } else {
-    print("no resonse");
   }
 }

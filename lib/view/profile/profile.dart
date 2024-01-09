@@ -23,6 +23,8 @@ class Profile extends StatelessWidget {
   showLogOut() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.clear();
+    destinationList!.clear();
+    nativeList!.clear();
     // CommonFunction.addDataToSharedPreferences('logout', 'success');
     Get.offAll(SignInPage());
     Get.delete<HomeController>();

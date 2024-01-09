@@ -5,11 +5,13 @@ import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/booking_details/booking_dtail.dart';
 import 'package:choose_n_fly/view/calender/calender.dart';
 import 'package:choose_n_fly/view/cart/cart_screen.dart';
+import 'package:choose_n_fly/view/coming_soon/coming_soon.dart';
 import 'package:choose_n_fly/view/home/Home%20widgets/Category%20Circle%20Button.dart';
 import 'package:choose_n_fly/view/home/Home%20widgets/Custom%20Status%20Card%20.dart';
 import 'package:choose_n_fly/view/accommodation/accomodation.dart';
 import 'package:choose_n_fly/view/home/controller/home_controller.dart';
 import 'package:choose_n_fly/view/profile/profile.dart';
+import 'package:choose_n_fly/view/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -75,20 +77,17 @@ class HomeScreen extends StatelessWidget {
                                         GestureDetector(
                                           onTap: () {
                                             Get.to(
-                                                () => Profile(
-                                                      // avLimit: "50000",
-                                                      // crediLimit: "300000",
-                                                      avLimit: homeController
-                                                          .walletModel!
-                                                          .availableLimit
-                                                          .toString(),
-                                                      crediLimit: homeController
-                                                          .walletModel!
-                                                          .creditlimit
-                                                          .toString(),
-                                                    ),
-                                                transition: Transition
-                                                    .leftToRightWithFade);
+                                              () => Profile(
+                                                // avLimit: "50000",
+                                                // crediLimit: "300000",
+                                                avLimit: homeController
+                                                    .walletModel!.availableLimit
+                                                    .toString(),
+                                                crediLimit: homeController
+                                                    .walletModel!.creditlimit
+                                                    .toString(),
+                                              ),
+                                            );
                                           },
                                           child: Column(
                                             crossAxisAlignment:
@@ -173,6 +172,9 @@ class HomeScreen extends StatelessWidget {
                                         GestureDetector(
                                           onTap: () {
                                             homeController.selecedTab.value = 1;
+                                            Get.to(() => ComingSoon(),
+                                                transition: Transition
+                                                    .leftToRightWithFade);
                                           },
                                           child: tabbar1(homeController, 1,
                                               "Accounts", context),
@@ -215,7 +217,11 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Get.to(() => ComingSoon(),
+                                              transition: Transition
+                                                  .leftToRightWithFade);
+                                        },
                                         child: CategoryCircleBtn(
                                           imagePath: 'assets/images/flight.png',
                                           text: 'Flights',
@@ -226,7 +232,11 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Get.to(() => ComingSoon(),
+                                              transition: Transition
+                                                  .leftToRightWithFade);
+                                        },
                                         child: CategoryCircleBtn(
                                           imagePath:
                                               'assets/images/transfer.png',
@@ -238,7 +248,11 @@ class HomeScreen extends StatelessWidget {
                                         ),
                                       ),
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Get.to(() => ComingSoon(),
+                                              transition: Transition
+                                                  .leftToRightWithFade);
+                                        },
                                         child: CategoryCircleBtn(
                                           imagePath: 'assets/images/tours.png',
                                           text: 'Tours and Activity',
@@ -262,7 +276,11 @@ class HomeScreen extends StatelessWidget {
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       InkWell(
-                                        onTap: () {},
+                                        onTap: () {
+                                          Get.to(() => ComingSoon(),
+                                              transition: Transition
+                                                  .leftToRightWithFade);
+                                        },
                                         child: CategoryCircleBtn(
                                           imagePath:
                                               'assets/images/holiday_pkg.png',
@@ -475,6 +493,7 @@ class HomeScreen extends StatelessWidget {
           ),
         );
       } else {
+        // Get.find<SplashController>().isNoNet.value = true;
         return networkController.noDataImage(context);
       }
     });

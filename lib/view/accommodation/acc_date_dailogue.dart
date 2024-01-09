@@ -231,23 +231,25 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                           backgroundColor: MaterialStatePropertyAll(
                               ColorConstant.primaryColor)),
                       onPressed: () {
-                        if (acController.checkInDate.value == "") {
-                          acController.ischeckInError.value = true;
-                        } else if (acController.checkOutDate.value == "") {
-                          acController.ischeckOutError.value = true;
-                        } else if (acController.nitController.text == "0" ||
-                            acController.nitController.text == "") {
-                          acController.isnightError.value = true;
-                        } else {
-                          acController.newCheckinDate.value =
-                              acController.checkInDate.value;
-                          acController.newCheckoutDate.value =
-                              acController.checkOutDate.value;
-                          acController.isnightError.value = false;
-                          acController.isDateShown.value = true;
+                        // if (acController.checkInDate.value == "") {
+                        //   acController.ischeckInError.value = true;
+                        // } else if (acController.checkOutDate.value == "") {
+                        //   acController.ischeckOutError.value = true;
+                        // } else if (acController.nitController.text == "0" ||
+                        //     acController.nitController.text == "") {
+                        //   acController.isnightError.value = true;
+                        // } else {
+                        //   acController.newCheckinDate.value =
+                        //       acController.checkInDate.value;
+                        //   acController.newCheckoutDate.value =
+                        //       acController.checkOutDate.value;
+                        //   acController.isnightError.value = false;
+                        //   acController.isDateShown.value = true;
 
-                          Navigator.pop(context);
-                        }
+                        //   Navigator.pop(context);
+                        // }
+                        acController.initialDate();
+                        Navigator.pop(context);
                       },
                       child: const Text(
                         "Submit",

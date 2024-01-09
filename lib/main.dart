@@ -1,6 +1,6 @@
-import 'package:choose_n_fly/test.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/splash/splash_screen.dart';
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 
@@ -18,10 +18,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   runApp(
-    DevicePreview(
-      enabled: !kReleaseMode,
-      builder: (context) => MyApp(), // Wrap your app
-    ),
+    // DevicePreview(
+    //   enabled: !kReleaseMode,
+    //   builder: (context) =>
+    MyApp(), // Wrap your app
+    //),
   );
 }
 
@@ -36,6 +37,12 @@ class MyApp extends StatelessWidget {
       DeviceOrientation.portraitDown,
     ]);
     return GetMaterialApp(
+      supportedLocales: [
+        Locale("en"),
+      ],
+      localizationsDelegates: const [
+        CountryLocalizations.delegate,
+      ],
       debugShowCheckedModeBanner: false,
       title: 'Choosenfly',
       //========test widget

@@ -58,9 +58,8 @@ class GuestDetail1 extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                     child: Text(
                       "Rooms",
                       style: TextStyle(
@@ -82,15 +81,15 @@ class GuestDetail1 extends StatelessWidget {
                           return null;
                         },
                         decoration: InputDecoration(
-                            contentPadding: EdgeInsets.symmetric(
+                            contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
                             enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: ColorConstant.lightBlue2,
                                 ),
                                 borderRadius: BorderRadius.circular(10)),
                             border: OutlineInputBorder(
-                                borderSide: BorderSide(
+                                borderSide: const BorderSide(
                                   color: ColorConstant.lightBlue2,
                                 ),
                                 borderRadius: BorderRadius.circular(10))),
@@ -101,6 +100,7 @@ class GuestDetail1 extends StatelessWidget {
                           );
                         }).toList(),
                         onChanged: (newValue) {
+                          print("onchanges");
                           acController.selectedDdindex.clear();
 
                           acController.selectedChildIndex.value = "";
@@ -117,10 +117,18 @@ class GuestDetail1 extends StatelessWidget {
                                       acController.roomCount.value.toString());
                               i++) {
                             acController.selectedDdindex.add("false");
-                            acController.childDdnum.value.add(0);
-                            acController.adultDdnum.value.add(0);
+                            acController.childDdnum.value.add(0.toString());
+                            acController.adultDdnum.value.add(0.toString());
                             acController.ageTextControllers.add([]);
                           }
+                          print(acController.selectedChildIndex.value);
+                          print(acController.selectedDdindex);
+                          print(
+                              "childddnumm===>${acController.childDdnum.value}");
+                          print(
+                              "aduktddnum==>${acController.adultDdnum.value}");
+
+                          print(acController.ageTextControllers);
 
                           print(acController.roomCount.value);
                         }),
@@ -128,7 +136,7 @@ class GuestDetail1 extends StatelessWidget {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.01,
                   ),
-                  DottedLine(
+                  const DottedLine(
                     direction: Axis.horizontal,
                     lineThickness: 0.5,
                     dashColor: ColorConstant.lightBlue2,
@@ -144,11 +152,18 @@ class GuestDetail1 extends StatelessWidget {
                     child: Obx(
                       () => ListView.builder(
                           shrinkWrap: true,
-                          physics: BouncingScrollPhysics(),
+                          physics: const BouncingScrollPhysics(),
                           itemCount: acController.roomCount.value != ""
                               ? int.parse(acController.roomCount.value)
                               : 0,
+                          // itemCount:
+                          //     acController.roomCount.value == "1" ? 1 : 0,
                           itemBuilder: (context, index) {
+                            print(
+                                "adultddd=>${acController.selectedChildIndex.value}");
+                            print("adultddd=>${acController.selectedDdindex}");
+                            print("indexxxx=>${index}");
+
                             return Column(
                               children: [
                                 Row(
@@ -160,11 +175,9 @@ class GuestDetail1 extends StatelessWidget {
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
                                           children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 6,
-                                                      vertical: 4),
+                                            const Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 6, vertical: 4),
                                               child: Text(
                                                 "Adults",
                                                 style: TextStyle(
@@ -176,10 +189,10 @@ class GuestDetail1 extends StatelessWidget {
                                             DropdownButtonFormField<String>(
                                                 value: acController.adultDdnum
                                                                 .value.length ==
-                                                            0 ||
+                                                            "0" ||
                                                         acController.adultDdnum
                                                                 .value[index] ==
-                                                            0
+                                                            "0"
                                                     ? null
                                                     : acController.adultDdnum
                                                         .value[index],
@@ -191,22 +204,22 @@ class GuestDetail1 extends StatelessWidget {
                                                 },
                                                 decoration: InputDecoration(
                                                     contentPadding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                             horizontal: 10,
                                                             vertical: 4),
                                                     enabledBorder:
                                                         OutlineInputBorder(
                                                             borderSide:
-                                                                BorderSide(
+                                                                const BorderSide(
                                                               color: ColorConstant
                                                                   .lightBlue2,
                                                             ),
                                                             borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                        10)),
+                                                                BorderRadius.circular(
+                                                                    10)),
                                                     border: OutlineInputBorder(
-                                                        borderSide: BorderSide(
+                                                        borderSide:
+                                                            const BorderSide(
                                                           color: ColorConstant
                                                               .lightBlue2,
                                                         ),
@@ -224,7 +237,7 @@ class GuestDetail1 extends StatelessWidget {
                                                 onChanged: (newValue) {
                                                   acController
                                                           .adultDdnum[index] =
-                                                      newValue;
+                                                      newValue!;
                                                 }),
                                           ],
                                         ),
@@ -232,7 +245,7 @@ class GuestDetail1 extends StatelessWidget {
                                       ),
                                     ),
 
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     //children dropdown
@@ -241,8 +254,8 @@ class GuestDetail1 extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
                                                 horizontal: 6, vertical: 4),
                                             child: Text(
                                               "Children",
@@ -257,22 +270,22 @@ class GuestDetail1 extends StatelessWidget {
                                                     String>(
                                                 value: acController.childDdnum
                                                                 .value.length ==
-                                                            0 ||
+                                                            "0" ||
                                                         acController.childDdnum
                                                                 .value[index] ==
-                                                            0
+                                                            "0"
                                                     ? null
                                                     : acController.childDdnum
                                                         .value[index],
                                                 decoration: InputDecoration(
                                                     contentPadding:
-                                                        EdgeInsets.symmetric(
+                                                        const EdgeInsets.symmetric(
                                                             horizontal: 10,
                                                             vertical: 4),
                                                     enabledBorder:
                                                         OutlineInputBorder(
                                                             borderSide:
-                                                                BorderSide(
+                                                                const BorderSide(
                                                               color: ColorConstant
                                                                   .lightBlue2,
                                                             ),
@@ -280,7 +293,8 @@ class GuestDetail1 extends StatelessWidget {
                                                                 BorderRadius.circular(
                                                                     10)),
                                                     border: OutlineInputBorder(
-                                                        borderSide: BorderSide(
+                                                        borderSide:
+                                                            const BorderSide(
                                                           color: ColorConstant
                                                               .lightBlue2,
                                                         ),
@@ -295,16 +309,31 @@ class GuestDetail1 extends StatelessWidget {
                                                   );
                                                 }).toList(),
                                                 onChanged: (newValue) {
+                                                  print(acController
+                                                          .selectedChildIndex
+                                                          .value ==
+                                                      index.toString());
+                                                  print(acController
+                                                      .selectedDdindex[index]);
+                                                  print(acController
+                                                      .childDdnum.value[index]);
                                                   acController
                                                       .selectedChildIndex
                                                       .value = index.toString();
+                                                  print(
+                                                      "selctedchildddindex==>${acController.selectedChildIndex.value}");
 
                                                   acController.selectedDdindex[
                                                       index] = "true";
 
                                                   acController
                                                           .childDdnum[index] =
-                                                      newValue;
+                                                      newValue!;
+
+                                                  print(
+                                                      "indexxxoo=>${acController.selectedDdindex[index]}");
+                                                  print(
+                                                      "ayyooo${acController.childDdnum[index]}");
 
                                                   print(acController
                                                       .ageTextControllers);
@@ -312,10 +341,13 @@ class GuestDetail1 extends StatelessWidget {
                                                       .childDdnum[index]);
                                                   print(index);
                                                   print(acController
-                                                      .ageTextControllers);
+                                                          .ageTextControllers[
+                                                      index]);
 
                                                   //"""""""""""''''"
-
+                                                  // print(acController
+                                                  //         .ageTextControllers[
+                                                  //     index]);
                                                   acController
                                                       .ageTextControllers[index]
                                                       .clear();
@@ -343,6 +375,22 @@ class GuestDetail1 extends StatelessWidget {
                                   height:
                                       MediaQuery.of(context).size.height * 0.01,
                                 ),
+                                // Obx(() => acController
+                                //                 .selectedChildIndex.value ==
+                                //             index.toString() ||
+                                //         acController.selectedDdindex[index] ==
+                                //             "true"
+                                //     ? Column(
+                                //         children: [
+                                //           Obx(() => acController.childDdnum
+                                //                       .value[index] ==
+                                //                   "0"
+                                //               ? const SizedBox()
+                                //               : const Text("child nd")),
+                                //         ],
+                                //       )
+                                //     : const Text("no")),
+
                                 //children's age
 
                                 Obx(() => acController
@@ -361,8 +409,8 @@ class GuestDetail1 extends StatelessWidget {
                                               () => acController.childDdnum
                                                           .value[index] ==
                                                       "0"
-                                                  ? SizedBox()
-                                                  : Text(
+                                                  ? const SizedBox()
+                                                  : const Text(
                                                       "Children's Age",
                                                       style: TextStyle(
                                                         color:
@@ -388,11 +436,13 @@ class GuestDetail1 extends StatelessWidget {
                                                   .childDdnum[index]
                                                   .toString()),
                                               shrinkWrap: true,
-                                              physics: BouncingScrollPhysics(),
+                                              physics:
+                                                  const BouncingScrollPhysics(),
                                               itemBuilder:
                                                   (context, childIndex) {
                                                 return Padding(
-                                                  padding: EdgeInsets.all(0),
+                                                  padding:
+                                                      const EdgeInsets.all(0),
                                                   child: SizedBox(
                                                     //  height: 50,
                                                     child: TextFormField(
@@ -409,11 +459,12 @@ class GuestDetail1 extends StatelessWidget {
                                                       decoration:
                                                           InputDecoration(
                                                         contentPadding:
-                                                            EdgeInsets.all(10),
+                                                            const EdgeInsets
+                                                                .all(10),
                                                         enabledBorder:
                                                             OutlineInputBorder(
                                                                 borderSide:
-                                                                    BorderSide(
+                                                                    const BorderSide(
                                                                   color: ColorConstant
                                                                       .lightBlue2,
                                                                 ),
@@ -424,7 +475,7 @@ class GuestDetail1 extends StatelessWidget {
                                                         border:
                                                             OutlineInputBorder(
                                                                 borderSide:
-                                                                    BorderSide(
+                                                                    const BorderSide(
                                                                   color: ColorConstant
                                                                       .lightBlue2,
                                                                 ),
@@ -459,9 +510,8 @@ class GuestDetail1 extends StatelessWidget {
                                         ],
                                       )
                                     : const SizedBox()),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 15),
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(vertical: 15),
                                   child: DottedLine(
                                     direction: Axis.horizontal,
                                     lineThickness: 0.5,
@@ -482,7 +532,7 @@ class GuestDetail1 extends StatelessWidget {
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.046,
                           child: ElevatedButton(
-                              style: ButtonStyle(
+                              style: const ButtonStyle(
                                   backgroundColor: MaterialStatePropertyAll(
                                       ColorConstant.white)),
                               onPressed: () {
@@ -500,7 +550,7 @@ class GuestDetail1 extends StatelessWidget {
                                 print(acController.isSubLoading.value);
                                 Navigator.pop(context);
                               },
-                              child: Text(
+                              child: const Text(
                                 "Close",
                                 style: TextStyle(
                                     color: ColorConstant.primaryColor,
@@ -515,103 +565,17 @@ class GuestDetail1 extends StatelessWidget {
                         child: SizedBox(
                           height: MediaQuery.of(context).size.height * 0.046,
                           child: ElevatedButton(
-                              style: ButtonStyle(
+                              style: const ButtonStyle(
                                   backgroundColor: MaterialStatePropertyAll(
                                       ColorConstant.primaryColor)),
                               onPressed: () {
                                 if (_formKey.currentState!.validate()) {
-                                  acController.isSubLoading.value = true;
+                                  acController.initial();
 
-                                  //childAgeList.clear();
-                                  acController.allAgeOrgs.clear();
-                                  print(acController.adultDdnum);
-                                  num adultSum = acController.adultDdnum.fold(0,
-                                      (previous, current) {
-                                    if (current is num) {
-                                      return previous + current;
-                                    } else if (current is String) {
-                                      return previous +
-                                          (num.tryParse(current) ?? 0);
-                                    } else {
-                                      return previous;
-                                    }
-                                  });
-
-                                  print('Sum of the adults: $adultSum');
-                                  num childSum = acController.childDdnum.fold(0,
-                                      (previous, current) {
-                                    if (current is num) {
-                                      return previous + current;
-                                    } else if (current is String) {
-                                      return previous +
-                                          (num.tryParse(current) ?? 0);
-                                    } else {
-                                      return previous;
-                                    }
-                                  });
-                                  print('Sum of the child: $childSum');
-                                  acController.guestTotal.value =
-                                      adultSum.toInt() + childSum.toInt();
-                                  print(
-                                      "sum of guests ${acController.guestTotal}");
-                                  print(
-                                      "room count${acController.roomCount.value}");
-                                  print(
-                                      "adult count list ${acController.adultDdnum}");
-                                  print(
-                                      "child count list${acController.childDdnum}");
-                                  acController.newRoomCount.value =
-                                      acController.roomCount.value;
-
-                                  for (int i = 0;
-                                      i <
-                                          int.parse(acController
-                                              .newRoomCount.value
-                                              .toString());
-                                      i++) {
-                                    mappedAges = acController
-                                        .ageTextControllers[i]
-                                        .map((e) => int.parse(e.text))
-                                        .toList();
-
-                                    acController.allAgeOrgs.add(mappedAges!);
-                                  }
-
-                                  acController.accommodationDetails =
-                                      getEnteredData(
-                                    acController,
-                                  );
-
-                                  acController.inHaccDetails =
-                                      getEnteredDataforinHouse(acController);
-
-                                  //===========================
-
-                                  // for (int i = 0;
-                                  //     i <
-                                  //         acController
-                                  //             .ageTextControllers!.length;
-                                  //     i++) {
-                                  //   for (int j = 0;
-                                  //       j <
-                                  //           acController
-                                  //               .ageTextControllers![i]
-                                  //               .length;
-                                  //       j++) {
-                                  //     childAgeList.add(acController
-                                  //         .ageTextControllers[i][j].text);
-                                  //     // print(
-                                  //     //     "Room $i, Child $j: ${acController.ageTextControllers![i][j].text}");
-                                  //   }
-
-                                  // }
-                                  // print(
-                                  //     "this is child agelist${childAgeList.toString()}");
-                                  acController.isSubLoading.value = false;
                                   Get.back();
                                 }
                               },
-                              child: Text(
+                              child: const Text(
                                 "Submit",
                                 style: TextStyle(
                                     color: ColorConstant.white,
@@ -631,69 +595,5 @@ class GuestDetail1 extends StatelessWidget {
         return networkController.noDataImage(context);
       }
     });
-  }
-
-  List<Map<String, dynamic>> getEnteredData(
-      AccomodationController acController) {
-    List<Map<String, dynamic>> dataList = [];
-
-    var length = acController.newRoomCount.value != ""
-        ? acController.newRoomCount.value
-        : 1;
-
-    for (int i = 0; i < int.parse(length.toString()); i++) {
-      Map<String, dynamic> data = {
-        "RoomSrNo": acController.newRoomCount.value != "" ? (i + 1) : 0,
-        'NoOfAdult': acController.adultDdnum[i] != 0
-            ? acController.adultDdnum[i]
-            : 0.toString(),
-        'NoOfChild': acController.childDdnum[i] == 0
-            ? 0.toString()
-            : acController.childDdnum[i] != 0
-                ? acController.childDdnum[i]
-                : 0.toString(),
-        if (acController.allAgeOrgs[i].isNotEmpty)
-          // "children age": acController.allAgeOrgs[i].join(', ')
-          "ChildAges": acController.allAgeOrgs[i]
-        else if (acController.allAgeOrgs[i].isEmpty)
-          "ChildAges": []
-      };
-
-      dataList.add(data);
-    }
-
-    return dataList;
-  }
-
-  List<Map<String, dynamic>> getEnteredDataforinHouse(
-      AccomodationController acController) {
-    List<Map<String, dynamic>> dataListinHouse = [];
-
-    var length = acController.newRoomCount.value != ""
-        ? acController.newRoomCount.value
-        : 1;
-
-    for (int i = 0; i < int.parse(length.toString()); i++) {
-      Map<String, dynamic> data = {
-        "roomcount": acController.newRoomCount.value != "" ? (i + 1) : 0,
-        'adult': acController.adultDdnum[i] != 0
-            ? acController.adultDdnum[i]
-            : 0.toString(),
-        'child': acController.childDdnum[i] == 0
-            ? 0.toString()
-            : acController.childDdnum[i] != 0
-                ? acController.childDdnum[i]
-                : 0.toString(),
-        if (acController.allAgeOrgs[i].isNotEmpty)
-          // "children age": acController.allAgeOrgs[i].join(', ')
-          "childAge": acController.allAgeOrgs[i]
-        else if (acController.allAgeOrgs[i].isEmpty)
-          "childAge": []
-      };
-
-      dataListinHouse.add(data);
-    }
-
-    return dataListinHouse;
   }
 }

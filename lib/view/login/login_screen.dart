@@ -1,12 +1,14 @@
 import 'package:choose_n_fly/common_widgets/custom_button.dart';
 import 'package:choose_n_fly/common_widgets/custom_textfield.dart';
 import 'package:choose_n_fly/network/network_controller.dart';
+import 'package:choose_n_fly/registration/registration_screen.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:choose_n_fly/view/login/login_controller.dart';
 import 'package:choose_n_fly/view/payment/payment_screen.dart';
+import 'package:choose_n_fly/view/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -231,7 +233,40 @@ class SignInPage extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                  )
+                                  ),
+                                  const SizedBox(
+                                    height: 13,
+                                  ),
+                                  Center(
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        // Get.to(() => RegistrationSCreen());
+                                      },
+                                      child: RichText(
+                                        text: const TextSpan(
+                                          children: <TextSpan>[
+                                            TextSpan(
+                                              text:
+                                                  '''Don't have an account?''',
+                                              style: TextStyle(
+                                                fontSize: 15,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            TextSpan(
+                                              text: "   Sign up",
+                                              style: TextStyle(
+                                                fontSize: 17,
+                                                fontWeight: FontWeight.bold,
+                                                color:
+                                                    ColorConstant.primaryColor,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -246,6 +281,7 @@ class SignInPage extends StatelessWidget {
           ),
         );
       } else {
+        //Get.find<SplashController>().isNoNet.value = true;
         return networkController.noDataImage(context);
       }
     });

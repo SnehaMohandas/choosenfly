@@ -27,7 +27,10 @@ class RoomDetails2 extends StatelessWidget {
       this.roomCount,
       this.adultCount,
       this.childCount,
-      this.childAge});
+      this.childAge,
+      this.hotelCode,
+      this.hotelName,
+      this.hotelDetails});
   final NetworkController networkController = Get.find<NetworkController>();
 
   var nights;
@@ -35,6 +38,9 @@ class RoomDetails2 extends StatelessWidget {
   List? adultCount;
   List? childCount;
   List? childAge;
+  String? hotelCode;
+  String? hotelName;
+  String? hotelDetails;
   int itemLimit = 1;
   List<List<TextEditingController>> controllersList = [];
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -72,10 +78,11 @@ class RoomDetails2 extends StatelessWidget {
           var acController = Get.find<AccomodationController>();
 
           var roomController =
-              Get.put(RoomController2(nights ?? "", acController));
+              Get.put(RoomController2(nights ?? "", acController, hotelCode!));
           return Scaffold(
             bottomSheet: Obx(
-              () => roomController.isLoading.value == true
+              () => roomController.isRoomtypeLoading.value == true ||
+                      roomController.isNoRoomAvailable.value == true
                   ? const SizedBox()
                   : Padding(
                       padding: const EdgeInsets.symmetric(
@@ -179,7 +186,7 @@ class RoomDetails2 extends StatelessWidget {
                   )),
             ),
             body: Obx(
-              () => roomController.isLoading.value == true
+              () => roomController.isRoomtypeLoading.value == true
                   ? Center(
                       child: loader(),
                     )
@@ -382,9 +389,7 @@ class RoomDetails2 extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          roomController
-                                                  .roomModel![0].hotelName ??
-                                              "",
+                                          hotelName!,
                                           maxLines: 2,
                                           style: TextStyle(
                                             overflow: TextOverflow.ellipsis,
@@ -395,16 +400,16 @@ class RoomDetails2 extends StatelessWidget {
                                             fontWeight: FontWeight.w600,
                                           ),
                                         ),
-                                        // Text(
-                                        //   'Al Wahda',
-                                        //   style: TextStyle(
-                                        //       fontWeight: FontWeight.w600,
-                                        //       fontSize: MediaQuery.of(context)
-                                        //               .size
-                                        //               .height *
-                                        //           0.018,
-                                        //       color: Colors.grey.shade400),
-                                        // ),
+                                        Text(
+                                          hotelDetails!,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.018,
+                                              color: Colors.grey.shade400),
+                                        ),
                                         Padding(
                                           padding:
                                               const EdgeInsets.only(top: 5),
@@ -459,7 +464,8 @@ class RoomDetails2 extends StatelessWidget {
                                         ),
                                         Obx(
                                           () => Text(
-                                            roomController.totalRate.value
+                                            roomController
+                                                .selectedRoomCategoryRate.value
                                                 .toString(),
                                             style: TextStyle(
                                                 color: const Color(0xFF149AED),
@@ -500,141 +506,79 @@ class RoomDetails2 extends StatelessWidget {
                                 height:
                                     MediaQuery.of(context).size.height * 0.012),
                             Padding(
-                              padding:
-                                  EdgeInsets.only(left: 24, right: 24, top: 5),
-                              // child: DropdownButtonFormField(
-                              //   value: null,
-                              //   // value: roomController
-                              //   //             .selectedRoomCategory.value ==
-                              //   //         ""
-                              //   //     ? null
-                              //   //     : roomController.selectedRoomCategory.value,
-                              //   decoration: InputDecoration(
-                              //       contentPadding: const EdgeInsets.only(
-                              //           top: 6, bottom: 6, left: 14, right: 14),
-                              //       hintStyle: TextingStyle.font14normalLb,
-                              //       hintText: 'Select Room',
-                              //       enabledBorder: OutlineInputBorder(
-                              //           borderSide: const BorderSide(
-                              //               color: ColorConstant.grey),
-                              //           borderRadius:
-                              //               BorderRadius.circular(10)),
-                              //       border: OutlineInputBorder(
-                              //           borderSide: const BorderSide(
-                              //               color: ColorConstant.grey),
-                              //           borderRadius:
-                              //               BorderRadius.circular(10))),
-                              //   // items: roomController.rooms.map((item) {
-                              //   //   return DropdownMenuItem(
-                              //   //       value: item[1], child: Text(item[0]));
-                              //   // }).toList(),
-                              //   items: roomController.roomT.map((room) {
-                              //     return DropdownMenuItem(
-                              //       value: room['roomCategory'],
-                              //       child: Text(room['roomCategory']),
-                              //     );
-                              //   }).toList(),
-                              //   onChanged: (v) {
-                              //     roomController.onRoomSelected(v.toString());
-                              //     print(roomController.selectedRoom.value);
-                              //   },
-                              //   validator: (value) {
-                              //     if (value == null) {
-                              //       return "Please select room";
-                              //     }
-                              //     return null;
-                              //   },
-                              // ),
-                              //===========
-                              // child: DropdownButtonFormField(
-                              //   value: null,
-                              //   decoration: InputDecoration(
-                              //       contentPadding: const EdgeInsets.only(
-                              //           top: 6, bottom: 6, left: 14, right: 14),
-                              //       hintStyle: TextingStyle.font14normalLb,
-                              //       hintText: 'Select Room',
-                              //       enabledBorder: OutlineInputBorder(
-                              //           borderSide:
-                              //               const BorderSide(color: ColorConstant.grey),
-                              //           borderRadius: BorderRadius.circular(10)),
-                              //       border: OutlineInputBorder(
-                              //           borderSide:
-                              //               const BorderSide(color: ColorConstant.grey),
-                              //           borderRadius: BorderRadius.circular(10))),
-                              //   items: roomController.roomsT!.map((item) {
-                              //     return DropdownMenuItem(
-                              //         value: item[9], child: Text(item[9]));
-                              //   }).toList(),
-                              //   onChanged: (v) {},
-                              //   validator: (value) {
-                              //     if (value == null) {
-                              //       return "Please select room";
-                              //     }
-                              //     return null;
-                              //   },
-                              // ),
-                              //==========
-                              child: DropdownButtonFormField<String>(
-                                decoration: InputDecoration(
-                                    contentPadding: const EdgeInsets.only(
-                                        top: 6, bottom: 6, left: 14, right: 14),
-                                    hintStyle: TextingStyle.font14normalLb,
-                                    hintText: 'Select Room',
-                                    enabledBorder: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: ColorConstant.grey),
-                                        borderRadius:
-                                            BorderRadius.circular(10)),
-                                    border: OutlineInputBorder(
-                                        borderSide: const BorderSide(
-                                            color: ColorConstant.grey),
-                                        borderRadius:
-                                            BorderRadius.circular(10))),
-                                // value: roomController
-                                //             .selectedRoomCategory.value ==
-                                //         ""
-                                //     ? null
-                                //     : roomController.selectedRoomCategory.value,
-                                value: roomController
-                                        .selectedRoomCategory.value.isEmpty
-                                    ? roomController.roomT.isNotEmpty
-                                        ? "0" // Set the initial value to the index of the first room category
-                                        : null // No initial value if roomT is empty
-                                    : roomController.selectedRoomCategory.value,
-                                // value: null,
-                                onChanged: (String? newValue) {
-                                  if (newValue != null) {
-                                    int selectedIndex = int.parse(newValue);
-                                    if (selectedIndex >= 0 &&
-                                        selectedIndex <
-                                            roomController.roomT.length) {
-                                      Map<String, dynamic> selectedRoom =
-                                          roomController.roomT[selectedIndex];
+                              padding: const EdgeInsets.only(
+                                  left: 24, right: 24, top: 5),
 
-                                      roomController.totalRate.value =
-                                          selectedRoom['totalRate'].toString();
-                                      print(
-                                          'Total Rate for ${selectedRoom["roomCategory"]}: ${roomController.totalRate}');
-                                    }
-                                  }
-                                },
+                              child: Obx(
+                                () => roomController.isNoRoomAvailable.value ==
+                                        true
+                                    ? const Text(
+                                        "No Rooms Available",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color.fromARGB(
+                                                255, 148, 34, 26)),
+                                      )
+                                    : DropdownButtonFormField<dynamic>(
+                                        decoration: InputDecoration(
+                                            contentPadding:
+                                                const EdgeInsets.only(
+                                                    top: 6,
+                                                    bottom: 6,
+                                                    left: 14,
+                                                    right: 14),
+                                            hintStyle:
+                                                TextingStyle.font14normalLb,
+                                            hintText: 'Select Room',
+                                            enabledBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                    color: ColorConstant.grey),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            border: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                    color: ColorConstant.grey),
+                                                borderRadius:
+                                                    BorderRadius.circular(10))),
+                                        value: roomController
+                                                    .selectedRoomCategoryId
+                                                    .value !=
+                                                ""
+                                            ? int.parse(roomController
+                                                .selectedRoomCategoryId.value)
+                                            : null,
+                                        onChanged: (newValue) {
+                                          print(newValue);
+                                          List<dynamic> selecteddes =
+                                              roomController
+                                                  .roomCategory
+                                                  .firstWhere((item) =>
+                                                      item[1] == newValue);
 
-                                items: roomController.roomT
-                                    .asMap()
-                                    .entries
-                                    .map<DropdownMenuItem<String>>((entry) {
-                                  int index = entry.key;
-                                  Map<String, dynamic> room = entry.value;
-                                  return DropdownMenuItem<String>(
-                                    value: index.toString(),
-                                    child: Text(room["roomCategory"]!),
-                                  );
-                                }).toList(),
+                                          roomController.selectedRoomCategory
+                                              .value = selecteddes[0];
+                                          roomController.selectedRoomCategoryId
+                                                  .value =
+                                              selecteddes[1].toString();
+                                          roomController
+                                                  .selectedRoomCategoryRate
+                                                  .value =
+                                              selecteddes[2].toString();
+                                          print(selecteddes);
+                                        },
+                                        items: roomController.roomCategory
+                                            .map((item) {
+                                          return DropdownMenuItem(
+                                            child: Text(item[0]),
+                                            value: item[1],
+                                          );
+                                        }).toList(),
+                                      ),
                               ),
 
                               //====================
                             ),
-                            Text(roomController.selectedRoomCategory.value),
                             SizedBox(
                                 height:
                                     MediaQuery.of(context).size.height * 0.012),
@@ -878,22 +822,23 @@ class RoomDetails2 extends StatelessWidget {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  ReadMoreText(
-                                    roomController.roomModel![0].hotelDetails
-                                            .toString() ??
-                                        "",
-                                    style: const TextStyle(
+                                  const ReadMoreText(
+                                    "ppp",
+                                    // roomController.roomModel![0].hotelDetails
+                                    //         .toString() ??
+                                    //     "",
+                                    style: TextStyle(
                                         fontSize:
                                             13), //  style: TextStyle(fontSize: 13),
                                     trimLines: 2,
                                     trimMode: TrimMode.Line,
                                     trimCollapsedText: 'Show more',
                                     trimExpandedText: 'Show less',
-                                    lessStyle: const TextStyle(
+                                    lessStyle: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         color: ColorConstant.lightBlue,
                                         fontSize: 13),
-                                    moreStyle: const TextStyle(
+                                    moreStyle: TextStyle(
                                         color: ColorConstant.lightBlue,
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13),
@@ -911,7 +856,7 @@ class RoomDetails2 extends StatelessWidget {
                                   ),
                                   GridView.builder(
                                       padding:
-                                          const EdgeInsets.only(bottom: 60),
+                                          const EdgeInsets.only(bottom: 20),
                                       shrinkWrap: true,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
@@ -946,10 +891,37 @@ class RoomDetails2 extends StatelessWidget {
                                             ),
                                           ),
                                         );
+                                      }),
+                                  const Text("Cancellation Policies",
+                                      style: TextStyle(
+                                          color: ColorConstant.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15)),
+                                  ListView.builder(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 60),
+                                      itemCount:
+                                          roomController.cancelPolicy.length,
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                        return ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: const Icon(
+                                            Icons.circle_rounded,
+                                            size: 7,
+                                          ),
+                                          title: Text(
+                                            roomController.cancelPolicy[index],
+                                            style:
+                                                const TextStyle(fontSize: 12),
+                                          ),
+                                        );
                                       })
                                 ],
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
@@ -963,4 +935,4 @@ class RoomDetails2 extends StatelessWidget {
     );
   }
 }
-// 
+//

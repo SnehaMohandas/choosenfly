@@ -256,6 +256,9 @@ dateDialogue(BuildContext context, RoomController2 roomController,
                               roomController.checkOutDate.value;
                           roomController.isnightError.value = false;
                           roomController.isDateShown.value = true;
+                          // roomController.atharvaCancelPolicy();
+                          // roomController.iwtxCancelPolicy();
+                          roomController.fetchRoomTypeidEdited();
 
                           Navigator.pop(context);
                         }
