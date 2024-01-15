@@ -3,6 +3,7 @@ import 'package:choose_n_fly/model/request_pdf_model.dart';
 import 'package:choose_n_fly/model/voucher_pdf_model.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -104,6 +105,50 @@ class BookingVoucherController extends GetxController {
     } catch (e) {
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  sendVoucherMail(hotelBookId, bookingId, email) async {
+    var response = await http.get(
+        Uri.parse(
+            "${baseUrl}custom/sendMailVoucherAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),
+        headers: {'apikey': header});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      if (response.body == "false") {
+        Fluttertoast.showToast(msg: "Mail sent successfully");
+      }
+    }
+  }
+
+  sendRequestMail(hotelBookId, bookingId, email) async {
+    print("object");
+    var response = await http.get(
+        Uri.parse(
+            "${baseUrl}custom/sendMailAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),
+        headers: {'apikey': header});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      if (response.body == "true") {
+        print("m");
+        Fluttertoast.showToast(msg: "Mail sent successfully");
+      }
+    }
+  }
+
+  sendConfirmMail(hotelBookId, bookingId, email) async {
+    var response = await http.get(
+        Uri.parse(
+            "${baseUrl}custom/sendMailConfirmationAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),
+        headers: {'apikey': header});
+
+    if (response.statusCode == 200) {
+      print(response.body);
+      if (response.body == "false") {
+        Fluttertoast.showToast(msg: "Mail sent successfully");
+      }
     }
   }
 }

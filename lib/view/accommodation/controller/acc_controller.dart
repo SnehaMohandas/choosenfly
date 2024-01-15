@@ -237,25 +237,33 @@ class AccomodationController extends GetxController {
         print("object");
         var data = allHotelModelFromJson(response.body);
         allHotelModel = data;
+        print(allHotelModel);
+
+        for (int i = 0; i < allHotelModel![0].iwtxHotels!.data[1].length; i++) {
+          currentItem = allHotelModel![0].iwtxHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
+        for (int i = 0;
+            i < allHotelModel![1].inhouseHotels!.data[1].length;
+            i++) {
+          currentItem = allHotelModel![1].inhouseHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
+        for (int i = 0;
+            i < allHotelModel![2].atharvaHotels!.data[1].length;
+            i++) {
+          currentItem = allHotelModel![2].atharvaHotels!.data[1][i];
+          allItems.add(currentItem);
+        }
 
         for (int i = 0;
-            i < allHotelModel![0].inhouseHotels!.data[1].length;
+            i < allHotelModel![3].jumeirahHotels!.data[1].length;
             i++) {
-          currentItem = allHotelModel![0].inhouseHotels!.data[1][i];
+          currentItem = allHotelModel![3].jumeirahHotels!.data[1][i];
           allItems.add(currentItem);
         }
-        for (int i = 0;
-            i < allHotelModel![1].atharvaHotels!.data[1].length;
-            i++) {
-          currentItem = allHotelModel![1].atharvaHotels!.data[1][i];
-          allItems.add(currentItem);
-        }
-        for (int i = 0;
-            i < allHotelModel![2].jumeirahHotels!.data[1].length;
-            i++) {
-          currentItem = allHotelModel![2].jumeirahHotels!.data[1][i];
-          allItems.add(currentItem);
-        }
+
+        print("allhotelsss===>>>${allItems}");
       } else {
         print("not 200");
       }

@@ -12,6 +12,7 @@ import 'package:choose_n_fly/view/accommodation/accomodation.dart';
 import 'package:choose_n_fly/view/home/controller/home_controller.dart';
 import 'package:choose_n_fly/view/profile/profile.dart';
 import 'package:choose_n_fly/view/splash/controller/splash_controller.dart';
+import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
@@ -395,7 +396,7 @@ class HomeScreen extends StatelessWidget {
                                     height: MediaQuery.of(context).size.height *
                                         0.02,
                                   ),
-                                  const Padding(
+                                  Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 28),
                                     child: Row(
@@ -403,8 +404,13 @@ class HomeScreen extends StatelessWidget {
                                           MainAxisAlignment.spaceAround,
                                       children: [
                                         CustomStatsCard(
-                                          title: 'Total\nHotels',
-                                          value: '543',
+                                          title: 'Credit\Limit',
+                                          value: homeController
+                                              .dashboardCountModel!
+                                              .data
+                                              .creditLimit
+                                              .data
+                                              .toString(),
                                           icon: Icon(
                                             FontAwesomeIcons.hotel,
                                             size: 18,
@@ -422,7 +428,12 @@ class HomeScreen extends StatelessWidget {
                                                 size: 18,
                                                 color: ColorConstant.white),
                                             title: 'Todays\nCheck-In  ',
-                                            value: '0',
+                                            value: homeController
+                                                .dashboardCountModel!
+                                                .data
+                                                .checkIn
+                                                .data
+                                                .toString(),
                                             iconBackgroundColor:
                                                 Color(0xFFE24897),
                                           ),
@@ -433,7 +444,12 @@ class HomeScreen extends StatelessWidget {
                                               size: 18,
                                               color: ColorConstant.white),
                                           title: 'Todays\nCheck-Out',
-                                          value: '1',
+                                          value: homeController
+                                              .dashboardCountModel!
+                                              .data
+                                              .checkOut
+                                              .data
+                                              .toString(),
                                           iconBackgroundColor: Colors.teal,
                                         ),
                                       ],
@@ -443,7 +459,7 @@ class HomeScreen extends StatelessWidget {
                                     height: MediaQuery.of(context).size.height *
                                         0.02,
                                   ),
-                                  const Padding(
+                                  Padding(
                                     padding:
                                         EdgeInsets.symmetric(horizontal: 28),
                                     child: Row(
@@ -455,7 +471,12 @@ class HomeScreen extends StatelessWidget {
                                               size: 22,
                                               color: ColorConstant.white),
                                           title: 'Total\nCancellation',
-                                          value: '2',
+                                          value: homeController
+                                              .dashboardCountModel!
+                                              .data
+                                              .cancel
+                                              .data
+                                              .toString(),
                                           iconBackgroundColor:
                                               Color(0xFF40C756),
                                         ),
@@ -467,7 +488,12 @@ class HomeScreen extends StatelessWidget {
                                                 size: 22,
                                                 color: ColorConstant.white),
                                             title: 'Pending\nConfirmation',
-                                            value: '1',
+                                            value: homeController
+                                                .dashboardCountModel!
+                                                .data
+                                                .pending
+                                                .data
+                                                .toString(),
                                             iconBackgroundColor:
                                                 ColorConstant.signBlue,
                                           ),
@@ -477,7 +503,12 @@ class HomeScreen extends StatelessWidget {
                                               size: 18,
                                               color: ColorConstant.white),
                                           title: 'Used\nCredits',
-                                          value: '0',
+                                          value: homeController
+                                              .dashboardCountModel!
+                                              .data
+                                              .used
+                                              .data
+                                              .toString(),
                                           iconBackgroundColor:
                                               Color(0xFFFE6969),
                                         ),

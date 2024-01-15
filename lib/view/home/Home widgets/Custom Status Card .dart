@@ -62,7 +62,9 @@ class CustomStatsCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 15, top: 8),
             child: Text(
               value,
+              maxLines: 2,
               style: TextStyle(
+                overflow: TextOverflow.ellipsis,
                 fontSize: MediaQuery.of(context).size.height * 0.025,
                 fontWeight: FontWeight.w500,
               ),

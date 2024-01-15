@@ -1288,7 +1288,29 @@ class AccommodationScreen extends StatelessWidget {
                                                           (BuildContext context,
                                                               int index) {
                                                         return InkWell(
-                                                          onTap: () {
+                                                          onTap: () async {
+                                                            var orgHotelCode;
+                                                            var sampleJumHotelCode;
+                                                            if (acController.allItems[
+                                                                        index][
+                                                                    "apiType"] ==
+                                                                "12") {
+                                                              orgHotelCode =
+                                                                  await acController
+                                                                              .allItems[
+                                                                          index]
+                                                                      [
+                                                                      "hotelSearchIWTXResponse"]["Code"];
+                                                            } else {
+                                                              orgHotelCode =
+                                                                  await acController
+                                                                              .allItems[
+                                                                          index]
+                                                                      [
+                                                                      "hotel_code"];
+                                                            }
+                                                            print(acController
+                                                                .allItems);
                                                             Get.to(
                                                                 () =>
                                                                     RoomDetails2(
@@ -1307,17 +1329,27 @@ class AccommodationScreen extends StatelessWidget {
                                                                       childAge:
                                                                           childAgeList,
                                                                       hotelCode:
-                                                                          acController.allItems[index]
-                                                                              [
-                                                                              "hotel_code"],
+                                                                          orgHotelCode,
+                                                                      // hotelCode:
+                                                                      //     acController.allItems[index]["hotel_code"] ??
+                                                                      //         "",
                                                                       hotelName:
                                                                           acController.allItems[index]
                                                                               [
                                                                               "hotel_name"],
                                                                       hotelDetails:
-                                                                          acController.allItems[index]
+                                                                          acController.allItems[index]["hotel_details"] ??
+                                                                              "",
+                                                                      platform: acController
+                                                                          .allItems[
+                                                                              index]
                                                                               [
-                                                                              "hotel_details"],
+                                                                              "apiType"]
+                                                                          .toString(),
+                                                                      hotelId: acController
+                                                                              .allItems[index]
+                                                                          [
+                                                                          "hotel_id"],
                                                                     ),
                                                                 transition:
                                                                     Transition

@@ -73,6 +73,8 @@ class ReqConfirmScreen extends StatelessWidget {
                           //             .hotelBookingDtoList[0].hotelbookingId,
                           // bookingId: bookingId,
                           hotelName: hotelNmae,
+                          hotelbookingId: hotelbookingId,
+                          bookingId: bookingId,
                         ),
                     transition: Transition.rightToLeftWithFade);
               },

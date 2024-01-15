@@ -24,11 +24,15 @@ class BookingVoucher extends StatelessWidget {
       {super.key,
       // required this.hotelBookingId,
       // required this.bookingId,
-      required this.hotelName});
+      required this.hotelName,
+      required this.hotelbookingId,
+      required this.bookingId});
   final NetworkController networkController = Get.find<NetworkController>();
   // final hotelBookingId;
   // final bookingId;
   final hotelName;
+  final hotelbookingId;
+  final bookingId;
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +61,11 @@ class BookingVoucher extends StatelessWidget {
                                 .requestPdfModel!.filelocationServer
                             : bookVController
                                 .confirmPdfModel!.filelocationServer,
-                    bookVController.emailController.text);
+                    bookVController.emailController.text,
+                    hotelbookingId,
+                    bookingId,
+                    bookVController,
+                    reqController.selectedValue.value);
                 // Fluttertoast.showToast(msg: "Voucher sent to the e-mail");
                 // Get.offAll(() => HomeScreen(), transition: Transition.native);
               },
@@ -220,50 +228,51 @@ class BookingVoucher extends StatelessWidget {
     );
   }
 
-  _openEmail(mail, attachment) async {
-    print(attachment);
-    var email = mail;
-    var subject = 'Hello';
-    var body = "path";
+  // _openEmail(mail, attachment) async {
+  //   print(attachment);
+  //   var email = mail;
+  //   var subject = 'Hello';
+  //   var body = "path";
 
-    var emailUrl =
-        'mailto:$email?subject=${Uri.encodeComponent(subject)}body=${Uri.encodeComponent(body)}&attachment=${Uri.encodeComponent(attachment)}';
-    try {
-      await launch(emailUrl);
-    } catch (e) {
-      throw 'Could not launch $emailUrl';
-    }
-  }
+  //   var emailUrl =
+  //       'mailto:$email?subject=${Uri.encodeComponent(subject)}body=${Uri.encodeComponent(body)}&attachment=${Uri.encodeComponent(attachment)}';
+  //   try {
+  //     await launch(emailUrl);
+  //   } catch (e) {
+  //     throw 'Could not launch $emailUrl';
+  //   }
+  // }
 
-  Future<void> send(mail, file) async {
-    final Email email = Email(
-      recipients: [mail],
-      attachmentPaths: [file],
-      isHTML: false,
-    );
+  // Future<void> send(mail, file) async {
+  //   final Email email = Email(
+  //     recipients: [mail],
+  //     attachmentPaths: [file],
+  //     isHTML: false,
+  //   );
 
-    String? platformResponse;
+  //   String? platformResponse;
 
-    try {
-      await FlutterEmailSender.send(email);
-      print("object");
-      platformResponse = 'success';
-    } catch (error) {
-      print(error);
-      platformResponse = error.toString();
-    } finally {}
-    print(platformResponse.toString());
+  //   try {
+  //     await FlutterEmailSender.send(email);
+  //     print("object");
+  //     platformResponse = 'success';
+  //   } catch (error) {
+  //     print(error);
+  //     platformResponse = error.toString();
+  //   } finally {}
+  //   print(platformResponse.toString());
 
-    //  if (!mounted) return;
+  //   //  if (!mounted) return;
 
-    // ScaffoldMessenger.of(context).showSnackBar(
-    //   SnackBar(
-    //     content: Text(platformResponse),
-    //   ),
-    // );
-  }
+  //   // ScaffoldMessenger.of(context).showSnackBar(
+  //   //   SnackBar(
+  //   //     content: Text(platformResponse),
+  //   //   ),
+  //   // );
+  // }
 
-  Future _fileFromPdfUrl(String pdfUrl, String mail) async {
+  Future _fileFromPdfUrl(String pdfUrl, String mail, hotelBookindId, bookingId,
+      BookingVoucherController bookVController, selectedValue) async {
     print('helllliii');
     final response = await http.get(Uri.parse(pdfUrl));
     final documentDirectory = await getApplicationDocumentsDirectory();
@@ -274,7 +283,15 @@ class BookingVoucher extends StatelessWidget {
     print('ok');
     file.writeAsBytesSync(response.bodyBytes);
     print('++++++++++++${file.path}');
-    await send(mail, file.path);
+    print(selectedValue);
+    if (selectedValue == "Voucher") {
+      bookVController.sendVoucherMail(hotelBookindId, bookingId, mail);
+    } else if (selectedValue == "Request") {
+      bookVController.sendRequestMail(hotelBookindId, bookingId, mail);
+    } else {
+      bookVController.sendConfirmMail(hotelBookindId, bookingId, mail);
+    }
+    // await send(mail, file.path);
 
     // await Share.shareFiles(
     //   [file.path],

@@ -23,16 +23,34 @@ class BookingPage extends StatelessWidget {
       required this.acController,
       required this.checkinD,
       required this.checkoutD,
-      required this.roomDetail});
+      required this.roomDetail,
+      required this.platForm,
+      required this.hotelId,
+      required this.totalPrice,
+      required this.selectedRoomCategoryData
+      // required this.sellingPrice,
+      // required this.roomCategoryId,
+      // required this.roomTypeId,
+      // required this.occupationId
+      });
   final RoomController2 roomController;
   final AccomodationController acController;
   final checkinD;
   final checkoutD;
   final roomDetail;
+  final platForm;
+  final hotelId;
+  final totalPrice;
+  final selectedRoomCategoryData;
+  // final sellingPrice;
+
+  // final roomCategoryId;
+  // final roomTypeId;
+  // final occupationId;
   List<List<TextEditingController>> controllersList = [];
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final TextEditingController LfirstnameController = TextEditingController();
-  // final TextEditingController LMiddlenameController = TextEditingController();
+  final TextEditingController LMiddlenameController = TextEditingController();
 
   final TextEditingController LLastnameController = TextEditingController();
 
@@ -47,12 +65,24 @@ class BookingPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     print("totalll===>${acController.orgguestTotal.value}");
+    print("rooommmmdetaillll====>${roomDetail}");
     // print(checkinD);
     // print(checkoutD);
     // print(roomDetail);
     return Obx(() {
       if (networkController.isConnected.value) {
-        var bookFormControlller = Get.put(BookFormController());
+        var bookFormControlller = Get.put(BookFormController(
+            platform: platForm,
+            checkIn: checkinD,
+            checkOut: checkoutD,
+            hotelId: hotelId,
+            totalPrice: totalPrice,
+            selectedRoomcategoryData: selectedRoomCategoryData
+            // sellingPrice: sellingPrice,
+            // roomCategoryId: roomCategoryId,
+            // roomTypeId: roomTypeId,
+            // occupancyId: occupationId
+            ));
 
         return WillPopScope(
           onWillPop: () async {
@@ -108,6 +138,7 @@ class BookingPage extends StatelessWidget {
                         if (formKey.currentState!.validate()) {
                           // print(roomController.selectedcourtesy2.value);
                           bookFormControlller.leaddata = await getFormValues();
+                          print(bookFormControlller.leaddata);
                           // print(jsonEncode(bookFormControlller.leaddata));
                           if (roomController.guestTotal.value != 0 &&
                               roomController.guestTotal.value != 1) {
@@ -159,7 +190,9 @@ class BookingPage extends StatelessWidget {
                             roomController.selectedRoom.value,
                             roomDetail,
                           );
-
+                          if (platForm == "0") {
+                            bookFormControlller.inhouseBooking();
+                          }
                           Get.to(() => PaymentPage(),
                               transition: Transition.rightToLeftWithFade);
                         }
@@ -288,29 +321,32 @@ class BookingPage extends StatelessWidget {
                             ],
                           ),
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.only(left: 26, right: 26, top: 8),
-                        //   child: TextFormField(
-                        //     controller: LMiddlenameController,
-                        //     decoration: InputDecoration(
-                        //         enabledBorder: OutlineInputBorder(
-                        //             borderSide: BorderSide(color: ColorConstant.grey),
-                        //             borderRadius: BorderRadius.circular(10)),
-                        //         border: OutlineInputBorder(
-                        //             borderSide: BorderSide(color: ColorConstant.grey),
-                        //             borderRadius: BorderRadius.circular(10)),
-                        //         contentPadding: EdgeInsets.only(
-                        //             top: 6, bottom: 6, left: 14, right: 14),
-                        //         hintStyle: TextingStyle.font14normalLb,
-                        //         hintText: 'Middle Name'),
-                        //     validator: (value) {
-                        //       if (value == "") {
-                        //         return "This field cannot be empty";
-                        //       }
-                        //       return null;
-                        //     },
-                        //   ),
-                        // ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 26, right: 26, top: 8),
+                          child: TextFormField(
+                            controller: LMiddlenameController,
+                            decoration: InputDecoration(
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: ColorConstant.grey),
+                                    borderRadius: BorderRadius.circular(10)),
+                                border: OutlineInputBorder(
+                                    borderSide:
+                                        BorderSide(color: ColorConstant.grey),
+                                    borderRadius: BorderRadius.circular(10)),
+                                contentPadding: EdgeInsets.only(
+                                    top: 6, bottom: 6, left: 14, right: 14),
+                                hintStyle: TextingStyle.font14normalLb,
+                                hintText: 'Middle Name'),
+                            validator: (value) {
+                              if (value == "") {
+                                return "This field cannot be empty";
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                         Padding(
                           padding: const EdgeInsets.only(
                               left: 26, right: 26, top: 8),
@@ -753,14 +789,16 @@ class BookingPage extends StatelessWidget {
 
   Map<String, String> getFormValues() {
     Map<String, String> formValues = {
-      "Courtesy": roomController.selectedcourtesy1.value,
+      "customer_id": "0",
+      "salutaion": roomController.selectedcourtesy1.value,
       'first_name': LfirstnameController.text,
-      //'middle_name': LMiddlenameController.text,
+      'middle_name': LMiddlenameController.text,
       'last_name': LLastnameController.text,
-      'email': LEmailController.text,
-      'contact_no': LContactController.text,
+      'emailId': LEmailController.text,
+      'mobileNumber': LContactController.text,
       'passport_no': LPassController.text,
-      'lpo': LLPOController.text,
+      'agentlpo': LLPOController.text,
+      "native_country": acController.selectedNativeCode.value
     };
 
     return formValues;

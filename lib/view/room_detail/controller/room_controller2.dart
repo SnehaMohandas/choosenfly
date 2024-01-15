@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:choose_n_fly/model/iwtx_cancel_policy_model.dart';
+import 'package:choose_n_fly/model/room_category.dart';
 import 'package:choose_n_fly/model/room_model.dart';
 import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/view/accommodation/controller/acc_controller.dart';
@@ -9,10 +11,14 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 class RoomController2 extends GetxController {
+  final platform;
   String nightCount;
   AccomodationController acController;
   String hotelCode;
-  RoomController2(this.nightCount, this.acController, this.hotelCode);
+  var hotelIdForInJumerah = "".obs;
+
+  RoomController2(
+      this.nightCount, this.acController, this.hotelCode, this.platform);
 
   var isInteriorClicked = true.obs;
   var interiorIndex = "1".obs;
@@ -180,13 +186,86 @@ class RoomController2 extends GetxController {
 // cancellation policy
 //''''''''''''''''''''''''''''
 
-  List cancelPolicy = [
-    "Cancellations made 15 or more days before check in date will be free.",
-    "Cancellations made more than 7 days in advance but less than 15 days will incur a cancellation charge of 1 nights tariff.",
-    "No shows and cancellations made 0 to 7 days in advance will incur 100% charge of the booking.",
-    "In case of a full refund on cancellation, there will be a deduction of approximately 5.7% as payment processing charges."
-  ];
+  var cancePolicyloading = true.obs;
+
+  inhouseJumerahCancelPolicy() async {
+    cancePolicyloading.value = true;
+    var parsedCheckin;
+    var parsedCheckOut;
+    cancelPolicy.clear();
+    List<Map<String, dynamic>> dataListinHouse = [];
+
+    var length3 = newRoomCount.value != ""
+        ? newRoomCount.value
+        : acController.orgRoomcount.value;
+
+    for (int i = 0; i < int.parse(length3.toString()); i++) {
+      Map<String, dynamic> data = {
+        "roomcount": i + 1,
+        'adult': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfAdult"]
+            : acController.orgAccomodationDetails[i]["NoOfAdult"],
+        'child': newRoomCount.value != ""
+            ? accommodationDetails[i]["NoOfChild"]
+            : acController.orgAccomodationDetails[i]["NoOfChild"],
+        "childAge": newRoomCount.value != ""
+            ? accommodationDetails[i]["ChildAges"]
+            : acController.orgAccomodationDetails[i]["ChildAges"],
+      };
+
+      dataListinHouse.add(data);
+    }
+    if (newCheckinDate.value != "" &&
+        newCheckoutDate.value != "" &&
+        isDateShown.value == true) {
+      parsedCheckin = newCheckinDate.value;
+      parsedCheckOut = newCheckoutDate.value;
+    } else {
+      parsedCheckin = acController.orgnewChekin.value;
+      parsedCheckOut = acController.orgnewChekout.value;
+    }
+    var inhouseData = await {
+      "checkIn":
+          "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckin))}",
+      "checkOut":
+          "${DateFormat('dd/MM/yyyy').format(DateFormat('MMM-dd-yyyy').parse(parsedCheckOut))}",
+      "native_country_id": acController.orgNativeCode.value,
+      "noOfRooms": newRoomCount.value != ""
+          ? newRoomCount.value
+          : acController.orgRoomcount.value,
+      "token": selectedRoomCategoryId.value.toString(),
+      "type": "1",
+      "hid": hotelIdForInJumerah.value,
+      "searchRoomDTO": newRoomCount.value != ""
+          ? dataListinHouse
+          : acController.orginHaccDetails,
+      //"agentId": userId
+    };
+
+    print("inhouseeee dataaa--------==>${inhouseData}");
+
+    var response = await http.post(
+        Uri.parse("${baseUrl}custom/inhouseCancellationPolicyAPIout"),
+        headers: {"apikey": header, 'Content-Type': 'application/json'},
+        body: jsonEncode(inhouseData));
+
+    if (response.statusCode == 200) {
+      var jsonString = json.decode(response.body);
+      cancelPolicy.value = jsonString;
+      // print(jsonString);
+      // for (int i = 0; i < jsonString.length; i++) {
+      //   cancelPolicy.addAll(jsonString[i]["policyRemark"]);
+      // }
+      cancePolicyloading.value = false;
+      print(cancelPolicy.value);
+    } else {
+      print("fails");
+    }
+  }
+
   atharvaCancelPolicy() async {
+    // cancelPolicyloading.value = true;
+
     var parsedCheckin;
     var parsedCheckOut;
     if (newCheckinDate.value != "" &&
@@ -216,7 +295,7 @@ class RoomController2 extends GetxController {
           : acController.atharvaroomDetailOrg
     };
 
-    print("theatharva dataaa--------==>${atharvaData}");
+    print("atharvaaaa dataaa--------==>${atharvaData}");
 
     // var response=await  http.post(Uri.parse("${baseUrl}custom/atharva/hotelPreBooking?type=policy"),
     // headers: {
@@ -230,11 +309,22 @@ class RoomController2 extends GetxController {
     // else{
 
     // }
+    //cancelPolicyloading.value = false;
   }
 
+  IwtxCancelPolicyModel? iwtxCancelPolicyModel;
+  List<dynamic> cancelPolicyRoomsiwtx = [];
+  Map<String, dynamic>? desiredRoom;
+  var cancelPolicy = [].obs;
+  // var cancelPolicyloading = true.obs;
+
   iwtxCancelPolicy() async {
+    //cancelPolicyloading.value = true;
     var parsedCheckin;
     var parsedCheckOut;
+    cancelPolicy.clear();
+
+    cancelPolicyRoomsiwtx.clear();
     if (newCheckinDate.value != "" &&
         newCheckoutDate.value != "" &&
         isDateShown.value == true) {
@@ -255,21 +345,57 @@ class RoomController2 extends GetxController {
       "nationality": acController.orgNativeCode.value,
       "groupByRooms": "Y",
       "cancellationPolicy": "Y",
-      "hotelCode": "101-355",
+      "hotelCode": hotelCode,
       "searchRoomDTOs": newRoomCount.value != ""
           ? iwtxRoomDetail
-          : acController.iwtxRoomdetailOrg
+          : acController.iwtxRoomdetailOrg,
+      "agentId": userId
     };
 
-    print("theiwtx dataaa--------==>${iwtxData}");
+    print("iwtx dataaa--------==>${iwtxData}");
 
-    // var response = await http.post(
-    //     Uri.parse("${baseUrl}custom/iwtx/hotelSearch"),
-    //     headers: {"apikey": header},
-    //     body: iwtxData);
+    var response = await http.post(
+        Uri.parse("${baseUrl}custom/iwtxCancellationPolicyAPIout"),
+        headers: {"apikey": header, 'Content-Type': 'application/json'},
+        body: jsonEncode(iwtxData));
 
-    // if (response.statusCode == 200) {
-    // } else {}
+    if (response.statusCode == 200) {
+      //iwtxCancelPolicyModel = iwtxCancelPolicyModelFromJson(response.body);
+      var jsonString = json.decode(response.body);
+      cancelPolicyRoomsiwtx =
+          jsonString['hotels']['hotel']['roomTypeDetails']['rooms']['room'];
+
+      // Find the room with the specified ratePlanId and roomTypeCode
+      // desiredRoom;
+      for (var room in cancelPolicyRoomsiwtx) {
+        if (room['ratePlanId'].toString() == selectedRoomRatePlanId.value &&
+            room['roomTypeCode'].toString() == selectedRoomTypeCode.value) {
+          desiredRoom = room;
+          break;
+        }
+      }
+
+      // Check if the desired room was found
+      if (desiredRoom != null &&
+          desiredRoom!["cancellationPolicyDetails"]["cancellation"] != null) {
+        // Extract cancellation policy details
+        cancelPolicy.value =
+            desiredRoom!['cancellationPolicyDetails']['cancellation'];
+
+        // Now, 'cancellationPolicy' contains the cancellation details for the specified room
+        print(
+            'Cancellation Policy Details for Room with ratePlanId 678642 and roomTypeCode 16306766:');
+        print(cancelPolicy);
+      } else {
+        print(
+            'Room with ratePlanId 678642 and roomTypeCode 16306766 not found.');
+      }
+
+      //  cancelPolicyloading.value = false;
+      // print("iwtxcccaancelll-0-00-00-${response.body}");
+    } else {
+      print("fails");
+    }
   }
 
   //''''''''''''''''''''''''''''''''''
@@ -277,16 +403,37 @@ class RoomController2 extends GetxController {
 
 //fetchroom type if room details or date changed
 
-  List roomCategory = [].obs;
+//{{{{{{{for inhouse datas
 
   var selectedRoomCategory = "".obs;
   var selectedRoomCategoryId = "".obs;
   var selectedRoomCategoryRate = "".obs;
+  var selectedRoomRatePlanId = "".obs;
+  var selectedRoomTypeCode = "".obs;
+
+  Map<String, dynamic>? selectedRoomData;
+  List roomcategorydata = [].obs;
+  var SelecteddropdownIndex = "0".obs;
+  //}}}}}}}
+
+  var isNoRoomAvailable = false.obs;
+
   var isRoomtypeLoading = true.obs;
 
   fetchRoomTypeidEdited() async {
-    print("Godddddddddddddddd${accommodationDetails}");
     isRoomtypeLoading.value = true;
+    selectedRoomCategory.value = "";
+    selectedRoomCategoryId.value = "";
+    selectedRoomCategoryRate.value = "";
+    selectedRoomData = {};
+    SelecteddropdownIndex.value = "0";
+    selectedRoomRatePlanId.value = "";
+    hotelIdForInJumerah.value = "";
+    selectedRoomTypeCode.value = "";
+    cancelPolicy.clear();
+
+    isNoRoomAvailable.value = false;
+    roomcategorydata.clear();
     //adult agedata raw 1
     List<Map<String, dynamic>> adultAgeData = [];
     adultAgeData.clear();
@@ -400,7 +547,7 @@ class RoomController2 extends GetxController {
 
       searchRoomDTOs.add(data2);
     }
-    print("searchroomdto====>>${searchRoomDTOs}");
+    // print("searchroomdto====>>${searchRoomDTOs}");
 
     ///=============================
     ///
@@ -459,7 +606,8 @@ class RoomController2 extends GetxController {
         "endDate": newCheckoutDate.value != ""
             ? "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(newCheckoutDate.value))}"
             : "${DateFormat('yyyyMMdd').format(DateFormat('MMM-dd-yyyy').parse(acController.orgnewChekout.value))}",
-        "hotelCode": "259-284294",
+        // "hotelCode": "259-284294",
+        "hotelCode": hotelCode,
         "nationality": "${acController.orgNativeCode2.value}",
         "groupByRooms": "Y",
         "cancellationPolicy": "Y",
@@ -476,17 +624,28 @@ class RoomController2 extends GetxController {
         "nationality": "${acController.orgNativeCode}",
         "groupByRooms": "Y",
         "cancellationPolicy": "Y",
-        "hotelCode": "137-901789",
+        "hotelCode": "${hotelCode}",
         "searchRoomDTOs": searchRoomDTOs,
         "agentId": userId
       }
     };
-    print("rooooooooooooommediteddddd=======>${roomData}");
+    //print("rooooooooooooommediteddddd=======>${roomData}");
+    print("ithaannnnn hotelcodeeeee===>${hotelCode}");
 
     // ==========================
 
+    String orginalHotelcode;
+    if (platform == "10") {
+      orginalHotelcode = hotelCode;
+    } else {
+      orginalHotelcode = "BAA";
+    }
+    print("orgg--${orginalHotelcode}");
+    print("rooommddddddd===>${roomData}");
+
     var response = await http.post(
-      Uri.parse("${baseUrl}custom/roomCategoryListAPIout"),
+      Uri.parse(
+          "${baseUrl}custom/roomCategoryListAPIout?hotelCode=${orginalHotelcode}"),
       body: jsonEncode(roomData),
       headers: {
         'apikey': header,
@@ -494,54 +653,149 @@ class RoomController2 extends GetxController {
       },
     );
 
-    roomCategory.clear();
+    // roomCategory.clear();
 
     if (response.statusCode == 200) {
-      print(hotelCode);
-      // print("roomtypeeee=====>>>${response.body}");
+      //''''''''''''''''''''''''''''
 
       var jsonString = jsonDecode(response.body);
-      print(jsonString);
-      // print(
-      //     "veryy nyssss===>>${jsonString["data"][0]["inhouse_roomshotelsRooms"]["data"][1]}");
 
-      print(jsonString["data"][0]["inhouse_rooms"]["data"][1]);
+      //if inhouse
+      //'''''''''''''''''''''''''
+      print("platformm==>${platform}");
 
-      List datasroom = jsonString["data"][0]["inhouse_rooms"]["data"][1];
+      if (platform == "0") {
+        print("inhouse");
+        List datasroom = jsonString["data"][0]["inhouse_rooms"]["data"][1];
 
-      if (datasroom.isEmpty) {
-        print("object");
-        isNoRoomAvailable.value = true;
+        if (datasroom.isEmpty) {
+          isNoRoomAvailable.value = true;
+          print("abc");
+        } else {
+          for (int i = 0; i < datasroom.length; i++) {
+            var hotelData = datasroom[i];
+            if (hotelData["hotel_code"] == hotelCode) {
+              isNoRoomAvailable.value = false;
+              roomcategorydata = hotelData["searchHotelRoomsDTOList"];
 
-        print("no room");
-      } else {
-        for (int i = 0;
-            i < jsonString["data"][0]["inhouse_rooms"]["data"][1].length;
-            i++) {
-          var hotelData = jsonString["data"][0]["inhouse_rooms"]["data"][1][i];
-          if (hotelData["hotel_code"] == hotelCode) {
-            isNoRoomAvailable.value = false;
+              selectedRoomCategory.value = roomcategorydata[0]["roomCategory"];
+              selectedRoomCategoryId.value =
+                  roomcategorydata[0]["intoken"].toString();
+              selectedRoomCategoryRate.value =
+                  roomcategorydata[0]["totalRate"].toString();
+              hotelIdForInJumerah.value =
+                  roomcategorydata[0]["hotel_id"].toString();
 
-            for (int i = 0;
-                i < hotelData["searchHotelRoomsDTOList"].length;
-                i++) {
-              roomCategory.add([
-                hotelData["searchHotelRoomsDTOList"][i]["roomCategory"],
-                hotelData["searchHotelRoomsDTOList"][i]["hotel_roomtype_id"],
-                hotelData["searchHotelRoomsDTOList"][i]["totalRate"]
-              ]);
-            }
-            if (roomCategory.isNotEmpty) {
-              selectedRoomCategory.value = roomCategory[0][0];
-              selectedRoomCategoryId.value = roomCategory[0][1].toString();
-              selectedRoomCategoryRate.value = roomCategory[0][2].toString();
+              selectedRoomData = roomcategorydata[0];
             }
           }
+          if (roomcategorydata.isEmpty) {
+            isNoRoomAvailable.value = true;
+          }
+        }
+
+        //  print(roomcategorydata);
+        print(selectedRoomCategory.value);
+        print(selectedRoomCategoryId.value);
+        print(selectedRoomCategoryRate.value);
+      }
+
+      //'''''''''''''''''''''''''''''''''''''''''''''''''''
+      else if (platform == "12") {
+        Map<String, dynamic> datasroom =
+            jsonString["data"][2]["iwtx_rooms"]["data"];
+
+        if (datasroom["hotels"]["hotel"] == null) {
+          isNoRoomAvailable.value = true;
+        } else {
+          //List roomDataiwtx = [];
+          isNoRoomAvailable.value = false;
+          for (int i = 0;
+              i <
+                  datasroom["hotels"]["hotel"]["roomTypeDetails"]["rooms"]
+                          ["room"]
+                      .length;
+              i++) {
+            roomcategorydata.addAll([
+              datasroom["hotels"]["hotel"]["roomTypeDetails"]["rooms"]["room"]
+                  [i]
+            ]);
+            // print("rrrrr${roomcategorydata}");
+            selectedRoomCategory.value = roomcategorydata[0]["roomType"];
+            // selectedRoomCategoryId.value =
+            //     //roomcategorydata[0]["roomTypeCode"].toString();
+            //     roomcategorydata[0]["roomTypeCode"].toString();
+            selectedRoomCategoryRate.value =
+                roomcategorydata[0]["totalRate"].toString();
+            selectedRoomRatePlanId.value =
+                roomcategorydata[0]["ratePlanId"].toString();
+            selectedRoomTypeCode.value =
+                roomcategorydata[0]["roomTypeCode"].toString();
+            selectedRoomData = roomcategorydata[0];
+          }
+
+          if (roomcategorydata.isEmpty) {
+            isNoRoomAvailable.value = true;
+          }
+        }
+
+        print("ayyoooo");
+        // print(roomcategorydata);
+        print(selectedRoomCategory.value);
+        print(selectedRoomCategoryId.value);
+        print(selectedRoomCategoryRate.value);
+      }
+      //''''''''''''''''''''''''''''''''''''''''''
+      else if (platform == "11") {
+        print("atharva");
+      }
+      //''''''''''''''''''''''''''''''''''''''
+      else {
+        List datasroom = jsonString["data"][1]["jumeirah_rooms"]["data"];
+
+        if (datasroom.isEmpty) {
+          isNoRoomAvailable.value = true;
+          print("abc");
+        } else {
+          for (int i = 0; i < datasroom.length; i++) {
+            var hotelData = datasroom[i];
+            isNoRoomAvailable.value = false;
+            roomcategorydata = hotelData["searchHotelRoomsDTOList"];
+
+            selectedRoomCategory.value = roomcategorydata[0]["roomCategory"];
+            selectedRoomCategoryId.value =
+                roomcategorydata[0]["intoken"].toString();
+            selectedRoomCategoryRate.value =
+                roomcategorydata[0]["totalRate"].toString();
+            hotelIdForInJumerah.value =
+                roomcategorydata[0]["hotel_id"].toString();
+
+            selectedRoomData = roomcategorydata[0];
+          }
+          if (roomcategorydata.isEmpty) {
+            isNoRoomAvailable.value = true;
+          }
+        }
+
+        //print(roomcategorydata);
+        print(selectedRoomCategory.value);
+        print(selectedRoomCategoryId.value);
+        print(selectedRoomCategoryRate.value);
+      }
+      //'''''''''''''''''''''''''''''''''''''''''''''
+
+      if (isNoRoomAvailable.value == false) {
+        if (platform == "0" || platform == "10") {
+          inhouseJumerahCancelPolicy();
+        } else if (platform == "12") {
+          iwtxCancelPolicy();
+        } else if (platform == "11") {
+          atharvaCancelPolicy();
         }
       }
-      print("cattt-->${selectedRoomCategoryId.value}");
-
-      print("success");
+      // else  if (isNoRoomAvailable.value == true) {
+      //     cancelPolicyloading.value = false;
+      //   }
 
       isRoomtypeLoading.value = false;
     } else {
@@ -549,14 +803,19 @@ class RoomController2 extends GetxController {
     }
   }
 
-  var isNoRoomAvailable = false.obs;
-
   @override
-  void onInit() {
-    print("object");
-    fetchRoomTypeidEdited();
+  void onInit() async {
+    print("hotelcode==>${hotelIdForInJumerah.value}");
+    await fetchRoomTypeidEdited();
     // atharvaCancelPolicy();
-    //iwtxCancelPolicy();
+    // if (platform == "12" && isNoRoomAvailable.value == false) {
+    //   iwtxCancelPolicy();
+    // } else if (platform == "0" ||
+    //     platform == "10" && isNoRoomAvailable.value == false) {
+    //   inhouseJumerahCancelPolicy();
+    // } else if (platform == "11" && isNoRoomAvailable.value == false) {
+    //   atharvaCancelPolicy();
+    // }
     super.onInit();
   }
 }
