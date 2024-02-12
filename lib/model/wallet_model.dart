@@ -23,6 +23,7 @@ class WalletModel {
   dynamic modifiedDate;
   dynamic totalcreditpaid;
   dynamic amountTobePaid;
+  dynamic grandTotalcreditLimit;
   bool active;
   bool deleted;
 
@@ -40,6 +41,7 @@ class WalletModel {
     required this.modifiedDate,
     required this.totalcreditpaid,
     required this.amountTobePaid,
+    required this.grandTotalcreditLimit,
     required this.active,
     required this.deleted,
   });
@@ -47,17 +49,18 @@ class WalletModel {
   factory WalletModel.fromJson(Map<String, dynamic> json) => WalletModel(
         agentcreditlimitId: json["agentcreditlimit_id"],
         agentId: json["agent_id"],
-        creditlimit: json["creditlimit"] ?? "",
+        creditlimit: json["creditlimit"],
         availableLimit: json["availableLimit"],
-        usedLimit: json["usedLimit"] ?? "",
+        usedLimit: json["usedLimit"],
         remark: json["remark"],
         companyName: json["company_name"],
-        createdBy: json["createdBy"] ?? "",
-        createdDate: json["createdDate"] ?? "",
-        modifiedBy: json["modifiedBy"] ?? "",
-        modifiedDate: json["modifiedDate"] ?? "",
-        totalcreditpaid: json["totalcreditpaid"] ?? "",
-        amountTobePaid: json["amountTobePaid"] ?? "",
+        createdBy: json["createdBy"],
+        createdDate: json["createdDate"],
+        modifiedBy: json["modifiedBy"],
+        modifiedDate: json["modifiedDate"],
+        totalcreditpaid: json["totalcreditpaid"],
+        amountTobePaid: json["amountTobePaid"],
+        grandTotalcreditLimit: json["grandTotalcreditLimit"],
         active: json["active"],
         deleted: json["deleted"],
       );
@@ -76,6 +79,7 @@ class WalletModel {
         "modifiedDate": modifiedDate,
         "totalcreditpaid": totalcreditpaid,
         "amountTobePaid": amountTobePaid,
+        "grandTotalcreditLimit": grandTotalcreditLimit,
         "active": active,
         "deleted": deleted,
       };

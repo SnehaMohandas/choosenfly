@@ -54,7 +54,7 @@ class GuestDetail1 extends StatelessWidget {
                 const EdgeInsets.only(left: 18, right: 18, top: 25, bottom: 14),
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              //autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -100,7 +100,6 @@ class GuestDetail1 extends StatelessWidget {
                           );
                         }).toList(),
                         onChanged: (newValue) {
-                          print("onchanges");
                           acController.selectedDdindex.clear();
 
                           acController.selectedChildIndex.value = "";
@@ -121,16 +120,6 @@ class GuestDetail1 extends StatelessWidget {
                             acController.adultDdnum.value.add(0.toString());
                             acController.ageTextControllers.add([]);
                           }
-                          print(acController.selectedChildIndex.value);
-                          print(acController.selectedDdindex);
-                          print(
-                              "childddnumm===>${acController.childDdnum.value}");
-                          print(
-                              "aduktddnum==>${acController.adultDdnum.value}");
-
-                          print(acController.ageTextControllers);
-
-                          print(acController.roomCount.value);
                         }),
                   ),
                   SizedBox(
@@ -159,11 +148,6 @@ class GuestDetail1 extends StatelessWidget {
                           // itemCount:
                           //     acController.roomCount.value == "1" ? 1 : 0,
                           itemBuilder: (context, index) {
-                            print(
-                                "adultddd=>${acController.selectedChildIndex.value}");
-                            print("adultddd=>${acController.selectedDdindex}");
-                            print("indexxxx=>${index}");
-
                             return Column(
                               children: [
                                 Row(
@@ -309,19 +293,9 @@ class GuestDetail1 extends StatelessWidget {
                                                   );
                                                 }).toList(),
                                                 onChanged: (newValue) {
-                                                  print(acController
-                                                          .selectedChildIndex
-                                                          .value ==
-                                                      index.toString());
-                                                  print(acController
-                                                      .selectedDdindex[index]);
-                                                  print(acController
-                                                      .childDdnum.value[index]);
                                                   acController
                                                       .selectedChildIndex
                                                       .value = index.toString();
-                                                  print(
-                                                      "selctedchildddindex==>${acController.selectedChildIndex.value}");
 
                                                   acController.selectedDdindex[
                                                       index] = "true";
@@ -330,24 +304,8 @@ class GuestDetail1 extends StatelessWidget {
                                                           .childDdnum[index] =
                                                       newValue!;
 
-                                                  print(
-                                                      "indexxxoo=>${acController.selectedDdindex[index]}");
-                                                  print(
-                                                      "ayyooo${acController.childDdnum[index]}");
-
-                                                  print(acController
-                                                      .ageTextControllers);
-                                                  print(acController
-                                                      .childDdnum[index]);
-                                                  print(index);
-                                                  print(acController
-                                                          .ageTextControllers[
-                                                      index]);
-
                                                   //"""""""""""''''"
-                                                  // print(acController
-                                                  //         .ageTextControllers[
-                                                  //     index]);
+
                                                   acController
                                                       .ageTextControllers[index]
                                                       .clear();
@@ -359,11 +317,6 @@ class GuestDetail1 extends StatelessWidget {
                                                               .toString()),
                                                           (index) =>
                                                               TextEditingController());
-
-                                                  print(
-                                                      "allllll=>>>${acController.ageTextControllers}");
-                                                  print(
-                                                      "specificcccc===>${acController.ageTextControllers[index]}");
                                                 }),
                                           ),
                                         ],
@@ -375,21 +328,6 @@ class GuestDetail1 extends StatelessWidget {
                                   height:
                                       MediaQuery.of(context).size.height * 0.01,
                                 ),
-                                // Obx(() => acController
-                                //                 .selectedChildIndex.value ==
-                                //             index.toString() ||
-                                //         acController.selectedDdindex[index] ==
-                                //             "true"
-                                //     ? Column(
-                                //         children: [
-                                //           Obx(() => acController.childDdnum
-                                //                       .value[index] ==
-                                //                   "0"
-                                //               ? const SizedBox()
-                                //               : const Text("child nd")),
-                                //         ],
-                                //       )
-                                //     : const Text("no")),
 
                                 //children's age
 

@@ -52,7 +52,6 @@ class BookingVoucher extends StatelessWidget {
           return Scaffold(
             floatingActionButton: FloatingActionButton(
               onPressed: () {
-                print("object");
                 _fileFromPdfUrl(
                     reqController.selectedValue.value == "Voucher"
                         ? bookVController.voucherPdfModel!.filelocationServer
@@ -111,7 +110,7 @@ class BookingVoucher extends StatelessWidget {
                 children: [
                   Container(
                     margin: EdgeInsets.symmetric(vertical: 8),
-                    height: MediaQuery.of(context).size.height * 0.06,
+                    //height: MediaQuery.of(context).size.height * 0.06,
                     width: double.infinity,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(colors: [
@@ -122,14 +121,17 @@ class BookingVoucher extends StatelessWidget {
                       //  color: Color.fromARGB(255, 228, 237, 242),
                     ),
                     child: Center(
-                      child: Text(hotelName,
-                          maxLines: 1,
-                          style: TextStyle(
-                              overflow: TextOverflow.ellipsis,
-                              color: ColorConstant.lightBlue,
-                              fontWeight: FontWeight.bold,
-                              fontSize:
-                                  MediaQuery.of(context).size.height * 0.017)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(hotelName,
+                            maxLines: 2,
+                            style: TextStyle(
+                                overflow: TextOverflow.ellipsis,
+                                color: ColorConstant.lightBlue,
+                                fontWeight: FontWeight.bold,
+                                fontSize: MediaQuery.of(context).size.height *
+                                    0.017)),
+                      ),
                     ),
                   ),
                   GestureDetector(

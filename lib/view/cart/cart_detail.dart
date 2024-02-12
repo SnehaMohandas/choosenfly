@@ -21,8 +21,8 @@ class CartDetails extends StatelessWidget {
                 const EdgeInsets.only(left: 20, right: 20, bottom: 20, top: 10),
             child: GestureDetector(
               onTap: () {
-                Get.to(() => PaymentPage(),
-                    transition: Transition.rightToLeftWithFade);
+                // Get.to(() => PaymentPage(hotelNmae: ,),
+                //     transition: Transition.rightToLeftWithFade);
               },
               child: const CustomButton(
                 child: Center(

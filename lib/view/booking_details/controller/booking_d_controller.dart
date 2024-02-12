@@ -12,10 +12,6 @@ class BookingDController extends GetxController {
   //var selectedValue = 'Upcoming'.obs;
   var isLoading = true.obs;
 
-  // void setSelectedValue(String value) {
-  //   selectedValue.value = value;
-  // }
-
   var timePeriod = DateFormat('MMM/yyyy').format(DateTime.now()).obs;
   List<List<String>> status = [
     ["Upcoming", "1"],
@@ -66,84 +62,24 @@ class BookingDController extends GetxController {
 
   //cancel booking inhouse
 
-  cancelBookinginH(bookinId) async {
+  cancelBooking(bookinId, type) async {
     try {
-      isLoading.value = true;
+      // isLoading.value = true;
       var response = await http.get(
           Uri.parse(
-              "${baseUrl}custom/cancelInhouseBookingAPIout?id=${bookinId}"),
+              "${baseUrl}/custom/singleCancelBookingAPIout?bookingId=${bookinId}&apiType=${type}"),
           headers: {'apikey': header});
       if (response.statusCode == 200) {
+        print(response.statusCode);
+
         Fluttertoast.showToast(msg: "Booking Cancelled");
-        Get.back();
+        //Get.back();
         print(response.body);
+        await fetchAllBOokings("");
       }
     } catch (e) {
     } finally {
-      isLoading.value = false;
-    }
-  }
-
-  //cancel booking jumerah
-
-  cancelBookingJum(bookinId, lastName, email) async {
-    try {
-      isLoading.value = true;
-      var response = await http.get(
-          Uri.parse(
-              "${baseUrl}custom/cancelJumeirahBookingAPIout?key=${bookinId}"),
-          headers: {'apikey': header});
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "Booking Cancelled");
-        Get.back();
-        print(response.body);
-      }
-    } catch (e) {
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  //cancel booking atharva
-
-  cancelBookingAth(
-    bookinId,
-  ) async {
-    try {
-      isLoading.value = true;
-      var response = await http.get(
-          Uri.parse(
-              "${baseUrl}custom/cancelJumeirahBookingAPIout?key=${bookinId}"),
-          headers: {'apikey': header});
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "Booking Cancelled");
-        Get.back();
-        print(response.body);
-      }
-    } catch (e) {
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  //cancel booking iwtx
-  cancelBookingIWTX(
-    bookinId,
-  ) async {
-    try {
-      isLoading.value = true;
-      var response = await http.get(
-          Uri.parse("${baseUrl}custom/iwtxCancelBookingAPIout?key=${bookinId}"),
-          headers: {'apikey': header});
-      if (response.statusCode == 200) {
-        Fluttertoast.showToast(msg: "Booking Cancelled");
-        Get.back();
-        print(response.body);
-      }
-      isLoading.value = false;
-    } catch (e) {
-    } finally {
-      // isLoading.value = false;
+      //isLoading.value = false;
     }
   }
 

@@ -327,7 +327,7 @@ class Datum {
   dynamic userType;
   String bookingdate;
   String? sellingprice;
-  String customerName;
+  dynamic customerName;
   String agentName;
   dynamic agentlpo;
   String inhouserefernce;

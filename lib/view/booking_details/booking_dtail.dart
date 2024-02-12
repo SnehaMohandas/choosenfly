@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:choose_n_fly/common_widgets/loader.dart';
 import 'package:choose_n_fly/network/network_controller.dart';
+import 'package:choose_n_fly/shimmer/all_bookings.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/booking_details/booking_d_inner.dart';
 import 'package:choose_n_fly/view/booking_details/controller/booking_d_controller.dart';
 import 'package:choose_n_fly/view/booking_details/req_confirmation.dart';
+import 'package:choose_n_fly/view/home/Home%20Page.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -45,7 +47,8 @@ class BookingDetail extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         Get.delete<BookingDController>();
-        return true;
+        Get.offAll(() => HomeScreen());
+        return false;
       },
       child: Obx(() {
         if (networkController.isConnected.value) {
@@ -60,8 +63,9 @@ class BookingDetail extends StatelessWidget {
               leading: IconButton(
                   onPressed: () async {
                     await Get.delete<BookingDController>();
+                    Get.offAll(() => HomeScreen());
 
-                    Get.back();
+                    // Get.back();
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios,
@@ -100,22 +104,24 @@ class BookingDetail extends StatelessWidget {
                           ? null
                           : bookingdController.selectedStatus.value,
                       decoration: InputDecoration(
-                          contentPadding: EdgeInsets.only(
+                          contentPadding: const EdgeInsets.only(
                               top: 6, bottom: 6, left: 14, right: 14),
                           hintStyle: TextingStyle.font14normalLb,
                           hintText: 'Select Status',
                           enabledBorder: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorConstant.grey),
+                              borderSide:
+                                  const BorderSide(color: ColorConstant.grey),
                               borderRadius: BorderRadius.circular(10)),
                           border: OutlineInputBorder(
-                              borderSide: BorderSide(color: ColorConstant.grey),
+                              borderSide:
+                                  const BorderSide(color: ColorConstant.grey),
                               borderRadius: BorderRadius.circular(10))),
                       items: bookingdController.status.map((item) {
                         return DropdownMenuItem(
                             value: item[1],
                             child: Text(
                               item[0],
-                              style: TextStyle(fontSize: 14),
+                              style: const TextStyle(fontSize: 14),
                             ));
                       }).toList(),
                       onChanged: (v) async {
@@ -153,23 +159,25 @@ class BookingDetail extends StatelessWidget {
                             onTap: () {
                               showMonthPicker(
                                       context: context,
-                                      initialDate: DateTime.now(),
+                                      initialDate: DateFormat("MMM/yyyy").parse(
+                                          bookingdController.timePeriod.value),
+                                      // initialDate: DateTime.now(),
                                       firstDate: bookingdController
                                                   .selectedStatus.value ==
                                               "1"
                                           ? DateTime.now()
-                                          : DateTime.now()
-                                              .subtract(Duration(days: 3650)),
+                                          : DateTime.now().subtract(
+                                              const Duration(days: 3650)),
                                       lastDate: bookingdController
                                                   .selectedStatus.value ==
                                               "2"
                                           ? DateTime.now()
-                                          : bookingdController
-                                                      .selectedStatus.value ==
-                                                  "3"
-                                              ? DateTime.now()
-                                              : DateTime.now()
-                                                  .add(Duration(days: 3650)))
+                                          // : bookingdController
+                                          //             .selectedStatus.value ==
+                                          //         "3"
+                                          //     ? DateTime.now()
+                                          : DateTime.now()
+                                              .add(const Duration(days: 3650)))
                                   .then((date) async {
                                 if (date != null) {
                                   var selctddate = date;
@@ -268,7 +276,7 @@ class BookingDetail extends StatelessWidget {
                                             color: ColorConstant.grey),
                                         borderRadius:
                                             BorderRadius.circular(10)),
-                                    contentPadding: const EdgeInsets.all(10))),
+                                    contentPadding: const EdgeInsets.all(12))),
                           ),
                         )
                       ],
@@ -276,16 +284,7 @@ class BookingDetail extends StatelessWidget {
                   ),
                   Obx(
                     () => bookingdController.isLoading.value == true
-                        ? Expanded(
-                            child: Container(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  loader(),
-                                ],
-                              ),
-                            ),
-                          )
+                        ? AllBookingShimmer()
                         : bookingdController.noBooking.value == true
                             ? Expanded(
                                 child: Container(
@@ -303,7 +302,7 @@ class BookingDetail extends StatelessWidget {
                                               fit: BoxFit.cover),
                                         ),
                                       ),
-                                      Text(
+                                      const Text(
                                         "No Bookings",
                                         style: TextStyle(
                                             color: ColorConstant.primaryColor,
@@ -314,7 +313,7 @@ class BookingDetail extends StatelessWidget {
                                 ),
                               )
                             : bookingdController.exceptionCatched.value == true
-                                ? Center(
+                                ? const Center(
                                     child: Text(
                                       "SERVER  ERROR",
                                       style: TextStyle(
@@ -347,6 +346,11 @@ class BookingDetail extends StatelessWidget {
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .hotelname,
+                                                        apiType:
+                                                            bookingdController
+                                                                .allBookingsModel!
+                                                                .data[index]
+                                                                .apitype,
                                                         agentName:
                                                             bookingdController
                                                                 .allBookingsModel!
@@ -357,21 +361,11 @@ class BookingDetail extends StatelessWidget {
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .bookingCode,
-                                                        checKin:
-                                                            bookingdController
-                                                                .allBookingsModel!
-                                                                .data[index]
-                                                                .checkIn,
                                                         bookingDate:
                                                             bookingdController
                                                                 .allBookingsModel!
                                                                 .data[index]
                                                                 .bookingdate,
-                                                        checkOut:
-                                                            bookingdController
-                                                                .allBookingsModel!
-                                                                .data[index]
-                                                                .checkOut,
                                                         paymentStatus:
                                                             bookingdController
                                                                 .allBookingsModel!
@@ -475,10 +469,10 @@ class BookingDetail extends StatelessWidget {
                                                   //   ),
                                                   // ),
                                                   Padding(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                            vertical: 13,
-                                                            horizontal: 13),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 13,
+                                                        horizontal: 13),
                                                     child: Column(
                                                       mainAxisAlignment:
                                                           MainAxisAlignment
@@ -508,7 +502,8 @@ class BookingDetail extends StatelessWidget {
                                                                 .data[index]
                                                                 .hotelname,
                                                             maxLines: 1,
-                                                            style: TextStyle(
+                                                            style:
+                                                                const TextStyle(
                                                               overflow:
                                                                   TextOverflow
                                                                       .ellipsis,
@@ -519,20 +514,36 @@ class BookingDetail extends StatelessWidget {
                                                           ),
                                                         ),
                                                         Padding(
-                                                          padding: EdgeInsets
-                                                              .symmetric(
-                                                                  vertical: 7),
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  vertical: 0),
                                                           child: Text(
                                                             bookingdController
                                                                     .allBookingsModel!
                                                                     .data[index]
                                                                     .totalprice ??
                                                                 "",
-                                                            style: TextStyle(
+                                                            style: const TextStyle(
                                                                 color:
                                                                     ColorConstant
                                                                         .red,
-                                                                fontSize: 12),
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                        ),
+                                                        Text(
+                                                          bookingdController
+                                                              .allBookingsModel!
+                                                              .data[index]
+                                                              .bookingdate,
+                                                          style:
+                                                              const TextStyle(
+                                                            color: ColorConstant
+                                                                .lightBlue,
+                                                            fontSize: 12,
                                                           ),
                                                         ),
                                                         Container(
@@ -567,19 +578,18 @@ class BookingDetail extends StatelessWidget {
                                                                         .width *
                                                                     0.34,
                                                                 child: Text(
-                                                                  bookingdController
-                                                                      .allBookingsModel!
-                                                                      .data[
-                                                                          index]
-                                                                      .bookingdate,
-                                                                  style: TextStyle(
-                                                                      color: ColorConstant
-                                                                          .lightBlue,
-                                                                      fontSize:
-                                                                          12,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .bold),
+                                                                  // bookingdController
+                                                                  //     .allBookingsModel!
+                                                                  //     .data[
+                                                                  //         index]
+                                                                  //     .bookingdate,
+                                                                  "Deadline : ${bookingdController.allBookingsModel!.data[index].deadlineTime ?? ""}",
+
+                                                                  style:
+                                                                      const TextStyle(
+                                                                    fontSize:
+                                                                        12,
+                                                                  ),
                                                                 ),
                                                                 // height: 39,
                                                               ),
@@ -614,11 +624,23 @@ class BookingDetail extends StatelessWidget {
                                                                         MainAxisAlignment
                                                                             .spaceBetween,
                                                                     children: [
+                                                                      //checking if eadline datefor cancelaion is over
+                                                                      // DateFormat("dd/MM/yyyy").parse(bookingdController.allBookingsModel!.data[index].deadlineTime ?? "09/02/2024").isBefore(DateTime(
+                                                                      //         DateTime.now().year,
+                                                                      //         DateTime.now().month,
+                                                                      //         DateTime.now().day))
+                                                                      //     ? SizedBox()
+                                                                      //     :
                                                                       GestureDetector(
                                                                         onTap:
                                                                             () {
                                                                           showDialogue(
-                                                                              context);
+                                                                            context,
+                                                                            bookingdController.allBookingsModel!.data[index].apitype,
+                                                                            bookingdController,
+                                                                            bookingdController.allBookingsModel!.data[index].bookingId,
+                                                                            bookingdController.allBookingsModel!.data[index].hotelId.toString(),
+                                                                          );
                                                                         },
                                                                         child:
                                                                             Container(
@@ -661,7 +683,7 @@ class BookingDetail extends StatelessWidget {
                                                                           // color:
                                                                           //     Colors.blue,
                                                                           child:
-                                                                              Icon(
+                                                                              const Icon(
                                                                             Icons.email,
                                                                             size:
                                                                                 20,
@@ -677,7 +699,7 @@ class BookingDetail extends StatelessWidget {
                                                               )
                                                             ],
                                                           ),
-                                                        )
+                                                        ),
                                                       ],
                                                     ),
                                                   ),
@@ -700,14 +722,20 @@ class BookingDetail extends StatelessWidget {
     );
   }
 
-  showDialogue(BuildContext context) {
+  showDialogue(
+    BuildContext context,
+    apiType,
+    BookingDController bookingDController,
+    bookingId,
+    String hotelId,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return Container(
           child: AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(20.0))),
+            // shape: const RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.all(Radius.circular(20.0))),
             title:
                 const Text('Cancel Booking?', style: TextStyle(fontSize: 17)),
             content: const Text('Are you sure want to cancel?',
@@ -721,14 +749,27 @@ class BookingDetail extends StatelessWidget {
               ),
               ElevatedButton(
                   style: const ButtonStyle(
-                      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.all(Radius.circular(12.0)))),
+                      // ////////////
                       backgroundColor: MaterialStatePropertyAll(
                           Color.fromARGB(255, 219, 61, 61))),
                   onPressed: () {
-                    Fluttertoast.showToast(msg: "Booking Cancelled");
-                    Navigator.of(context).pop();
+                    Navigator.pop(context);
+                    //this is for testing canel bookingg of test hotel only
+                    if (apiType == 0 && hotelId == "291") {
+                      bookingDController.cancelBooking(bookingId, apiType);
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "only test hotels can be canceled");
+                    }
+
+                    //  else if (apiType == 10) {
+                    //   bookingDController.cancelBookingJum(bookingId);
+                    // }
+                    // if (apiType == 11) {
+                    //   bookingDController.cancelBookingAth(bookingId);
+                    // } else {
+                    //   bookingDController.cancelBookingIWTX(bookingId);
+                    // }
                   },
                   child: const Text(
                     "Yes",

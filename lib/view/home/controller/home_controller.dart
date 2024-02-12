@@ -13,16 +13,21 @@ class HomeController extends GetxController {
   var exceptionCatched = false.obs;
 
   //fetching wallet
-  FetchWallet(id) async {
+  FetchWallet() async {
     isLoading.value = true;
     try {
       var response = await http.get(
-          Uri.parse("${baseUrl}custom/agentCreditLimitAPIout?agentId=${id}"),
+          Uri.parse(
+              "${baseUrl}custom/agentCreditLimitAPIout?agentId=${userId}"),
           headers: {'apikey': header});
       if (response.statusCode == 200) {
+        print(header);
+        print(response);
         print("object");
         var data = walletModelFromJson(response.body);
         walletModel = data;
+        print(data);
+        availableLimit = walletModel!.availableLimit;
       } else {
         exceptionCatched.value = true;
         print("000000");
@@ -44,9 +49,8 @@ class HomeController extends GetxController {
         print("object");
         var data = dashboardCountModelFromJson(response.body);
         dashboardCountModel = data;
-        print("dashboaddddd===>${data}");
       } else {
-        //exceptionCatched.value = true;
+        exceptionCatched.value = true;
         print("000000");
       }
       //isLoading.value = false;
@@ -57,7 +61,7 @@ class HomeController extends GetxController {
 
   @override
   void onInit() {
-    FetchWallet(agentId);
+    FetchWallet();
     // TODO: implement onInit
     super.onInit();
   }

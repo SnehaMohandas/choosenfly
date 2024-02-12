@@ -90,7 +90,7 @@ class BookingVoucherController extends GetxController {
               "${baseUrl}custom/confirmationPdfAPIout?id=${hotelBookId}&bookingid=${bookingId}"),
           headers: {'apikey': header});
       if (response.statusCode == 200) {
-        print("object");
+        print(response.body);
         var data = confirmPdfModelFromJson(response.body);
         print(data);
         confirmPdfModel = data;
@@ -109,6 +109,8 @@ class BookingVoucherController extends GetxController {
   }
 
   sendVoucherMail(hotelBookId, bookingId, email) async {
+    print(
+        "${baseUrl}custom/sendMailVoucherAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}");
     var response = await http.get(
         Uri.parse(
             "${baseUrl}custom/sendMailVoucherAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),
@@ -123,7 +125,8 @@ class BookingVoucherController extends GetxController {
   }
 
   sendRequestMail(hotelBookId, bookingId, email) async {
-    print("object");
+    print(
+        "${baseUrl}custom/sendMailAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}");
     var response = await http.get(
         Uri.parse(
             "${baseUrl}custom/sendMailAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),
@@ -139,6 +142,8 @@ class BookingVoucherController extends GetxController {
   }
 
   sendConfirmMail(hotelBookId, bookingId, email) async {
+    print(
+        "${baseUrl}custom/sendMailConfirmationAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}");
     var response = await http.get(
         Uri.parse(
             "${baseUrl}custom/sendMailConfirmationAPIout?id=${hotelBookId}&bookingid=${bookingId}&email=${email}"),

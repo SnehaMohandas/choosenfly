@@ -1,5 +1,6 @@
 import 'package:choose_n_fly/common_widgets/loader.dart';
 import 'package:choose_n_fly/network/network_controller.dart';
+import 'package:choose_n_fly/shimmer/req_con_voucher.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/booking_details/booking_vocher.dart';
 import 'package:choose_n_fly/view/booking_details/controller/booking_voucher_controller.dart';
@@ -135,14 +136,7 @@ class ReqConfirmScreen extends StatelessWidget {
                 Obx(
                   () => reqController.isLoading.value == true
                       ? Expanded(
-                          child: Container(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                loader(),
-                              ],
-                            ),
-                          ),
+                          child: ReqVoucherShimmer(),
                         )
                       : Padding(
                           padding: const EdgeInsets.symmetric(
@@ -313,6 +307,11 @@ class ReqConfirmScreen extends StatelessWidget {
                                                     "Voucher"
                                                 ? Text(reqController
                                                         .voucherModel![0]
+                                                        .hotelBookingDtoList[0]
+                                                        .clientrefernce ??
+                                                    reqController
+                                                        .confirmModel!
+                                                        .bookingDetails
                                                         .hotelBookingDtoList[0]
                                                         .clientrefernce ??
                                                     "")
@@ -625,6 +624,11 @@ class ReqConfirmScreen extends StatelessWidget {
                                                         .voucherModel![0]
                                                         .hotelBookingDtoList[0]
                                                         .checkInText ??
+                                                    reqController
+                                                        .confirmModel!
+                                                        .bookingDetails
+                                                        .hotelBookingDtoList[0]
+                                                        .checkInText ??
                                                     "")
                                                 : reqController.selectedValue
                                                             .value ==
@@ -681,6 +685,11 @@ class ReqConfirmScreen extends StatelessWidget {
                                                     "Voucher"
                                                 ? Text(reqController
                                                         .voucherModel![0]
+                                                        .hotelBookingDtoList[0]
+                                                        .checkOutText ??
+                                                    reqController
+                                                        .confirmModel!
+                                                        .bookingDetails
                                                         .hotelBookingDtoList[0]
                                                         .checkOutText ??
                                                     "")
@@ -900,11 +909,13 @@ class ReqConfirmScreen extends StatelessWidget {
                               ColorConstant.primaryColor)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          Navigator.of(context).pop();
+
                           await reqController.priceRefChange(
                               hotelbookingidPriceRef,
                               priceController.text,
                               apiType);
-                          Navigator.of(context).pop();
+                          //Navigator.of(context).pop();
                         }
                       },
                       child: Obx(
@@ -982,11 +993,12 @@ class ReqConfirmScreen extends StatelessWidget {
                               ColorConstant.primaryColor)),
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
+                          Navigator.of(context).pop();
+
                           await reqController.priceRefChange(
                               hotelbookingidPriceRef,
                               supplierController.text,
                               apiType);
-                          Navigator.of(context).pop();
                         }
                       },
                       child: Obx(

@@ -58,7 +58,7 @@ class LoginController extends GetxController {
         Get.offAll(HomeScreen(), transition: Transition.rightToLeftWithFade);
       } else {
         Fluttertoast.showToast(
-          msg: "Login Failed",
+          msg: "Incorrect username or password",
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.BOTTOM,
           backgroundColor: Color.fromARGB(255, 131, 23, 15),

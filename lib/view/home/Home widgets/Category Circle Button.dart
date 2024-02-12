@@ -8,11 +8,13 @@ class CategoryCircleBtn extends StatelessWidget {
   final double fontSize;
   final Color textColor;
   final Color backgroundColor;
+  final Color color;
 
   const CategoryCircleBtn({
     Key? key,
     required this.text,
     required this.imagePath,
+    required this.color,
     this.imageSize = 50,
     required this.fontSize,
     this.textColor = ColorConstant.white,
@@ -40,9 +42,10 @@ class CategoryCircleBtn extends StatelessWidget {
           child: Center(
             child: Image.asset(
               imagePath,
-              color: Colors.grey,
-              height: 26,
-              width: 26,
+              filterQuality: FilterQuality.high,
+              color: color,
+              height: 28,
+              width: 28,
             ),
           ),
         ),

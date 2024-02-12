@@ -1,9 +1,11 @@
 import 'dart:ffi';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:choose_n_fly/common_widgets/custom_button.dart';
 import 'package:choose_n_fly/common_widgets/loader.dart';
 import 'package:choose_n_fly/utils/clr_constant.dart';
+import 'package:choose_n_fly/utils/consts.dart';
 import 'package:choose_n_fly/utils/text_styles.dart';
 import 'package:choose_n_fly/view/accommodation/controller/acc_controller.dart';
 import 'package:choose_n_fly/view/booking/booking_page.dart';
@@ -17,34 +19,39 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:readmore/readmore.dart';
 
 import '../../network/network_controller.dart';
 
 class RoomDetails2 extends StatelessWidget {
-  RoomDetails2({
-    super.key,
-    this.nights,
-    this.roomCount,
-    this.adultCount,
-    this.childCount,
-    this.childAge,
-    this.hotelCode,
-    this.hotelName,
-    this.hotelDetails,
-    this.platform,
-    this.hotelId,
-  });
+  RoomDetails2(
+      {super.key,
+      this.nights,
+      this.roomCount,
+      this.adultCount,
+      this.childCount,
+      //this.childAge,
+      this.hotelCode,
+      this.hotelName,
+      this.hotelDetails,
+      this.starRating,
+      this.platform,
+      this.hotelId,
+      this.hotelcodeForDetail});
   final NetworkController networkController = Get.find<NetworkController>();
+
+  String? hotelcodeForDetail;
 
   var nights;
   var roomCount;
   List? adultCount;
   List? childCount;
-  List? childAge;
+  //List? childAge;
   String? hotelCode;
   String? hotelName;
   String? hotelDetails;
+  String? starRating;
   String? platform;
   int? hotelId;
   int itemLimit = 1;
@@ -87,10 +94,18 @@ class RoomDetails2 extends StatelessWidget {
           var acController = Get.find<AccomodationController>();
 
           var roomController = Get.put(RoomController2(
-              nights ?? "", acController, hotelCode!, platform));
+              nights ?? "",
+              acController,
+              hotelCode!,
+              platform,
+              hotelcodeForDetail.toString()));
+          print("rrrrrroooommm--${roomController.isRoomtypeLoading.value}");
+          print("imgggggg${roomController.hotelimg.value}");
+
           return Scaffold(
             bottomSheet: Obx(
               () => roomController.isRoomtypeLoading.value == true ||
+                      roomController.hoteldetailLoading.value == true ||
                       roomController.isNoRoomAvailable.value == true ||
                       platform == "11"
                   ? const SizedBox()
@@ -112,61 +127,19 @@ class RoomDetails2 extends StatelessWidget {
                                 () => BookingPage(
                                       roomController: roomController,
                                       acController: acController,
-                                      checkinD: roomController
-                                                  .isDateShown.value ==
-                                              true
-                                          ? roomController.newCheckinDate.value
-                                          // : acController.isDateShown.value == true
-                                          //     ? acController.newCheckinDate.value
-                                          : acController.orgnewChekin.value !=
-                                                  ""
-                                              ? acController.orgnewChekin.value
-                                              : acController.isSearchtapped
-                                                          .value ==
-                                                      true
-                                                  ? acController
-                                                      .newCheckinDate.value
-                                                  : "",
-                                      checkoutD: roomController
-                                                  .isDateShown.value ==
-                                              true
-                                          ? roomController.newCheckoutDate.value
-                                          : acController.orgnewChekout.value !=
-                                                  ""
-                                              ? acController.orgnewChekout.value
-                                              : acController.isSearchtapped
-                                                          .value ==
-                                                      true
-                                                  ? acController
-                                                      .newCheckoutDate.value
-                                                  // : acController.isDateShown.value == true
-                                                  //     ? acController.newCheckoutDate.value
-                                                  : "",
-                                      roomDetail: roomController
-                                                  .accommodationDetails !=
-                                              null
-                                          ? roomController.accommodationDetails
-                                          : acController
-                                                      .orgAccomodationDetails !=
-                                                  null
-                                              ? acController
-                                                  .orgAccomodationDetails
-                                              : acController.isSearchtapped
-                                                          .value ==
-                                                      true
-                                                  ? acController
-                                                      .accommodationDetails
-                                                  //============
-                                                  // : acController.accommodationDetails != null
-                                                  //     ? acController.accommodationDetails
-                                                  //=======
-                                                  : [],
+                                      checkinD:
+                                          roomController.newCheckinDate.value,
+                                      checkoutD:
+                                          roomController.newCheckoutDate.value,
+                                      roomDetail:
+                                          roomController.accommodationDetails,
                                       platForm: platform,
                                       hotelId: hotelId,
                                       totalPrice: roomController
                                           .selectedRoomCategoryRate.value,
                                       selectedRoomCategoryData:
                                           roomController.selectedRoomData,
+                                      hotelName: hotelName,
                                       // sellingPrice: roomController
                                       //     .selectedSellingPrice.value,
 
@@ -207,12 +180,22 @@ class RoomDetails2 extends StatelessWidget {
                   },
                   icon: const Icon(
                     Icons.arrow_back_ios,
-                    color: ColorConstant.white,
+                    color: ColorConstant.black,
                   )),
             ),
-            body: Obx(() => roomController.isRoomtypeLoading.value == true
-                ? Center(
-                    child: loader(),
+            body: Obx(() => roomController.isRoomtypeLoading.value == true ||
+                    roomController.hoteldetailLoading.value == true
+                ? Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Center(
+                        child: loader(),
+                      ),
+                      const SizedBox(
+                        height: 5,
+                      ),
+                      const Text(" Checking availability...")
+                    ],
                   )
                 : SingleChildScrollView(
                     // physics: BouncingScrollPhysics(),
@@ -223,287 +206,239 @@ class RoomDetails2 extends StatelessWidget {
                         children: [
                           Stack(
                             children: [
-                              Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  height:
-                                      MediaQuery.of(context).size.height * 0.37,
-                                  child: Obx(
-                                    () => CarouselSlider.builder(
-                                      itemCount: roomController
-                                                  .isInteriorClicked.value ==
-                                              true
-                                          ? roomController.interior.length
-                                          : roomController.exterior.length,
-                                      itemBuilder: (context, index, realIndex) {
-                                        return roomController
-                                                    .isInteriorClicked.value ==
-                                                true
-                                            ? Container(
+                              Obx(
+                                () => roomController.hotelimg.length == 0
+                                    ? Container(
+                                        height:
+                                            MediaQuery.of(context).size.height *
+                                                0.32,
+                                        width: double.infinity,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(8.531),
+                                        ),
+                                        child: const Icon(Icons.error),
+                                      )
+                                    : CarouselSlider(
+                                        options: CarouselOptions(
+                                            enableInfiniteScroll: true,
+                                            aspectRatio: 18 / 5,
+                                            viewportFraction: 1.0,
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.32,
+                                            autoPlay: roomController
+                                                        .hotelimg.length ==
+                                                    1
+                                                ? false
+                                                : true),
+                                        items: roomController.hotelimg.map((e) {
+                                          return Builder(
+                                              builder: (BuildContext context) {
+                                            return CachedNetworkImage(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.32,
+                                              imageUrl: platform == "0"
+                                                  ? "$imgUrl${e.toString()}"
+                                                  : e.toString(),
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
                                                 height: MediaQuery.of(context)
                                                         .size
                                                         .height *
-                                                    0.37,
+                                                    0.32,
+                                                width: double.infinity,
                                                 decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            roomController
-                                                                    .interior[
-                                                                index]),
-                                                        fit: BoxFit.cover)),
-                                              )
-                                            : Container(
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .height *
-                                                    0.37,
-                                                decoration: BoxDecoration(
-                                                    image: DecorationImage(
-                                                        image: AssetImage(
-                                                            roomController
-                                                                    .exterior[
-                                                                index]),
-                                                        fit: BoxFit.cover)),
-                                              );
-                                      },
-                                      options: CarouselOptions(
-                                          onPageChanged: (index, reason) {
-                                            if (roomController
-                                                    .isInteriorClicked.value ==
-                                                true) {
-                                              roomController.interiorIndex
-                                                  .value = "${index + 1}";
-                                            } else {
-                                              roomController.exteriorIndex
-                                                  .value = "${index + 1}";
-                                            }
-                                          },
-                                          height: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.37,
-                                          // enlargeCenterPage: true,
-                                          // aspectRatio: 1,
-                                          //  autoPlayCurve: Curves.elasticIn,
-                                          enableInfiniteScroll: true,
-                                          viewportFraction: 1,
-                                          autoPlay: true),
-                                    ),
-                                  )),
-                              Positioned(
-                                top: MediaQuery.of(context).size.height * 0.3,
-                                left: 20,
-                                child: Obx(
-                                  () => Container(
-                                    height: MediaQuery.of(context).size.height *
-                                        0.035,
-                                    width:
-                                        MediaQuery.of(context).size.width * 0.4,
-                                    decoration: BoxDecoration(
-                                        color: Colors.white,
-                                        borderRadius:
-                                            BorderRadius.circular(20)),
-                                    child: Row(
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.cover),
+                                                ),
+                                              ),
+                                              placeholder: (context, url) =>
+                                                  Center(
+                                                child: Lottie.asset(
+                                                    "assets/animation/Animation - 1700807305736.json",
+                                                    fit: BoxFit.cover),
+                                              ),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  roomController
+                                                          .hotelimg.isEmpty
+                                                      ? const Center(
+                                                          child:
+                                                              Icon(Icons.error))
+                                                      : const Center(
+                                                          child: Icon(
+                                                              Icons.error)),
+                                            );
+                                          });
+                                        }).toList(),
+                                      ),
+                              ),
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(
+                                left: 15, top: 16, right: 15),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(right: 2),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
-                                        const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            roomController
-                                                .isInteriorClicked.value = true;
-                                          },
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 4),
                                           child: Text(
-                                            'Interior',
+                                            hotelName!,
+                                            maxLines: 2,
                                             style: TextStyle(
-                                                color: roomController
-                                                            .isInteriorClicked
-                                                            .value ==
-                                                        true
-                                                    ? ColorConstant.primaryColor
-                                                    : ColorConstant.darkgrey,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12),
+                                              overflow: TextOverflow.ellipsis,
+                                              fontSize: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.024,
+                                              fontWeight: FontWeight.w600,
+                                            ),
                                           ),
                                         ),
-                                        const Spacer(),
-                                        const VerticalDivider(
-                                          thickness: 1,
-                                        ),
-                                        const Spacer(),
-                                        GestureDetector(
-                                          onTap: () {
-                                            roomController.isInteriorClicked
-                                                .value = false;
-                                          },
-                                          child: Text(
-                                            'Exterior',
-                                            style: TextStyle(
-                                                color: roomController
-                                                            .isInteriorClicked
+                                        hotelDetails != ""
+                                            ? Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.location_on_outlined,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  Expanded(
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                              right: 3),
+                                                      child: Text(
+                                                        "  ${hotelDetails!}",
+                                                        maxLines: 2,
+                                                        style: TextStyle(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            fontSize: MediaQuery.of(
+                                                                        context)
+                                                                    .size
+                                                                    .height *
+                                                                0.018,
+                                                            color: Colors
+                                                                .grey.shade400),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              )
+                                            : const SizedBox(),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 3),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.star,
+                                                    size: 14,
+                                                    color: Colors.orange,
+                                                  ),
+                                                  Container(
+                                                    height: 24,
+                                                    width: 48,
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.orange,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              8),
+                                                    ),
+                                                    child: Center(
+                                                      child: Text(
+                                                        '${starRating}/5',
+                                                        style: const TextStyle(
+                                                          fontSize: 12,
+                                                          fontWeight:
+                                                              FontWeight.w700,
+                                                          color: Colors.white,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Obx(
+                                                () => roomController
+                                                            .selectedRoomCategoryRate
                                                             .value ==
-                                                        true
-                                                    ? ColorConstant.darkgrey
-                                                    : ColorConstant
-                                                        .primaryColor,
-                                                fontWeight: FontWeight.w600,
-                                                fontSize: 12),
+                                                        ""
+                                                    ? const SizedBox()
+                                                    : Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                                right: 13,
+                                                                top: 7),
+                                                        child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .end,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            const Text(
+                                                              'Best Offer    ',
+                                                              style: TextStyle(
+                                                                fontSize: 12,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: ColorConstant
+                                                                    .lightBlue,
+                                                              ),
+                                                            ),
+                                                            Obx(
+                                                              () => Text(
+                                                                "${roomController.selectedRoomCategoryRate.value.toString()}  ${roomController.selectedCurrCode.value}",
+                                                                style: TextStyle(
+                                                                    color: const Color(
+                                                                        0xFF149AED),
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    fontSize: MediaQuery.of(context)
+                                                                            .size
+                                                                            .height *
+                                                                        0.025),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                              )
+                                            ],
                                           ),
-                                        ),
-                                        const Spacer()
+                                        )
                                       ],
                                     ),
                                   ),
                                 ),
-                              ),
-                              Positioned(
-                                  top: MediaQuery.of(context).size.height * 0.3,
-                                  left:
-                                      MediaQuery.of(context).size.width * 0.77,
-                                  child: Obx(
-                                    () => Container(
-                                      height:
-                                          MediaQuery.of(context).size.height *
-                                              0.035,
-                                      width: MediaQuery.of(context).size.width *
-                                          0.17,
-                                      decoration: BoxDecoration(
-                                          color: const Color(0XFF161616),
-                                          borderRadius:
-                                              BorderRadius.circular(20)),
-                                      child: Row(
-                                        children: [
-                                          Image.asset(
-                                            'assets/images/material-symbols_image-outline-rounded.png',
-                                            height: 100,
-                                            filterQuality: FilterQuality.high,
-                                          ),
-                                          roomController.isInteriorClicked
-                                                      .value ==
-                                                  true
-                                              ? Text(
-                                                  "${roomController.interiorIndex.value}/${roomController.interior.length}",
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
-                                                )
-                                              : Text(
-                                                  "${roomController.exteriorIndex.value}/${roomController.exterior.length}",
-                                                  style: const TextStyle(
-                                                      color: Colors.white),
-                                                )
-                                        ],
-                                      ),
-                                    ),
-                                  ))
-                            ],
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 15, top: 16),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        hotelName!,
-                                        maxLines: 2,
-                                        style: TextStyle(
-                                          overflow: TextOverflow.ellipsis,
-                                          fontSize: MediaQuery.of(context)
-                                                  .size
-                                                  .height *
-                                              0.024,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
-                                        hotelDetails!,
-                                        style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.018,
-                                            color: Colors.grey.shade400),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(top: 5),
-                                        child: Row(
-                                          children: [
-                                            const Icon(
-                                              Icons.star,
-                                              size: 12,
-                                              color: Colors.orange,
-                                            ),
-                                            Container(
-                                              height: 20,
-                                              width: 40,
-                                              decoration: BoxDecoration(
-                                                color: Colors.orange,
-                                                borderRadius:
-                                                    BorderRadius.circular(8),
-                                              ),
-                                              child: const Center(
-                                                child: Text(
-                                                  '4.3/5',
-                                                  style: TextStyle(
-                                                    fontSize: 8,
-                                                    fontWeight: FontWeight.w700,
-                                                    color: Colors.white,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                                Obx(
-                                  () => roomController
-                                              .selectedRoomCategoryRate.value ==
-                                          ""
-                                      ? const SizedBox()
-                                      : Padding(
-                                          padding: const EdgeInsets.only(
-                                            right: 13,
-                                          ),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              const Text(
-                                                'Best Offer',
-                                                style: TextStyle(
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w500,
-                                                  color:
-                                                      ColorConstant.lightBlue,
-                                                ),
-                                              ),
-                                              Obx(
-                                                () => Text(
-                                                  roomController
-                                                      .selectedRoomCategoryRate
-                                                      .value
-                                                      .toString(),
-                                                  style: TextStyle(
-                                                      color: const Color(
-                                                          0xFF149AED),
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                      fontSize:
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .height *
-                                                              0.025),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                )
                               ],
                             ),
                           ),
@@ -527,6 +462,7 @@ class RoomDetails2 extends StatelessWidget {
                                               Color.fromARGB(255, 148, 34, 26)),
                                     )
                                   : DropdownButtonFormField<dynamic>(
+                                      isExpanded: true,
                                       decoration: InputDecoration(
                                           contentPadding: const EdgeInsets.only(
                                               top: 6,
@@ -548,7 +484,7 @@ class RoomDetails2 extends StatelessWidget {
                                                   BorderRadius.circular(10))),
                                       value: roomController
                                           .SelecteddropdownIndex.value,
-                                      onChanged: (newValue) {
+                                      onChanged: (newValue) async {
                                         if (newValue != null) {
                                           roomController.SelecteddropdownIndex
                                               .value = newValue;
@@ -586,9 +522,91 @@ class RoomDetails2 extends StatelessWidget {
                                                       .selectedRoomData![
                                                           'hotel_id']
                                                       .toString();
-
+                                              if (platform == "10") {
+                                                if (roomController.selectedRoomData!["breakfast_included"] == true &&
+                                                    roomController.selectedRoomData!["lunch_included"] ==
+                                                        true &&
+                                                    roomController.selectedRoomData!["dinner_included"] ==
+                                                        true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With BreakFast, Lunch And Dinner Included";
+                                                } else if (roomController
+                                                                .selectedRoomData![
+                                                            "breakfast_included"] ==
+                                                        true &&
+                                                    roomController.selectedRoomData!["lunch_included"] ==
+                                                        true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With BreakFast And Lunch Included";
+                                                } else if (roomController
+                                                                .selectedRoomData![
+                                                            "breakfast_included"] ==
+                                                        true &&
+                                                    roomController.selectedRoomData!["dinner_included"] ==
+                                                        true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With BreakFast And Dinner Included";
+                                                } else if (roomController
+                                                                .selectedRoomData![
+                                                            "lunch_included"] ==
+                                                        true &&
+                                                    roomController.selectedRoomData![
+                                                            "dinner_included"] ==
+                                                        true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With Lunch And Dinner Included";
+                                                } else if (roomController
+                                                            .selectedRoomData![
+                                                        "breakfast_included"] ==
+                                                    true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With BreakFast Included";
+                                                } else if (roomController
+                                                            .selectedRoomData![
+                                                        "lunch_included"] ==
+                                                    true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With Lunch Included";
+                                                } else if (roomController
+                                                        .selectedRoomData!["dinner_included"] ==
+                                                    true) {
+                                                  roomController
+                                                          .selectedMealType
+                                                          .value =
+                                                      "Room With Dinner Included";
+                                                } else {
+                                                  roomController
+                                                      .selectedMealType
+                                                      .value = "Room Only";
+                                                  roomController
+                                                      .selectedCurrCode
+                                                      .value = roomController
+                                                              .selectedRoomData![
+                                                          'cancellation_policy']
+                                                      ["currency_code"];
+                                                }
+                                              } else {
+                                                roomController.selectedMealType
+                                                    .value = roomController
+                                                        .selectedRoomData![
+                                                    "roomType"];
+                                                roomController.selectedCurrCode
+                                                    .value = "";
+                                              }
                                               roomController
-                                                  .inhouseJumerahCancelPolicy();
+                                                  .cancellationPolicy();
                                             } else if (platform == "12") {
                                               roomController
                                                       .selectedRoomCategory
@@ -611,9 +629,14 @@ class RoomDetails2 extends StatelessWidget {
                                                       .selectedRoomData![
                                                           "roomTypeCode"]
                                                       .toString();
-
-                                              print(roomController
-                                                  .cancelPolicyRoomsiwtx);
+                                              roomController.selectedCurrCode
+                                                  .value = roomController
+                                                      .selectedRoomData![
+                                                  "currCode"];
+                                              roomController.selectedMealType
+                                                  .value = roomController
+                                                      .selectedRoomData![
+                                                  "mealPlan"];
 
                                               for (var room in roomController
                                                   .cancelPolicyRoomsiwtx) {
@@ -628,9 +651,10 @@ class RoomDetails2 extends StatelessWidget {
                                                             .selectedRoomTypeCode
                                                             .value) {
                                                   roomController.desiredRoom =
-                                                      room;
-                                                  print(
-                                                      "desiredroom===>${roomController.desiredRoom}");
+                                                      await room;
+                                                  print(roomController
+                                                      .desiredRoom);
+
                                                   break;
                                                 }
                                               }
@@ -642,38 +666,36 @@ class RoomDetails2 extends StatelessWidget {
                                                               "cancellationPolicyDetails"]
                                                           ["cancellation"] !=
                                                       null) {
+                                                print("oi");
                                                 // Extract cancellation policy details
                                                 roomController.cancelPolicy
                                                     .value = roomController
                                                             .desiredRoom![
                                                         'cancellationPolicyDetails']
                                                     ['cancellation'];
-
-                                                // Now, 'cancellationPolicy' contains the cancellation details for the specified room
                                                 print(
-                                                    'Cancellation Policy Details for Room with ratePlanId 678642 and roomTypeCode 16306766:');
+                                                    "policyyhere===${roomController.cancelPolicy.value}");
                                               } else {
-                                                print(
-                                                    'Room with ratePlanId 678642 and roomTypeCode 16306766 not found.');
+                                                print("pp");
+                                                roomController
+                                                    .cancelPolicy.value = [];
+
+                                                print(roomController
+                                                    .cancelPolicy.value);
                                               }
                                             }
 
                                             roomController
-                                                    .selectedRoomCategoryRate
-                                                    .value =
-                                                roomController
-                                                    .selectedRoomData![
-                                                        'totalRate']
-                                                    .toString();
+                                                .selectedRoomCategoryRate
+                                                .value = double.parse(
+                                                    roomController
+                                                        .selectedRoomData![
+                                                            'totalRate']
+                                                        .toString())
+                                                .round()
+                                                .toString();
                                           }
                                         }
-
-                                        // print(roomController
-                                        //     .selectedRoomCategory.value);
-                                        // print(roomController
-                                        //     .selectedRoomCategoryRate.value);
-                                        // print(
-                                        //     roomController.selectedRoomData);
                                       },
                                       items: roomController.roomcategorydata
                                           .asMap()
@@ -683,16 +705,15 @@ class RoomDetails2 extends StatelessWidget {
                                         int index = entry.key;
 
                                         Map<String, dynamic> item = entry.value;
+
                                         return DropdownMenuItem<String>(
                                           value: index.toString(),
-                                          child: platform == "0"
+                                          child: platform == "0" ||
+                                                  platform == "10"
                                               ? Text(item["roomCategory"])
                                               : platform == "12"
                                                   ? Text(item["roomType"])
-                                                  : platform == "10"
-                                                      ? Text(
-                                                          item["roomCategory"])
-                                                      : const Text(""),
+                                                  : const Text(""),
                                         );
                                       }).toList(),
                                       validator: (value) {
@@ -744,83 +765,18 @@ class RoomDetails2 extends StatelessWidget {
                                             ),
                                           ),
                                           Padding(
-                                              padding: const EdgeInsets.only(
-                                                left: 16,
-                                              ),
-                                              child: Obx(
-                                                () => roomController
-                                                                .newCheckinDate
-                                                                .value !=
-                                                            "" &&
-                                                        roomController
-                                                                .newCheckoutDate
-                                                                .value !=
-                                                            "" &&
-                                                        roomController
-                                                                .isDateShown
-                                                                .value ==
-                                                            true
-                                                    ? Text(
-                                                        '${roomController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${roomController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
-                                                        style: const TextStyle(
-                                                            color: ColorConstant
-                                                                .lightBlue,
-                                                            fontWeight:
-                                                                FontWeight.w500,
-                                                            fontSize: 14),
-                                                      )
-                                                    : acController.orgnewChekin
-                                                                    .value !=
-                                                                "" &&
-                                                            acController
-                                                                    .orgnewChekout
-                                                                    .value !=
-                                                                ""
-                                                        ? Text(
-                                                            '${acController.orgnewChekin.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.orgnewChekout.value.characters.take(6).toString().replaceAll("-", " ")}',
-                                                            style: const TextStyle(
-                                                                color: ColorConstant
-                                                                    .lightBlue,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                fontSize: 14),
-                                                          )
-                                                        : acController
-                                                                    .isSearchtapped
-                                                                    .value ==
-                                                                true
-
-                                                            //=======
-                                                            //  acController
-                                                            //                 .newCheckinDate.value !=
-                                                            //             "" &&
-                                                            //         acController.newCheckoutDate
-                                                            //                 .value !=
-                                                            //             "" &&
-                                                            //         acController
-                                                            //                 .isDateShown.value ==
-                                                            //             true
-                                                            //========
-                                                            ? Text(
-                                                                '${acController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${acController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
-                                                                style: const TextStyle(
-                                                                    color: ColorConstant
-                                                                        .lightBlue,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    fontSize:
-                                                                        14),
-                                                              )
-                                                            : const Icon(
-                                                                Icons
-                                                                    .arrow_drop_down,
-                                                                color: ColorConstant
-                                                                    .lightBlue,
-                                                                size: 28,
-                                                              ),
-                                              ))
+                                            padding: const EdgeInsets.only(
+                                              left: 16,
+                                            ),
+                                            child: Text(
+                                              '${roomController.newCheckinDate.value.characters.take(6).toString().replaceAll("-", " ")} - ${roomController.newCheckoutDate.value.characters.take(6).toString().replaceAll("-", " ")}',
+                                              style: const TextStyle(
+                                                  color:
+                                                      ColorConstant.lightBlue,
+                                                  fontWeight: FontWeight.w500,
+                                                  fontSize: 14),
+                                            ),
+                                          )
                                         ],
                                       ),
                                     ),
@@ -860,64 +816,43 @@ class RoomDetails2 extends StatelessWidget {
                                             ),
                                           ),
                                           Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 16,
-                                            ),
-                                            child: Obx(
-                                              () => roomController
-                                                          .isSubLoading.value ==
-                                                      false
-                                                  ? Text(
-                                                      "${roomController.newRoomCount.value} Rooms - ${roomController.guestTotal} Guests",
-                                                      style: const TextStyle(
-                                                          color: ColorConstant
-                                                              .lightBlue,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          fontSize: 14),
-                                                    )
-                                                  //=========
-                                                  // : acController.isSubLoading.value == false
-                                                  //============
+                                              padding: const EdgeInsets.only(
+                                                left: 16,
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Text(
+                                                    roomController.newRoomCount
+                                                                .value ==
+                                                            "1"
+                                                        ? "${roomController.newRoomCount.value} Room - "
+                                                        : "${roomController.newRoomCount.value} Rooms - ",
 
-                                                  : acController.orgRoomcount
-                                                              .value !=
-                                                          ""
-                                                      ? Text(
-                                                          "${acController.orgRoomcount.value} Rooms - ${acController.orgguestTotal} Guests",
-                                                          style: const TextStyle(
-                                                              color:
-                                                                  ColorConstant
-                                                                      .lightBlue,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w500,
-                                                              fontSize: 14),
-                                                        )
-                                                      : acController
-                                                                  .isSearchtapped
-                                                                  .value ==
-                                                              true
-                                                          ? Text(
-                                                              "${acController.newRoomCount.value} Rooms - ${acController.guestTotal} Guests",
-                                                              style: const TextStyle(
-                                                                  color: ColorConstant
-                                                                      .lightBlue,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  fontSize: 14),
-                                                            )
-                                                          : const Icon(
-                                                              Icons
-                                                                  .arrow_drop_down,
-                                                              color:
-                                                                  ColorConstant
-                                                                      .lightBlue,
-                                                              size: 28,
-                                                            ),
-                                            ),
-                                          )
+                                                    //"${roomController.newRoomCount.value} Rooms - ${roomController.guestTotal} Guests",
+                                                    style: const TextStyle(
+                                                        color: ColorConstant
+                                                            .lightBlue,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 14),
+                                                  ),
+                                                  Text(
+                                                    roomController.guestTotal!
+                                                                .value ==
+                                                            1
+                                                        ? "${roomController.guestTotal!.value} Guest"
+                                                        : "${roomController.guestTotal!.value} Guests",
+
+                                                    //"${roomController.newRoomCount.value} Rooms - ${roomController.guestTotal} Guests",
+                                                    style: const TextStyle(
+                                                        color: ColorConstant
+                                                            .lightBlue,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        fontSize: 14),
+                                                  ),
+                                                ],
+                                              ))
                                         ],
                                       ),
                                     ),
@@ -932,94 +867,191 @@ class RoomDetails2 extends StatelessWidget {
                           ),
                           Padding(
                             padding: const EdgeInsets.only(
-                                left: 23, right: 23, top: 12, bottom: 12),
+                                left: 23, right: 23, top: 0, bottom: 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text("Description",
-                                    style: TextStyle(
-                                        color: ColorConstant.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15)),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                const ReadMoreText(
-                                  "Monteverde Country Lodge is a quiet, comfortable hotel located near the Ecological Sanctuary and the Monteverde Butterfly Gardens in an area called Cerro Plano, an ideal location half way between the Monteverde Cloud Forest reserve and the main village of the Monteverde area (Santa Elena), in close proximity to several restaurants and activities. All rooms have private bathrooms with hot water.",
-                                  // roomController.roomModel![0].hotelDetails
-                                  //         .toString() ??
-                                  //     "",
-                                  style: TextStyle(
-                                      fontSize:
-                                          13), //  style: TextStyle(fontSize: 13),
-                                  trimLines: 2,
-                                  trimMode: TrimMode.Line,
-                                  trimCollapsedText: 'Show more',
-                                  trimExpandedText: 'Show less',
-                                  lessStyle: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      color: ColorConstant.lightBlue,
-                                      fontSize: 13),
-                                  moreStyle: TextStyle(
-                                      color: ColorConstant.lightBlue,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13),
-                                ),
-                                const SizedBox(
-                                  height: 16,
-                                ),
-                                const Text("Amenities",
-                                    style: TextStyle(
-                                        color: ColorConstant.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15)),
-                                const SizedBox(
-                                  height: 10,
-                                ),
-                                GridView.builder(
-                                    padding: const EdgeInsets.only(bottom: 20),
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    gridDelegate:
-                                        const SliverGridDelegateWithFixedCrossAxisCount(
-                                            crossAxisCount: 2,
-                                            crossAxisSpacing: 0,
-                                            mainAxisExtent: 40,
-                                            mainAxisSpacing: 0),
-                                    itemCount: amIons.length,
-                                    itemBuilder: (context, index) {
-                                      return Container(
-                                        height: 15,
-                                        // color: Colors.yellow,
-                                        width: double.infinity,
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 0),
-                                          child: Row(
-                                            children: [
-                                              Icon(
-                                                amIons[index],
-                                                color: ColorConstant.grey,
-                                              ),
-                                              const SizedBox(
-                                                width: 10,
-                                              ),
-                                              Text(amTitle[index],
-                                                  style: const TextStyle(
-                                                      fontSize: 13))
-                                            ],
+                                roomController.hotelDescription.value == ""
+                                    ? const SizedBox()
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          const Text("Description",
+                                              style: TextStyle(
+                                                  color: ColorConstant.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15)),
+                                          const SizedBox(
+                                            height: 10,
                                           ),
-                                        ),
-                                      );
-                                    }),
+                                          ReadMoreText(
+                                            roomController
+                                                .hotelDescription.value,
+                                            // "Monteverde Country Lodge is a quiet, comfortable hotel located near the Ecological Sanctuary and the Monteverde Butterfly Gardens in an area called Cerro Plano, an ideal location half way between the Monteverde Cloud Forest reserve and the main village of the Monteverde area (Santa Elena), in close proximity to several restaurants and activities. All rooms have private bathrooms with hot water.",
+                                            style:
+                                                const TextStyle(fontSize: 13),
+                                            trimLines: 2,
+                                            trimMode: TrimMode.Line,
+                                            trimCollapsedText: 'Show more',
+                                            trimExpandedText: 'Show less',
+                                            lessStyle: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                color: ColorConstant.lightBlue,
+                                                fontSize: 13),
+                                            moreStyle: const TextStyle(
+                                                color: ColorConstant.lightBlue,
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13),
+                                          ),
+                                          const SizedBox(
+                                            height: 16,
+                                          ),
+                                        ],
+                                      ),
+                                roomController.selectedMealType.value == ""
+                                    ? const SizedBox()
+                                    : Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          const Text("Meal Type",
+                                              style: TextStyle(
+                                                  color: ColorConstant.black,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 15)),
+                                          const SizedBox(
+                                            height: 10,
+                                          ),
+                                          Text(
+                                            roomController
+                                                .selectedMealType.value
+                                                .toString(),
+                                            style:
+                                                const TextStyle(fontSize: 13),
+                                          ),
+                                          const SizedBox(
+                                            height: 16,
+                                          ),
+                                        ],
+                                      ),
+                                Obx(
+                                  () => roomController
+                                              .isRoomtypeLoading.value ==
+                                          false
+                                      ? roomController.platform == "0"
+                                          ? Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                const Text("Amenities",
+                                                    style: TextStyle(
+                                                        color:
+                                                            ColorConstant.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 15)),
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                GridView.builder(
+                                                    padding:
+                                                        const EdgeInsets.only(
+                                                            bottom: 20),
+                                                    shrinkWrap: true,
+                                                    physics:
+                                                        const NeverScrollableScrollPhysics(),
+                                                    gridDelegate:
+                                                        const SliverGridDelegateWithFixedCrossAxisCount(
+                                                            crossAxisCount: 2,
+                                                            crossAxisSpacing: 0,
+                                                            mainAxisExtent: 40,
+                                                            mainAxisSpacing: 0),
+                                                    //itemCount: amIons.length,
+                                                    itemCount: roomController
+                                                        .hotelDetailsModel!
+                                                        .data[0]
+                                                        .inhouseHotelDetails!
+                                                        .data
+                                                        .hotelAmenitiesMainDtoList
+                                                        .length,
+                                                    itemBuilder:
+                                                        (context, index) {
+                                                      return Container(
+                                                        height: 15,
+                                                        // color: Colors.yellow,
+                                                        width: double.infinity,
+                                                        child: Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                      0),
+                                                          child: Row(
+                                                            children: [
+                                                              Container(
+                                                                height: 22,
+                                                                width: 22,
+                                                                decoration: const BoxDecoration(
+                                                                    image: DecorationImage(
+                                                                        image: AssetImage(
+                                                                            "assets/images/failities.png"),
+                                                                        fit: BoxFit
+                                                                            .cover)),
+                                                              ),
+                                                              // Icon(
+                                                              //   FontAwesomeIcons
+                                                              //       .servicestack,
+                                                              //   color:
+                                                              //       ColorConstant
+                                                              //           .grey,
+                                                              // ),
+                                                              const SizedBox(
+                                                                width: 10,
+                                                              ),
+                                                              Text(
+                                                                  roomController
+                                                                          .hotelDetailsModel!
+                                                                          .data[
+                                                                              0]
+                                                                          .inhouseHotelDetails!
+                                                                          .data
+                                                                          .hotelAmenitiesMainDtoList[
+                                                                              index]
+                                                                          .localName
+                                                                          .toString() ??
+                                                                      "",
+                                                                  style: const TextStyle(
+                                                                      fontSize:
+                                                                          13))
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      );
+                                                    }),
+                                              ],
+                                            )
+                                          : const SizedBox()
+                                      : const SizedBox(),
+                                ),
                                 roomController.cancelPolicy.length == 0
-                                    ? SizedBox()
+                                    ? const SizedBox()
                                     : const Text("Cancellation Policies",
                                         style: TextStyle(
                                             color: ColorConstant.black,
                                             fontWeight: FontWeight.bold,
                                             fontSize: 15)),
+
+                                // GetBuilder<RoomController2>(
+                                //   builder: (controller) {
+                                //     return Text(controller.desiredRoom![
+                                //             "cancellationPolicyDetails"]
+                                //             ["cancellation"]
+                                //         .toString());
+                                //   },
+                                // )
                                 Obx(() {
                                   print(platform);
                                   print(
@@ -1034,14 +1066,17 @@ class RoomDetails2 extends StatelessWidget {
                                     }
                                   }
                                   return ListView.builder(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 60),
+                                      padding: const EdgeInsets.only(
+                                          bottom: 60, top: 10),
                                       itemCount: roomController
                                           .cancelPolicy.value.length,
                                       shrinkWrap: true,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, index) {
+                                        print("wrkeddd");
+                                        print(
+                                            "desiredroom==>${roomController.desiredRoom}");
                                         if (platform == "12") {
                                           var cancelIndex = roomController
                                               .cancelPolicy[index];
@@ -1080,19 +1115,16 @@ class RoomDetails2 extends StatelessWidget {
 
                                         return ListTile(
                                           contentPadding: EdgeInsets.zero,
+                                          minLeadingWidth: 10,
+                                          titleAlignment: ListTileTitleAlignment
+                                              .titleHeight,
                                           leading: const Icon(
                                             Icons.circle_rounded,
                                             size: 7,
                                           ),
                                           title: platform == "12"
                                               ? Text(
-                                                  // "Cancellation between ${DateFormat('MMM-dd-yyyy').format(DateFormat('yyyyMMdd').parse(roomController.cancelPolicy.value[index]["fromDate"].toString()))} to ${DateFormat('MMM-dd-yyyy').format(DateFormat('yyyyMMdd').parse(roomController.cancelPolicy.value[index]["toDate"].toString()))} will be charged AED ${roomController.selectedRoomCategoryRate.value}/- (${roomController.cancelPolicy[index]["Value"].toString()})",
-
-                                                  "Cancellation between ${formattedfromDate} to ${formattedtoDate} will be charged AED ${roomController.selectedRoomCategoryRate.value}/- (${roomController.cancelPolicy[index]["Value"] ?? "".toString()}  ${type})",
-
-                                                  // roomController.cancelPolicy
-                                                  //         .value[index]["Value"] ??
-                                                  //     "".toString(),
+                                                  "Cancellation between ${formattedfromDate} to ${formattedtoDate} will be charged AED ${roomController.selectedRoomCategoryRate.value}/- (${roomController.cancelPolicy[index]["value"] ?? "".toString()}  ${type})",
                                                   style: const TextStyle(
                                                       fontSize: 12),
                                                 )
@@ -1122,3 +1154,4 @@ class RoomDetails2 extends StatelessWidget {
   }
 }
 //
+

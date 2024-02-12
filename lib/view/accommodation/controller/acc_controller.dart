@@ -24,7 +24,7 @@ class AccomodationController extends GetxController {
   var selectedNativeCode2 = ''.obs; //(eg:US)
 
   var noNatSelected =
-      false.obs; //validation msg showing while native country not selected
+      false.obs; //validation msg showing if native country not selected
 
   List destination = [].obs;
   var selectedDestinaion = ''.obs; //(eg:America)
@@ -32,7 +32,7 @@ class AccomodationController extends GetxController {
   var selectedDesType = ''.obs; //(eg:states)
 
   var nodestSelected =
-      false.obs; //validation msg showing while destination country not selected
+      false.obs; //validation msg showing if destination country not selected
   //'''''''''''''''''''''''''''''''
   //'''''''''''''''''''''''''''''''
 
@@ -54,15 +54,11 @@ class AccomodationController extends GetxController {
   var isDateShown = false.obs;
   var ischeckInError = false.obs;
   var ischeckOutError = false.obs;
-  var isnightError = false.obs;
+  //var isnightError = false.obs;
 
   Future<void> selectCheckin(BuildContext context) async {
-    print("this is difff${difference}");
     final DateTime? picked = await showDatePicker(
       context: context,
-      // initialDate: checkInDate.value != ""
-      //     ? DateTime.parse(checkInDate.value)
-      //: DateTime.now(),
       initialDate: checkInDate.value != "" ? checkin! : DateTime.now(),
       firstDate: DateTime.now(),
       lastDate: checkOutDate.value == ""
@@ -73,22 +69,24 @@ class AccomodationController extends GetxController {
       checkin = picked;
       checkInDate.value =
           DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
-      print("original====>>${checkInDate.value}");
 
       ischeckInError.value = false;
       dateforCal1 = DateFormat('MMM-dd-yyyy').parse(checkInDate.value);
       if (checkOutDate.value != "") {
         nigtCalculate();
       }
-      print("checkindateeeee===${checkInDate}");
     } else {
       print("not pickedd");
     }
   }
 
   nigtCalculate() {
-    difference.value = dateforCal2!.difference(dateforCal1!.toUtc());
-    print("difffvalueee${difference.value}");
+    DateTime dateWithMidnight =
+        DateTime(dateforCal1!.year, dateforCal1!.month, dateforCal1!.day);
+    print(dateWithMidnight);
+
+    difference.value = dateforCal2!.difference(dateWithMidnight);
+    print(difference.value.inDays.round());
     if (difference.value != Duration(seconds: 0)) {
       nitController.text = difference.value.inDays.toString();
     }
@@ -104,8 +102,7 @@ class AccomodationController extends GetxController {
               ? checkin!.add(Duration(days: 1))
               : DateTime.now().add(
                   Duration(days: 1)), // initialDate: checkInDate.value != ""
-      //     ?checkin!.add(Duration(days: 1))
-      //     : DateTime.now(),
+
       firstDate: checkInDate.value == ""
           ? DateTime.now().add(Duration(days: 1))
           : checkin!.add(Duration(days: 1)),
@@ -118,11 +115,15 @@ class AccomodationController extends GetxController {
           DateFormat('MMM-dd-yyyy').format(DateTime.parse(picked.toString()));
       ischeckOutError.value = false;
       dateforCal2 = DateFormat('MMM-dd-yyyy').parse(checkOutDate.value);
+      print("chckoutt${dateforCal2}");
+      print(checkInDate.value);
+      print(checkOutDate.value);
+
       if (checkInDate.value != "") {
+        print("chckoutt${dateforCal2}");
         nigtCalculate();
       }
-
-      print("checkindateeeee===${checkOutDate}");
+      print("chckoutt${dateforCal2}");
     } else {
       print("not pickd");
     }
@@ -151,6 +152,8 @@ class AccomodationController extends GetxController {
   RxInt guestTotal = 0.obs;
 
   var childDdnum = ["0"].obs;
+
+  //var childddnum = [].obs;
   List<List<dynamic>> ageTextControllers = [[]];
   var isValidate = false.obs;
   var isSearchtapped = false.obs;
@@ -171,7 +174,7 @@ class AccomodationController extends GetxController {
   var iwtxRoomdetail;
   var jumeraRoomdetail;
 
-  //for converting into a single list of hotel
+  //for converting into a single list of hotels
   Map<String, dynamic>? currentItem;
   List allItems = [];
 
@@ -197,7 +200,7 @@ class AccomodationController extends GetxController {
           "countStart": 0,
           "id": 0,
           "countLast": "4",
-          "agent_id": "5",
+          "agent_id": userId.toString(),
           "searchCityorCountry_id": orgDesCode.value.toString(),
           "searchCorCtype": orgDesType.value.toString(),
           "searchRoomDTO": orginHaccDetails,
@@ -237,7 +240,7 @@ class AccomodationController extends GetxController {
         print("object");
         var data = allHotelModelFromJson(response.body);
         allHotelModel = data;
-        print(allHotelModel);
+        // print(allHotelModel);
 
         for (int i = 0; i < allHotelModel![0].iwtxHotels!.data[1].length; i++) {
           currentItem = allHotelModel![0].iwtxHotels!.data[1][i];
@@ -289,6 +292,9 @@ class AccomodationController extends GetxController {
   var orgNativeCode = "".obs;
   var orgNativeCode2 = "".obs;
   var orgNatCountry = "".obs;
+  var orgAdultDDNum = [];
+  var orgChildddNum = [];
+  List<List> orgnalAges = [];
 
   //row data for posting accommodation(differ for inhouse )
 
@@ -317,18 +323,22 @@ class AccomodationController extends GetxController {
 
   //fetching destination
   FetchDestination(searchKey) async {
+    print("dest");
     try {
       var exceptionCatched = false.obs;
+      print(header);
 
       var response = await http.get(
           Uri.parse("${baseUrl}custom/destinationAPIout?term=${searchKey}"),
           headers: {'apikey': header});
+
+      print(json.decode(response.body));
+
       if (response.statusCode == 200) {
         print("object");
         var data = destinationModelFromJson(response.body);
         destinationModel = data;
         for (int i = 0; i < destinationModel!.length; i++) {
-          // destination.add(destinationModel![i].hotelDetails);
           destinationList!.add([
             destinationModel![i].hotelDetails,
             destinationModel![i].hotelCode,
@@ -348,6 +358,7 @@ class AccomodationController extends GetxController {
 
   //fetch native
   FetchNative() async {
+    print("naaatttvvv");
     try {
       var response = await http.get(
           Uri.parse("${baseUrl}custom/nationalityAPIout"),
@@ -357,14 +368,14 @@ class AccomodationController extends GetxController {
         var data = nativeModelFromJson(response.body);
         nativeModel = data;
         for (int i = 0; i < nativeModel!.length; i++) {
-          // nat.add(nativeModel![i].hotelDetails);
           nativeList!.add([
             nativeModel![i].name,
             nativeModel![i].countryId,
             nativeModel![i].countryCode
           ]);
         }
-        print(nativeList);
+        print("nativelisttt----${nativeList}");
+        print("destlisttt----${destinationList}");
       } else {
         exceptionCatched.value = true;
         print("000000");
@@ -376,8 +387,45 @@ class AccomodationController extends GetxController {
   //'''''''''''''''''''''''''''''''''''''''''''''
 //'''''''''''''''''''''''''''''''''''''''''''''''''''''''
 
+  orgValueadded() {
+    print("called");
+    isSearchtapped.value = true;
+    orgAdultDDNum.clear();
+    orgChildddNum.clear();
+    orgnalAges.clear();
+    // OrgageTextControllers.clear();
+    // OrgelectedDdindex.clear();
+
+    orgnewChekin.value = newCheckinDate.value;
+    orgnewChekout.value = newCheckoutDate.value;
+    orgDestination.value = selectedDestinaion.value;
+    orgDesCode.value = selectedDesCode.value;
+
+    orgDesType.value = selectedDesType.value;
+
+    orgNativeCode.value = selectedNativeCode.value;
+    orgNativeCode2.value = selectedNativeCode2.value;
+
+    orgNatCountry.value = selectedNatCountry.value;
+    orgRoomcount.value = newRoomCount.value;
+    orgguestTotal.value = guestTotal.value;
+    orgAccomodationDetails = accommodationDetails;
+    orginHaccDetails = inHaccDetails;
+
+    //for cancellation policy
+    atharvaroomDetailOrg = atharvaroomDetail;
+    iwtxRoomdetailOrg = iwtxRoomdetail;
+    iwtxAgedetailOrg = iwtxageDetail;
+    for (int i = 0; i < orgAccomodationDetails.length; i++) {
+      orgAdultDDNum.add(orgAccomodationDetails[i]["NoOfAdult"]);
+      orgChildddNum.add(orgAccomodationDetails[i]["NoOfChild"]);
+      orgnalAges.addAll([orgAccomodationDetails[i]["ChildAges"]]);
+    }
+  }
+
 //initially select 1 room 1 guest
   initial() async {
+    print("looooool");
     isSubLoading.value = true;
 
     allAgeOrgs.clear();
@@ -427,15 +475,13 @@ class AccomodationController extends GetxController {
     } else {
       newCheckinDate.value = checkInDate.value;
       newCheckoutDate.value = checkOutDate.value;
-      isnightError.value = false;
+      // isnightError.value = false;
       isDateShown.value =
           true; // Check if the night value is not already set, then set a default value
-      if (nitController.text.isEmpty) {
-        nitController.text = "1";
-      }
     }
   }
 
+//for external API DRO array
   List<Map<String, dynamic>> getEnteredData() {
     List<Map<String, dynamic>> dataList = [];
 
@@ -443,17 +489,10 @@ class AccomodationController extends GetxController {
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       Map<String, dynamic> data = {
-        "RoomSrNo": newRoomCount.value != "" ? (i + 1) : 0,
-        'NoOfAdult': adultDdnum[i] != 0 ? adultDdnum[i] : 0.toString(),
-        'NoOfChild': childDdnum[i] == 0
-            ? 0.toString()
-            : childDdnum[i] != 0
-                ? childDdnum[i]
-                : 0.toString(),
-        if (allAgeOrgs[i].isNotEmpty)
-          "ChildAges": allAgeOrgs[i]
-        else if (allAgeOrgs[i].isEmpty)
-          "ChildAges": []
+        "RoomSrNo": i + 1,
+        'NoOfAdult': adultDdnum[i].toString(),
+        'NoOfChild': childDdnum[i].toString(),
+        "ChildAges": allAgeOrgs[i]
       };
 
       dataList.add(data);
@@ -462,6 +501,7 @@ class AccomodationController extends GetxController {
     return dataList;
   }
 
+//for inhouse DTO arary
   List<Map<String, dynamic>> getEnteredDataforinHouse() {
     List<Map<String, dynamic>> dataListinHouse = [];
 
@@ -469,17 +509,10 @@ class AccomodationController extends GetxController {
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       Map<String, dynamic> data = {
-        "roomcount": newRoomCount.value != "" ? (i + 1) : 0,
-        'adult': adultDdnum[i] != 0 ? adultDdnum[i] : 0.toString(),
-        'child': childDdnum[i] == 0
-            ? 0.toString()
-            : childDdnum[i] != 0
-                ? childDdnum[i]
-                : 0.toString(),
-        if (allAgeOrgs[i].isNotEmpty)
-          "childAge": allAgeOrgs[i]
-        else if (allAgeOrgs[i].isEmpty)
-          "childAge": []
+        "roomcount": (i + 1),
+        'adult': adultDdnum[i].toString(),
+        'child': childDdnum[i].toString(),
+        "childAge": allAgeOrgs[i]
       };
 
       dataListinHouse.add(data);
@@ -499,18 +532,11 @@ class AccomodationController extends GetxController {
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       Map<String, dynamic> data = {
-        "RoomSrNo": newRoomCount.value != "" ? (i + 1) : 0,
-        'NoOfAdult': adultDdnum[i] != 0 ? adultDdnum[i] : 0.toString(),
-        'NoOfChild': childDdnum[i] == 0
-            ? 0.toString()
-            : childDdnum[i] != 0
-                ? childDdnum[i]
-                : 0.toString(),
+        "RoomSrNo": (i + 1),
+        'NoOfAdult': adultDdnum[i].toString(),
+        'NoOfChild': childDdnum[i].toString(),
         "RateKey": "thcttyd7egsTTu/+T5KfO0TtoK0W2Ftmi7ENr3G8Nw4=",
-        if (allAgeOrgs[i].isNotEmpty)
-          "ChildAges": allAgeOrgs[i]
-        else if (allAgeOrgs[i].isEmpty)
-          "ChildAges": []
+        "ChildAges": allAgeOrgs[i]
       };
 
       dataListatharvaCancel.add(data);
@@ -533,19 +559,13 @@ class AccomodationController extends GetxController {
         int.parse(adultDdnum[i]),
         (index) => 25,
       );
+
       Map<String, dynamic> data = {
-        "roomcount": newRoomCount.value != "" ? (i + 1) : 0,
-        'adult': adultDdnum[i] != 0 ? adultDdnum[i] : 0.toString(),
-        'child': childDdnum[i] == 0
-            ? 0.toString()
-            : childDdnum[i] != 0
-                ? childDdnum[i]
-                : 0.toString(),
-        if (allAgeOrgs[i].isNotEmpty)
-          "childAge": allAgeOrgs[i]
-        else if (allAgeOrgs[i].isEmpty)
-          "childAge": [],
-        "adultAges": adultage
+        "roomcount": (i + 1),
+        'adult': adultDdnum[i].toString(),
+        'child': childDdnum[i].toString(),
+        "childAge": allAgeOrgs[i],
+        "adultAge": adultage
       };
 
       dataListiwtxCancel.add(data);
@@ -567,11 +587,9 @@ class AccomodationController extends GetxController {
         int.parse(adultDdnum[i]),
         (index) => 25,
       );
+
       Map<String, dynamic> data = {
-        if (allAgeOrgs[i].isNotEmpty)
-          "childAge": allAgeOrgs[i]
-        else if (allAgeOrgs[i].isEmpty)
-          "childAge": [],
+        "childAge": allAgeOrgs[i],
         "adultAges": adultage
       };
 

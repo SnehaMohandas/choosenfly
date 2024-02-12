@@ -1,31 +1,86 @@
+import 'dart:convert';
+
+import 'package:choose_n_fly/utils/consts.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 
 class CalenderController extends GetxController {
-  RxList<EventModel> events = <EventModel>[].obs;
-  Rx<DateTime> selectedDate = DateTime.now().obs;
+  Rx<DateTime> selectedDay = DateTime.now().obs;
+
+  void onDaySelected(DateTime selectDay, DateTime focusDay) {
+    selectedDay.value = selectDay;
+  }
+
+  var isLoading = false.obs;
 
   @override
   void onInit() {
+    calenderBookingLst(DateFormat('yyyy-MM-dd')
+        .format(DateTime.parse(selectedDay.value.toString())));
     super.onInit();
-    // Load events here, for example, from an API or a database
-    // Initialize events with some sample data
-    events.addAll([
-      EventModel(DateTime(2023, 12, 1), 'Booking 1'),
-      EventModel(DateTime(2023, 12, 8), 'Booking 2'),
-      EventModel(DateTime(2023, 12, 20), 'Booking 3'),
-      EventModel(DateTime(2023, 12, 20), 'Booking 4'),
-      EventModel(DateTime(2023, 12, 20), 'Booking 5'),
-      EventModel(DateTime(2024, 01, 8), 'Booking 6'),
-      EventModel(DateTime(2024, 01, 8), 'Booking 7'),
+  }
 
-      // Add more events here
-    ]);
+  var bookingList = [].obs;
+
+  var isnoBooking = false.obs;
+
+  var orgnlBookingList = [].obs;
+  var CalenderbookingLists = [].obs;
+  var jsonString;
+  void calenderBookingLst(String date) async {
+    try {
+      isLoading.value = true;
+      CalenderbookingLists.clear();
+      var data = {"date": date};
+
+      var response = await http.post(
+        Uri.parse("${baseUrl}custom/calenderEventsWithDateAPIout"),
+        body: jsonEncode(data),
+        headers: {
+          "apikey": header,
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print(response.body);
+        jsonString = json.decode(response.body);
+        if (jsonString["data"][0]["data"]["hotelBookingDTOList"].isEmpty) {
+          isnoBooking.value = true;
+          print("emptyyyy");
+        } else {
+          isnoBooking.value = false;
+          CalenderbookingLists.addAll(
+              jsonString["data"][0]["data"]["hotelBookingDTOList"]);
+          print("vvvvvvvvvv${CalenderbookingLists}");
+        }
+
+        isLoading.value = false;
+      }
+      print(response.statusCode);
+    } catch (e) {
+      print(e);
+    }
   }
 }
 
-class EventModel {
-  final DateTime date;
-  final String eventName;
+//================
 
-  EventModel(this.date, this.eventName);
-}
+// import 'package:get/get.dart';
+
+// class CalendarController extends GetxController {
+//   // Observable variables to update UI reactively
+//   final Rx<DateTime> selectedDay = DateTime.now().obs;
+//   final List<DateTime> unavailableDates; // List of unavailable dates
+
+//   CalendarController({required this.unavailableDates});
+
+//   // Function to check if a day is unavailable
+//   bool isDayUnavailable(DateTime day) {
+//     return unavailableDates.any((unavailableDay) =>
+//         day.year == unavailableDay.year &&
+//         day.month == unavailableDay.month &&
+//         day.day == unavailableDay.day);
+//   }
+// }

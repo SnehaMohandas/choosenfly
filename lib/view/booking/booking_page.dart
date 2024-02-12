@@ -27,8 +27,9 @@ class BookingPage extends StatelessWidget {
       required this.platForm,
       required this.hotelId,
       required this.totalPrice,
-      required this.selectedRoomCategoryData
-      // required this.sellingPrice,
+      required this.selectedRoomCategoryData,
+      // required this.sellingPrice,,
+      required this.hotelName
       // required this.roomCategoryId,
       // required this.roomTypeId,
       // required this.occupationId
@@ -42,6 +43,7 @@ class BookingPage extends StatelessWidget {
   final hotelId;
   final totalPrice;
   final selectedRoomCategoryData;
+  final hotelName;
   // final sellingPrice;
 
   // final roomCategoryId;
@@ -66,23 +68,25 @@ class BookingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     print("totalll===>${acController.orgguestTotal.value}");
     print("rooommmmdetaillll====>${roomDetail}");
-    // print(checkinD);
-    // print(checkoutD);
+    print("guestttt=====${roomController.guestTotal!.value}");
+    print(checkinD);
+    print(checkoutD);
     // print(roomDetail);
     return Obx(() {
       if (networkController.isConnected.value) {
         var bookFormControlller = Get.put(BookFormController(
-            platform: platForm,
-            checkIn: checkinD,
-            checkOut: checkoutD,
-            hotelId: hotelId,
-            totalPrice: totalPrice,
-            selectedRoomcategoryData: selectedRoomCategoryData
-            // sellingPrice: sellingPrice,
-            // roomCategoryId: roomCategoryId,
-            // roomTypeId: roomTypeId,
-            // occupancyId: occupationId
-            ));
+          platform: platForm,
+          checkIn: checkinD,
+          checkOut: checkoutD,
+          hotelId: hotelId,
+          totalPrice: totalPrice,
+          selectedRoomcategoryData: selectedRoomCategoryData,
+
+          // sellingPrice: sellingPrice,
+          // roomCategoryId: roomCategoryId,
+          // roomTypeId: roomTypeId,
+          // occupancyId: occupationId
+        ));
 
         return WillPopScope(
           onWillPop: () async {
@@ -92,43 +96,43 @@ class BookingPage extends StatelessWidget {
           child: Scaffold(
             bottomSheet: Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 24, bottom: 20, top: 10),
-                  child: GestureDetector(
-                    onTap: () async {
-                      if (formKey.currentState!.validate()) {
-                        bookFormControlller.leaddata = await getFormValues();
-                        print(bookFormControlller.leaddata);
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 24, bottom: 20, top: 10),
+                //   child: GestureDetector(
+                //     onTap: () async {
+                //       if (formKey.currentState!.validate()) {
+                //         bookFormControlller.leaddata = await getFormValues();
+                //         print(bookFormControlller.leaddata);
 
-                        bookFormControlller.guestFormdata =
-                            await getEnteredForm(
-                                acController,
-                                roomController,
-                                bookFormControlller,
-                                bookFormControlller.leaddata);
-                        print(
-                            "datlisttt===>${bookFormControlller.guestFormdata}");
+                //         bookFormControlller.guestFormdata =
+                //             await getEnteredForm(
+                //                 acController,
+                //                 roomController,
+                //                 bookFormControlller,
+                //                 bookFormControlller.leaddata);
+                //         print(
+                //             "datlisttt===>${bookFormControlller.guestFormdata}");
 
-                        Fluttertoast.showToast(msg: "Added to cart");
-                        Get.off(() => CartScreen(),
-                            transition: Transition.rightToLeftWithFade);
-                      }
-                    },
-                    child: Container(
-                      width: 45,
-                      height: MediaQuery.of(context).size.height * 0.05,
-                      child: Icon(
-                        Icons.shopping_bag_outlined,
-                        color: ColorConstant.primaryColor,
-                      ),
-                      decoration: BoxDecoration(
-                          border: Border.all(
-                            color: ColorConstant.grey,
-                          ),
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                  ),
-                ),
+                //         Fluttertoast.showToast(msg: "Added to cart");
+                //         Get.off(() => CartScreen(),
+                //             transition: Transition.rightToLeftWithFade);
+                //       }
+                //     },
+                //     child: Container(
+                //       width: 45,
+                //       height: MediaQuery.of(context).size.height * 0.05,
+                //       child: const Icon(
+                //         Icons.shopping_bag_outlined,
+                //         color: ColorConstant.primaryColor,
+                //       ),
+                //       decoration: BoxDecoration(
+                //           border: Border.all(
+                //             color: ColorConstant.grey,
+                //           ),
+                //           borderRadius: BorderRadius.circular(10)),
+                //     ),
+                //   ),
+                // ),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.only(
@@ -140,69 +144,41 @@ class BookingPage extends StatelessWidget {
                           bookFormControlller.leaddata = await getFormValues();
                           print(bookFormControlller.leaddata);
                           // print(jsonEncode(bookFormControlller.leaddata));
-                          if (roomController.guestTotal.value != 0 &&
-                              roomController.guestTotal.value != 1) {
+                          if (roomController.guestTotal!.value != 0 &&
+                              roomController.guestTotal!.value != 1) {
                             bookFormControlller.guestFormdata =
                                 await getEnteredForm(
                                     acController,
                                     roomController,
                                     bookFormControlller,
                                     bookFormControlller.guestFormdata);
-                            // print(
-                            //     "datlisttt===>${bookFormControlller.guestFormdata}");
-                          } else if (roomController.guestTotal.value == 1) {
-                          } else if (acController.orgguestTotal.value != 0 &&
-                              acController.orgguestTotal.value != 1) {
-                            bookFormControlller.guestFormdata =
-                                await getEnteredForm(
-                                    acController,
-                                    roomController,
-                                    bookFormControlller,
-                                    bookFormControlller.guestFormdata);
-                            // print(
-                            //     "datlisttt===>${bookFormControlller.guestFormdata}");
-                          } else if (acController.guestTotal.value != 0 &&
-                              acController.guestTotal.value != 1) {
-                            bookFormControlller.guestFormdata =
-                                await getEnteredForm(
-                                    acController,
-                                    roomController,
-                                    bookFormControlller,
-                                    bookFormControlller.guestFormdata);
-                            // print(
-                            //     "datlisttt===>${bookFormControlller.guestFormdata}");
+                            print(
+                                "formmm------${bookFormControlller.guestFormdata}");
                           }
 
-                          // if (roomController.selectedcourtesy2.value != []) {
-                          //   print("notempty");
-                          //   bookFormControlller.guestFormdata =
-                          //       await getEnteredForm(
-                          //           acController,
-                          //           roomController,
-                          //           bookFormControlller.guestFormdata);
-                          //   print(
-                          //       "datlisttt===>${bookFormControlller.guestFormdata}");
-                          // }
-
-                          await bookFormControlller.postAccommodation(
-                            checkinD,
-                            checkoutD,
-                            roomController.selectedRoom.value,
-                            roomDetail,
-                          );
-                          if (platForm == "0") {
-                            bookFormControlller.inhouseBooking();
-                          }
-                          Get.to(() => PaymentPage(),
+                          Get.to(
+                              () => PaymentPage(
+                                    hotelNmae: hotelName,
+                                    roomController: roomController,
+                                    acController: acController,
+                                    leaddata: bookFormControlller.leaddata,
+                                    checkin: checkinD,
+                                    checkout: checkoutD,
+                                    platForm: platForm,
+                                    hotelId: hotelId,
+                                    selectedRoomCategoryData:
+                                        selectedRoomCategoryData,
+                                    roomDetail: roomDetail,
+                                  ),
                               transition: Transition.rightToLeftWithFade);
                         }
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 0),
+                      child: const Padding(
+                        padding: EdgeInsets.only(bottom: 0),
                         child: CustomButton(
                           child: Center(
                               child: Text(
-                            "Book and Confirm",
+                            "Continue",
                             style: TextStyle(
                                 color: ColorConstant.white,
                                 fontWeight: FontWeight.bold,
@@ -225,17 +201,17 @@ class BookingPage extends StatelessWidget {
 
                     Get.back();
                   },
-                  icon: Icon(
+                  icon: const Icon(
                     Icons.arrow_back_ios,
                     color: ColorConstant.white,
                   )),
-              title: Text(
+              title: const Text(
                 'Personal Details',
                 style: TextStyle(color: Colors.white),
               ),
               centerTitle: true,
               flexibleSpace: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                       color: ColorConstant.primaryColor,
                       borderRadius: BorderRadius.only(
                           bottomLeft: Radius.circular(20),
@@ -246,7 +222,7 @@ class BookingPage extends StatelessWidget {
                 padding: const EdgeInsets.only(bottom: 20),
                 child: Form(
                   key: formKey,
-                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  //autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -265,28 +241,29 @@ class BookingPage extends StatelessWidget {
                                   color: Colors.grey[200],
                                 ),
                                 child: DropdownButtonFormField(
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                       contentPadding: EdgeInsets.only(left: 6),
                                       border: InputBorder.none),
                                   value: roomController
-                                              .selectedcourtesy1.value ==
+                                              .selectedSalutation1.value ==
                                           ""
                                       ? null
-                                      : roomController.selectedcourtesy1.value,
-                                  items: roomController.courtesy1.map((item) {
+                                      : roomController
+                                          .selectedSalutation1.value,
+                                  items: roomController.salutation1.map((item) {
                                     return DropdownMenuItem(
                                         value: item,
                                         child: Text(item.toString()));
                                   }).toList(),
                                   onChanged: (v) {
-                                    roomController.selectedcourtesy1.value =
+                                    roomController.selectedSalutation1.value =
                                         v.toString();
-                                    print(
-                                        roomController.selectedcourtesy1.value);
+                                    print(roomController
+                                        .selectedSalutation1.value);
                                   },
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 10,
                               ),
                               Expanded(
@@ -294,16 +271,16 @@ class BookingPage extends StatelessWidget {
                                   controller: LfirstnameController,
                                   decoration: InputDecoration(
                                       enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               color: ColorConstant.grey),
                                           borderRadius:
                                               BorderRadius.circular(10)),
                                       border: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               color: ColorConstant.grey),
                                           borderRadius:
                                               BorderRadius.circular(10)),
-                                      contentPadding: EdgeInsets.only(
+                                      contentPadding: const EdgeInsets.only(
                                           top: 6,
                                           bottom: 6,
                                           left: 14,
@@ -312,7 +289,7 @@ class BookingPage extends StatelessWidget {
                                       hintText: 'First Name'),
                                   validator: (value) {
                                     if (value == "") {
-                                      return "This field cannot be empty";
+                                      return "This field can't be empty";
                                     }
                                     return null;
                                   },
@@ -328,23 +305,17 @@ class BookingPage extends StatelessWidget {
                             controller: LMiddlenameController,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'Middle Name'),
-                            validator: (value) {
-                              if (value == "") {
-                                return "This field cannot be empty";
-                              }
-                              return null;
-                            },
                           ),
                         ),
                         Padding(
@@ -354,14 +325,14 @@ class BookingPage extends StatelessWidget {
                             controller: LLastnameController,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'Last Name'),
@@ -380,20 +351,24 @@ class BookingPage extends StatelessWidget {
                             controller: LEmailController,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'E-mail'),
                             validator: (value) {
                               if (value == "") {
-                                return "This field cannot be empty";
+                                return "This field can't be empty";
+                              } else if (!RegExp(
+                                      r"^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                                  .hasMatch(value.toString())) {
+                                return "Please enter a valid email address";
                               }
                               return null;
                             },
@@ -411,20 +386,20 @@ class BookingPage extends StatelessWidget {
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'Contact No.'),
                             validator: (value) {
                               if (value == "") {
-                                return "This field cannot be empty";
+                                return "This field can't be empty";
                               }
                               return null;
                             },
@@ -437,20 +412,20 @@ class BookingPage extends StatelessWidget {
                             controller: LPassController,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'Passport No.'),
                             validator: (value) {
                               if (value == "") {
-                                return "This field cannot be empty";
+                                return "This field can't be empty";
                               }
                               return null;
                             },
@@ -463,99 +438,34 @@ class BookingPage extends StatelessWidget {
                             controller: LLPOController,
                             decoration: InputDecoration(
                                 enabledBorder: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
                                 border: OutlineInputBorder(
-                                    borderSide:
-                                        BorderSide(color: ColorConstant.grey),
+                                    borderSide: const BorderSide(
+                                        color: ColorConstant.grey),
                                     borderRadius: BorderRadius.circular(10)),
-                                contentPadding: EdgeInsets.only(
+                                contentPadding: const EdgeInsets.only(
                                     top: 6, bottom: 6, left: 14, right: 14),
                                 hintStyle: TextingStyle.font14normalLb,
                                 hintText: 'LPO'),
                             validator: (value) {
                               if (value == "") {
-                                return "This field cannot be empty";
+                                return "This field can't be empty";
                               }
                               return null;
                             },
                           ),
                         ),
                         ListView.builder(
-                            padding: EdgeInsets.only(bottom: 60),
+                            padding: const EdgeInsets.only(bottom: 60),
                             shrinkWrap: true,
-                            physics: BouncingScrollPhysics(),
-                            itemCount: roomController.guestTotal.value != 1 &&
-                                    roomController.guestTotal.value != 0
-                                ? roomController.guestTotal.value - 1
-                                : roomController.guestTotal.value == 1
-                                    ? 0
-                                    : acController.orgguestTotal.value != 1 &&
-                                            acController.orgguestTotal.value !=
-                                                0
-                                        ? acController.orgguestTotal.value - 1
-                                        : acController.guestTotal.value != 1 &&
-                                                acController.guestTotal.value !=
-                                                    0
-                                            ? acController.guestTotal.value - 1
-                                            : 0,
+                            physics: const BouncingScrollPhysics(),
+                            itemCount: roomController.guestTotal!.value != 1 &&
+                                    roomController.guestTotal!.value != 0
+                                ? roomController.guestTotal!.value - 1
+                                : 0,
                             itemBuilder: (context, index) {
-                              if (roomController.guestTotal.value != 1 &&
-                                  roomController.guestTotal.value != 0) {
-                                print("con1");
-                              } else if (roomController.guestTotal.value == 1) {
-                                print("con2");
-                              } else if (acController.orgguestTotal.value !=
-                                      1 &&
-                                  acController.orgguestTotal.value != 0) {
-                                print("con3");
-                              } else if (acController.guestTotal.value != 1 &&
-                                  acController.guestTotal.value != 0) {
-                                print("con 4");
-                              } else {
-                                print("con 5");
-                              }
-
-                              // roomController.selectedcourtesy2.value =
-                              //     List.generate(
-                              //         roomController.guestTotal.value != 1 &&
-                              //                 roomController.guestTotal.value !=
-                              //                     0
-                              //             ? roomController.guestTotal.value - 1
-                              //             : roomController.guestTotal.value == 1
-                              //                 ? 0
-                              //                 : acController.guestTotal.value !=
-                              //                             1 &&
-                              //                         acController.guestTotal
-                              //                                 .value !=
-                              //                             0
-                              //                     ? acController
-                              //                             .guestTotal.value -
-                              //                         1
-                              //                     : 0,
-                              //         (index) => "Mr.");
-
-                              // if (roomController.selectedGender.isEmpty) {
-                              // roomController.selectedGender.value =
-                              //     List.generate(
-                              //         roomController.guestTotal.value != 1 &&
-                              //                 roomController.guestTotal.value !=
-                              //                     0
-                              //             ? roomController.guestTotal.value - 1
-                              //             : roomController.guestTotal.value == 1
-                              //                 ? 0
-                              //                 : acController.guestTotal.value !=
-                              //                             1 &&
-                              //                         acController.guestTotal
-                              //                                 .value !=
-                              //                             0
-                              //                     ? acController
-                              //                             .guestTotal.value -
-                              //                         1
-                              //                     : 0,
-                              //         (index) => "");
-                              //}
                               if (controllersList.length <= index) {
                                 controllersList.add([
                                   TextEditingController(), // Controller for First Name
@@ -575,13 +485,13 @@ class BookingPage extends StatelessWidget {
                                         bottom: 6),
                                     child: Text(
                                       "Guest No: ${index + 1}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: ColorConstant.lightBlue,
                                           fontSize: 14,
                                           fontWeight: FontWeight.w500),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     height: 8,
                                   ),
                                   Container(
@@ -603,21 +513,23 @@ class BookingPage extends StatelessWidget {
                                                   color: Colors.grey[200],
                                                 ),
                                                 child: DropdownButtonFormField(
-                                                  decoration: InputDecoration(
-                                                      contentPadding:
-                                                          EdgeInsets.only(
-                                                              left: 6),
-                                                      border: InputBorder.none),
+                                                  decoration:
+                                                      const InputDecoration(
+                                                          contentPadding:
+                                                              EdgeInsets.only(
+                                                                  left: 6),
+                                                          border:
+                                                              InputBorder.none),
                                                   value: roomController
-                                                                  .selectedcourtesy2[
+                                                                  .selectedSalutation2[
                                                               index] ==
                                                           []
                                                       ? null
                                                       : roomController
-                                                              .selectedcourtesy2[
+                                                              .selectedSalutation2[
                                                           index],
                                                   items: roomController
-                                                      .courtesy2
+                                                      .salutaion2
                                                       .map((item) {
                                                     return DropdownMenuItem(
                                                         value: item,
@@ -625,12 +537,12 @@ class BookingPage extends StatelessWidget {
                                                   }).toList(),
                                                   onChanged: (v) {
                                                     roomController
-                                                            .selectedcourtesy2[
+                                                            .selectedSalutation2[
                                                         index] = v.toString();
                                                   },
                                                 ),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 width: 10,
                                               ),
                                               Expanded(
@@ -639,23 +551,25 @@ class BookingPage extends StatelessWidget {
                                                       controllersList[index][0],
                                                   decoration: InputDecoration(
                                                       enabledBorder: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  ColorConstant
-                                                                      .grey),
+                                                          borderSide:
+                                                              const BorderSide(
+                                                                  color:
+                                                                      ColorConstant
+                                                                          .grey),
                                                           borderRadius:
                                                               BorderRadius.circular(
                                                                   10)),
                                                       border: OutlineInputBorder(
-                                                          borderSide: BorderSide(
-                                                              color:
-                                                                  ColorConstant
-                                                                      .grey),
+                                                          borderSide:
+                                                              const BorderSide(
+                                                                  color:
+                                                                      ColorConstant
+                                                                          .grey),
                                                           borderRadius:
                                                               BorderRadius.circular(
                                                                   10)),
                                                       contentPadding:
-                                                          EdgeInsets.only(
+                                                          const EdgeInsets.only(
                                                               top: 6,
                                                               bottom: 6,
                                                               left: 14,
@@ -665,7 +579,7 @@ class BookingPage extends StatelessWidget {
                                                       hintText: 'First Name'),
                                                   validator: (value) {
                                                     if (value == "") {
-                                                      return "This field cannot be empty";
+                                                      return "This field can't be empty";
                                                     }
                                                     return null;
                                                   },
@@ -683,24 +597,28 @@ class BookingPage extends StatelessWidget {
                                             decoration: InputDecoration(
                                                 enabledBorder:
                                                     OutlineInputBorder(
-                                                        borderSide: BorderSide(
-                                                            color: ColorConstant
-                                                                .grey),
+                                                        borderSide:
+                                                            const BorderSide(
+                                                                color:
+                                                                    ColorConstant
+                                                                        .grey),
                                                         borderRadius:
                                                             BorderRadius
                                                                 .circular(10)),
                                                 border: OutlineInputBorder(
-                                                    borderSide: BorderSide(
-                                                        color:
-                                                            ColorConstant.grey),
+                                                    borderSide:
+                                                        const BorderSide(
+                                                            color: ColorConstant
+                                                                .grey),
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             10)),
-                                                contentPadding: EdgeInsets.only(
-                                                    top: 6,
-                                                    bottom: 6,
-                                                    left: 14,
-                                                    right: 14),
+                                                contentPadding:
+                                                    const EdgeInsets.only(
+                                                        top: 6,
+                                                        bottom: 6,
+                                                        left: 14,
+                                                        right: 14),
                                                 hintStyle:
                                                     TextingStyle.font14normalLb,
                                                 hintText: 'Last Name'),
@@ -718,24 +636,25 @@ class BookingPage extends StatelessWidget {
                                           child: DropdownButtonFormField(
                                             decoration: InputDecoration(
                                               enabledBorder: OutlineInputBorder(
-                                                  borderSide: BorderSide(
+                                                  borderSide: const BorderSide(
                                                       color:
                                                           ColorConstant.grey),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10)),
                                               border: OutlineInputBorder(
-                                                  borderSide: BorderSide(
+                                                  borderSide: const BorderSide(
                                                       color:
                                                           ColorConstant.grey),
                                                   borderRadius:
                                                       BorderRadius.circular(
                                                           10)),
-                                              contentPadding: EdgeInsets.only(
-                                                  top: 6,
-                                                  bottom: 6,
-                                                  left: 14,
-                                                  right: 14),
+                                              contentPadding:
+                                                  const EdgeInsets.only(
+                                                      top: 6,
+                                                      bottom: 6,
+                                                      left: 14,
+                                                      right: 14),
                                               // border: InputBorder.none
                                             ),
                                             hint: Text(
@@ -765,6 +684,13 @@ class BookingPage extends StatelessWidget {
                                               print(roomController
                                                   .selectedGender);
                                             },
+                                            validator: (value) {
+                                              if (value == "" ||
+                                                  value == null) {
+                                                return "This field can't be empty";
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                       ],
@@ -790,7 +716,7 @@ class BookingPage extends StatelessWidget {
   Map<String, String> getFormValues() {
     Map<String, String> formValues = {
       "customer_id": "0",
-      "salutaion": roomController.selectedcourtesy1.value,
+      "salutaion": roomController.selectedSalutation1.value.replaceAll(".", ""),
       'first_name': LfirstnameController.text,
       'middle_name': LMiddlenameController.text,
       'last_name': LLastnameController.text,
@@ -810,25 +736,30 @@ class BookingPage extends StatelessWidget {
       BookFormController bookFormController,
       leaddata) {
     List<Map<String, dynamic>> dataList = [];
-    var length = roomController.guestTotal.value != 1 &&
-            roomController.guestTotal.value != 0
-        ? roomController.guestTotal.value - 1
-        : acController.orgguestTotal.value != 1 &&
-                acController.orgguestTotal.value != 0
-            ? acController.orgguestTotal.value - 1
-            : acController.guestTotal.value != 1 &&
-                    acController.guestTotal.value != 0
-                ? acController.guestTotal.value - 1
-                : 0;
+    var length = roomController.guestTotal!.value != 1 &&
+            roomController.guestTotal!.value != 0
+        ? roomController.guestTotal!.value - 1
+        // : acController.orgguestTotal.value != 1 &&
+        //         acController.orgguestTotal.value != 0
+        //     ? acController.orgguestTotal.value - 1
+        //     : acController.guestTotal.value != 1 &&
+        //             acController.guestTotal.value != 0
+        //         ? acController.guestTotal.value - 1
+        : 0;
 
     for (int i = 0; i < length; i++) {
       print(roomController.selectedGender[i]);
       Map<String, dynamic> data = {
         // "lead": leaddata,
-        "Courtesy": roomController.selectedcourtesy2[i],
-        'First Name': controllersList[i][0].text,
-        'Last Name': controllersList[i][1].text,
-        'Gender': roomController.selectedGender[i],
+        "guest_id": i.toString(),
+        "guest_type": "adult",
+        "salutaion": roomController.selectedSalutation2[i]
+            .toString()
+            .replaceAll(".", ""),
+        'first_name': controllersList[i][0].text,
+        'last_name': controllersList[i][1].text,
+
+        //'Gender': roomController.selectedGender[i],
       };
 
       dataList.add(data);

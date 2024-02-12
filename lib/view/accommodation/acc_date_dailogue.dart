@@ -2,6 +2,7 @@ import 'package:choose_n_fly/utils/clr_constant.dart';
 import 'package:choose_n_fly/view/accommodation/controller/acc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 acDateDialogue(BuildContext context, AccomodationController acController) {
@@ -198,13 +199,13 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                   ),
                 ),
               ),
-              Obx(
-                () => acController.isnightError.value == true
-                    ? const Text("Atleast select 1 night",
-                        style:
-                            TextStyle(color: ColorConstant.red, fontSize: 10))
-                    : const SizedBox(),
-              ),
+              // Obx(
+              //   () => acController.isnightError.value == true
+              //       ? const Text("Atleast select 1 night",
+              //           style:
+              //               TextStyle(color: ColorConstant.red, fontSize: 10))
+              //       : const SizedBox(),
+              // ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.01,
               ),
@@ -231,25 +232,16 @@ acDateDialogue(BuildContext context, AccomodationController acController) {
                           backgroundColor: MaterialStatePropertyAll(
                               ColorConstant.primaryColor)),
                       onPressed: () {
-                        // if (acController.checkInDate.value == "") {
-                        //   acController.ischeckInError.value = true;
-                        // } else if (acController.checkOutDate.value == "") {
-                        //   acController.ischeckOutError.value = true;
-                        // } else if (acController.nitController.text == "0" ||
-                        //     acController.nitController.text == "") {
-                        //   acController.isnightError.value = true;
-                        // } else {
-                        //   acController.newCheckinDate.value =
-                        //       acController.checkInDate.value;
-                        //   acController.newCheckoutDate.value =
-                        //       acController.checkOutDate.value;
-                        //   acController.isnightError.value = false;
-                        //   acController.isDateShown.value = true;
+                        print(acController.nitController.text);
 
-                        //   Navigator.pop(context);
-                        // }
-                        acController.initialDate();
-                        Navigator.pop(context);
+                        if (acController.nitController.text == "" ||
+                            acController.nitController.text == "0") {
+                          Fluttertoast.showToast(msg: "Atleast select 1 day");
+                          // acController.isnightError.value = true;
+                        } else {
+                          acController.initialDate();
+                          Navigator.pop(context);
+                        }
                       },
                       child: const Text(
                         "Submit",

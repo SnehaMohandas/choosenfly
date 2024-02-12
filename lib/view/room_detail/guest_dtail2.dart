@@ -31,7 +31,6 @@ class GuestDetail2 extends StatelessWidget {
   var childAgeList = [];
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  //List<String> allAgeOrgs = [];
   List? mappedAges;
 
   @override
@@ -63,21 +62,10 @@ class GuestDetail2 extends StatelessWidget {
                 const EdgeInsets.only(left: 14, right: 14, top: 25, bottom: 14),
             child: Form(
               key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
+              //autovalidateMode: AutovalidateMode.onUserInteraction,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.02,
-                  // ),
-                  // GestureDetector(
-                  //     onTap: () {
-                  //       Navigator.pop(context);
-                  //     },
-                  //     child: Icon(Icons.arrow_back)),
-                  // SizedBox(
-                  //   height: MediaQuery.of(context).size.height * 0.02,
-                  // ),
                   const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 6, vertical: 4),
                     child: Text(
@@ -93,10 +81,6 @@ class GuestDetail2 extends StatelessWidget {
                     () => DropdownButtonFormField<String>(
                         value: roomController.roomCount.value != ""
                             ? roomController.roomCount.value
-                            // : roomCounts != ""
-                            //     ? roomCounts.toString()
-                            // : acController.roomCount.value != ""
-                            //     ? acController.roomCount.value
                             : null,
                         validator: (value) {
                           if (value == null) {
@@ -107,9 +91,6 @@ class GuestDetail2 extends StatelessWidget {
                         decoration: InputDecoration(
                             contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 10, vertical: 4),
-                            // labelText: "Rooms",
-                            // labelStyle: TextStyle(
-                            //     color: ColorConstant.liteBlack, fontSize: 14),
                             enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
                                   color: ColorConstant.lightBlue2,
@@ -173,6 +154,10 @@ class GuestDetail2 extends StatelessWidget {
                               ? int.parse(roomController.roomCount.value)
                               : 0,
                           itemBuilder: (context, index) {
+                            print(
+                                "mmmmmmmmmmmm${roomController.selectedChildIndex.value}");
+                            print(
+                                "eeeeeeeeeeeeeeeee${roomController.selectedDdindex}");
                             return Column(
                               children: [
                                 Row(
@@ -183,23 +168,14 @@ class GuestDetail2 extends StatelessWidget {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
+                                          const Padding(
+                                            padding: EdgeInsets.symmetric(
                                                 horizontal: 6, vertical: 4),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                print("tt");
-                                                print(roomController
-                                                    .adultDdnum.value.length);
-                                                print(roomController
-                                                    .adultDdnum.value[index]);
-                                              },
-                                              child: const Text(
-                                                "Adults",
-                                                style: TextStyle(
-                                                  color: ColorConstant.black,
-                                                  fontSize: 13,
-                                                ),
+                                            child: Text(
+                                              "Adults",
+                                              style: TextStyle(
+                                                color: ColorConstant.black,
+                                                fontSize: 13,
                                               ),
                                             ),
                                           ),
@@ -217,25 +193,6 @@ class GuestDetail2 extends StatelessWidget {
                                                     ? null
                                                     : roomController.adultDdnum
                                                         .value[index],
-                                                //===============
-
-                                                // value: roomController
-                                                //             .adultDdnum
-                                                //             .value
-                                                //             .length==0 ||
-                                                //         roomController
-                                                //                     .adultDdnum
-                                                //                     .value[
-                                                //                 index] ==
-                                                //             0
-                                                //     ? roomController
-                                                //         .adultDdnum
-                                                //         .value[index]
-                                                //     : adultCounts.isNotEmpty
-                                                //         ? adultCounts[index]
-                                                //             .toString()
-                                                //         : null,
-                                                //=============
                                                 validator: (value) {
                                                   if (value == null) {
                                                     return 'Please select an option';
@@ -358,14 +315,6 @@ class GuestDetail2 extends StatelessWidget {
                                                           .childDdnum[index] =
                                                       newValue;
 
-                                                  print(roomController
-                                                      .ageTextControllers);
-                                                  print(roomController
-                                                      .childDdnum[index]);
-                                                  print(index);
-                                                  print(roomController
-                                                      .ageTextControllers);
-
                                                   //"""""""""""''''"
 
                                                   roomController
@@ -382,11 +331,6 @@ class GuestDetail2 extends StatelessWidget {
                                                                   .toString()),
                                                           (index) =>
                                                               TextEditingController());
-
-                                                  print(
-                                                      "allllll=>>>${roomController.ageTextControllers}");
-                                                  print(
-                                                      "specificcccc===>${roomController.ageTextControllers[index]}");
                                                 }),
                                           ),
 
@@ -581,7 +525,7 @@ class GuestDetail2 extends StatelessWidget {
                               style: const ButtonStyle(
                                   backgroundColor: MaterialStatePropertyAll(
                                       ColorConstant.primaryColor)),
-                              onPressed: () {
+                              onPressed: () async {
                                 if (_formKey.currentState!.validate()) {
                                   roomController.isSubLoading.value = true;
                                   //==========
@@ -616,19 +560,10 @@ class GuestDetail2 extends StatelessWidget {
                                       return previous;
                                     }
                                   });
-                                  print(
-                                      'Sum of the list: ${childSum.toString()}');
-                                  roomController.guestTotal.value =
-                                      adultSum.toInt() + childSum.toInt();
-                                  print("totallll${roomController.guestTotal}");
-                                  print(
-                                      "room count${roomController.roomCount.value}");
 
-                                  print(
-                                      "adult count list ${roomController.adultDdnum}");
-                                  print(
-                                      "child count list${roomController.childDdnum}");
-                                  print(roomController.ageTextControllers);
+                                  roomController.guestTotal!.value =
+                                      adultSum.toInt() + childSum.toInt();
+
                                   roomController.newRoomCount.value =
                                       roomController.roomCount.value;
                                   for (int i = 0;
@@ -661,70 +596,9 @@ class GuestDetail2 extends StatelessWidget {
 
                                   roomController.isSubLoading.value = false;
 
-                                  // roomController.atharvaCancelPolicy();
-                                  // roomController.iwtxCancelPolicy();
                                   roomController.fetchRoomTypeidEdited();
 
                                   Get.back();
-
-                                  //===================test
-                                  // for (int i = 0;
-                                  //     i <
-                                  //         int.parse(roomController
-                                  //             .roomCount.value
-                                  //             .toString());
-                                  //     i++) {
-                                  //   for (int j = 0;
-                                  //       j <
-                                  //           roomController
-                                  //               .ageTextControllers![i]
-                                  //               .length;
-                                  //       j++) {
-                                  //     if (roomController
-                                  //         .ageTextControllers[i].isNotEmpty) {
-                                  //       mappedAges = roomController
-                                  //           .ageTextControllers[i]
-                                  //           .map((e) => e.text)
-                                  //           .join(', ');
-                                  //     }
-                                  //   }
-                                  //   if (roomController
-                                  //       .ageTextControllers[i].isNotEmpty) {
-                                  //     roomController.allAgeOrgs
-                                  //         .add(mappedAges!);
-                                  //   }
-                                  // }
-                                  // if (roomController.allAgeOrgs.isEmpty ||
-                                  //     roomController.allAgeOrgs == []) {
-                                  //   print("object");
-                                  // } else {
-                                  //   print(roomController.allAgeOrgs);
-                                  // }
-                                  //==============
-
-                                  //for age in one list
-                                  //===================
-
-                                  // for (int i = 0;
-                                  //     i <
-                                  //         roomController
-                                  //             .ageTextControllers!.length;
-                                  //     i++) {
-                                  //   for (int j = 0;
-                                  //       j <
-                                  //           roomController
-                                  //               .ageTextControllers![i].length;
-                                  //       j++) {
-                                  //     childAgeList.add(roomController
-                                  //         .ageTextControllers[i][j].text);
-                                  //     print(
-                                  //         "Room $i, Child $j: ${roomController.ageTextControllers![i][j].text}");
-                                  //   }
-
-                                  //   // }
-                                  // }
-                                  // print(childAgeList.toString());
-                                  //========================
                                 }
                               },
                               child: const Text(
@@ -753,32 +627,19 @@ class GuestDetail2 extends StatelessWidget {
       AccomodationController acController, RoomController2 roomController) {
     List<Map<String, dynamic>> dataList = [];
 
-    var length = roomController.newRoomCount.value != ""
-        ? roomController.newRoomCount.value
-        : 1;
+    var length = roomController.newRoomCount.value;
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
-      print("this is childcount${roomController.ageTextControllers[i]}");
-      Map<String, dynamic> data = {
-        "RoomSrNo": roomController.newRoomCount.value != ""
-            ? (i + 1).toString()
-            : 0.toString(),
-        'NoOfAdult': roomController.adultDdnum[i] != 0
-            ? roomController.adultDdnum[i]
-            : 0.toString(),
-        'NoOfChild': roomController.childDdnum[i] == 0
-            ? 0.toString()
-            : roomController.childDdnum[i] != 0
-                ? roomController.childDdnum[i]
-                // : acController.childDdnum[i] != 0
-                //     ? acController.childDdnum[i]
-                : 0.toString(),
-        if (roomController.allAgeOrgs[i].isNotEmpty)
-          "ChildAges": roomController.allAgeOrgs[i]
-        else if (roomController.allAgeOrgs[i].isEmpty)
-          "ChildAges": []
+      print("this is childcount${roomController.childDdnum}");
+      print("this is adult${roomController.adultDdnum}");
 
-        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+      print("this is age${roomController.allAgeOrgs}");
+
+      Map<String, dynamic> data = {
+        "RoomSrNo": (i + 1).toString(),
+        'NoOfAdult': roomController.adultDdnum[i].toString(),
+        'NoOfChild': roomController.childDdnum[i].toString(),
+        "ChildAges": roomController.allAgeOrgs[i]
       };
 
       dataList.add(data);
@@ -791,35 +652,18 @@ class GuestDetail2 extends StatelessWidget {
       AccomodationController acController, RoomController2 roomController) {
     List<Map<String, dynamic>> dataList = [];
 
-    var length = roomController.newRoomCount.value != ""
-        ? roomController.newRoomCount.value
-        : 1;
+    var length = roomController.newRoomCount.value;
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       print("this is childcount${roomController.ageTextControllers[i]}");
+
       Map<String, dynamic> data = {
-        "RoomSrNo": roomController.newRoomCount.value != ""
-            ? (i + 1).toString()
-            : 0.toString(),
-        'NoOfAdult': roomController.adultDdnum[i] != 0
-            ? roomController.adultDdnum[i]
-            : 0.toString(),
-        'NoOfChild': roomController.childDdnum[i] == 0
-            ? 0.toString()
-            : roomController.childDdnum[i] != 0
-                ? roomController.childDdnum[i]
-                // : acController.childDdnum[i] != 0
-                //     ? acController.childDdnum[i]
-                : 0.toString(),
+        "RoomSrNo": (i + 1).toString(),
+        'NoOfAdult': roomController.adultDdnum[i].toString(),
+        'NoOfChild': roomController.childDdnum[i].toString(),
         "RateKey": "thcttyd7egsTTu/+T5KfO0TtoK0W2Ftmi7ENr3G8Nw4=",
-        if (roomController.allAgeOrgs[i].isNotEmpty)
-          "ChildAges": roomController.allAgeOrgs[i]
-        else if (roomController.allAgeOrgs[i].isEmpty)
-          "ChildAges": []
-
-        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+        "ChildAges": roomController.allAgeOrgs[i]
       };
-
       dataList.add(data);
     }
 
@@ -832,9 +676,7 @@ class GuestDetail2 extends StatelessWidget {
     List adultage = [];
     adultage.clear();
 
-    var length = roomController.newRoomCount.value != ""
-        ? roomController.newRoomCount.value
-        : 1;
+    var length = roomController.newRoomCount.value;
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       print("this is childcount${roomController.ageTextControllers[i]}");
@@ -845,28 +687,12 @@ class GuestDetail2 extends StatelessWidget {
       );
 
       Map<String, dynamic> data = {
-        "roomcount": roomController.newRoomCount.value != ""
-            ? (i + 1).toString()
-            : 0.toString(),
-        'adult': roomController.adultDdnum[i] != 0
-            ? roomController.adultDdnum[i]
-            : 0.toString(),
-        'child': roomController.childDdnum[i] == 0
-            ? 0.toString()
-            : roomController.childDdnum[i] != 0
-                ? roomController.childDdnum[i]
-                // : acController.childDdnum[i] != 0
-                //     ? acController.childDdnum[i]
-                : 0.toString(),
-        if (roomController.allAgeOrgs[i].isNotEmpty)
-          "childAge": roomController.allAgeOrgs[i]
-        else if (roomController.allAgeOrgs[i].isEmpty)
-          "childAge": [],
-        "adultAges": adultage
-
-        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
+        "roomcount": (i + 1).toString(),
+        'adult': roomController.adultDdnum[i].toString(),
+        'child': roomController.childDdnum[i].toString(),
+        "childAge": roomController.allAgeOrgs[i],
+        "adultAge": adultage
       };
-
       dataList.add(data);
     }
 
@@ -879,9 +705,7 @@ class GuestDetail2 extends StatelessWidget {
     List adultage = [];
     adultage.clear();
 
-    var length = roomController.newRoomCount.value != ""
-        ? roomController.newRoomCount.value
-        : 1;
+    var length = roomController.newRoomCount.value;
 
     for (int i = 0; i < int.parse(length.toString()); i++) {
       print("this is childcount${roomController.ageTextControllers[i]}");
@@ -892,13 +716,8 @@ class GuestDetail2 extends StatelessWidget {
       );
 
       Map<String, dynamic> data = {
-        if (roomController.allAgeOrgs[i].isNotEmpty)
-          "childAge": roomController.allAgeOrgs[i]
-        else if (roomController.allAgeOrgs[i].isEmpty)
-          "childAge": [],
+        "childAge": roomController.allAgeOrgs[i],
         "adultAges": adultage
-
-        //if (allAgeOrgs.isNotEmpty) 'children age': allAgeOrgs[i].toString()
       };
 
       dataList.add(data);

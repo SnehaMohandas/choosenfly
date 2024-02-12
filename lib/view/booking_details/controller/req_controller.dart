@@ -112,7 +112,6 @@ class ReqConfirmController extends GetxController {
       print(response.statusCode);
       if (response.statusCode == 200) {
         print("detaillsss==>${response.body}");
-        // Fluttertoast.showToast(msg: "Removed from cart");
         await fetchVoucherDetails();
       }
     } catch (e) {
@@ -121,39 +120,9 @@ class ReqConfirmController extends GetxController {
     }
   }
 
-  //supplier reference
-  //var supplierRef = "".obs;
-
-  // supplierRefChange(
-  //   bookingIdPR,
-  //   code,
-  //   apiType,
-  // ) async {
-  //   try {
-  //     isAdding.value = true;
-
-  //     //isLoading.value = true;
-  //     var response = await http.get(
-  //         Uri.parse(
-  //             "${baseUrl}custom/setBookingCodeAPIout?id=${bookingIdPR}&bookingcode=${code}&apistatus=${apiType}&type=${bookingStatus}&apiId=${apiType}"),
-  //         headers: {'apikey': header});
-  //     print(response.statusCode);
-  //     if (response.statusCode == 200) {
-  //       print("detaillsss==>${response.body}");
-  //       // Fluttertoast.showToast(msg: "Removed from cart");
-  //       await fetchVoucherDetails();
-  //     }
-  //   } catch (e) {
-  //   } finally {
-  //     isAdding.value = false;
-  //   }
-  // }
-
   @override
   void onInit() {
     fetchVoucherDetails();
-    // fetchConfirmDetails();
-    // fetchRequestDetails();
 
     super.onInit();
   }

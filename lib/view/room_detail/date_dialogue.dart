@@ -217,18 +217,6 @@ dateDialogue(BuildContext context, RoomController2 roomController,
                           backgroundColor:
                               MaterialStatePropertyAll(ColorConstant.white)),
                       onPressed: () {
-                        // acController.checkInDate.value = "";
-                        // acController.checkOutDate.value = "";
-                        // acController.difference.value =
-                        //     Duration(seconds: 0);
-                        // acController.nitController.clear();
-                        // acController.ischeckInError.value =
-                        //     false;
-                        // acController.ischeckOutError.value =
-                        //     false;
-                        // acController.isDateShown.value =
-                        //     false;
-
                         Navigator.pop(context);
                       },
                       child: const Text(
@@ -251,29 +239,14 @@ dateDialogue(BuildContext context, RoomController2 roomController,
                         } else {
                           Navigator.pop(context);
 
-                          print("worked");
                           roomController.newCheckinDate.value =
                               roomController.checkInDate.value;
                           roomController.newCheckoutDate.value =
                               roomController.checkOutDate.value;
                           roomController.isnightError.value = false;
                           roomController.isDateShown.value = true;
-                          // roomController.atharvaCancelPolicy();
-                          // roomController.iwtxCancelPolicy();
 
                           await roomController.fetchRoomTypeidEdited();
-                          // if (roomController.platform == "0" ||
-                          //     roomController.platform == "10" &&
-                          //         roomController.isNoRoomAvailable.value ==
-                          //             false) {
-                          //   roomController.inhouseJumerahCancelPolicy();
-                          // } else if (roomController.platform == "12" &&
-                          //     roomController.isNoRoomAvailable.value == false) {
-                          //   roomController.iwtxCancelPolicy();
-                          // } else if (roomController.platform == "11" &&
-                          //     roomController.isNoRoomAvailable.value == false) {
-                          //   roomController.atharvaCancelPolicy();
-                          // }
                         }
                       },
                       child: const Text(

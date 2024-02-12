@@ -28,6 +28,7 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       if (networkController.isConnected.value) {
+        print("buildddd");
         return Scaffold(
           body: SingleChildScrollView(
             child: Container(

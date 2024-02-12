@@ -65,7 +65,7 @@ class CustomStatsCard extends StatelessWidget {
               maxLines: 2,
               style: TextStyle(
                 overflow: TextOverflow.ellipsis,
-                fontSize: MediaQuery.of(context).size.height * 0.025,
+                fontSize: MediaQuery.of(context).size.height * 0.02,
                 fontWeight: FontWeight.w500,
               ),
             ),
